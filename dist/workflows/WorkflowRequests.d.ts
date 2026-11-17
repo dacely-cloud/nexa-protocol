@@ -1,0 +1,99 @@
+import type { WorkflowGroupReference } from './WorkflowGroupTypes.js';
+import type { WorkflowPatch, WorkflowListCursor, WorkflowNodeReference, WorkflowEdgeReference } from './WorkflowTypes.js';
+import type { WorkflowDetails } from './WorkflowPrimitives.js';
+import type { ComponentDefinition } from './ComponentTypes.js';
+/** Catalog format is separate from saved component versions and draft storage format. */
+export interface WorkflowCatalog {
+    readonly format: 1;
+    readonly components: readonly ComponentDefinition[];
+}
+/** Authoritative validation always names one immutable saved revision. */
+export interface WorkflowValidateRequest {
+    readonly workflowId: string;
+    readonly revision: string;
+}
+/** Bounded draft transport. Large writes require a separate staged-upload capability. */
+export declare const WorkflowGatewayLimits: {
+    readonly patchBytes: 1048576;
+    readonly textChunkCharacters: 65536;
+    readonly recordBatch: 32;
+    readonly recordBatchChunkCharacters: 2048;
+    readonly manifestNodes: 128;
+    readonly manifestEdges: 256;
+    readonly manifestGroups: 128;
+};
+/** Client-chosen identities make an unacknowledged create safe to retry. */
+export interface WorkflowCreateRequest {
+    readonly workflowId: string;
+    readonly commandId: string;
+    readonly details: WorkflowDetails;
+}
+/** Command identity and expected revision serve different purposes. */
+export interface WorkflowSaveRequest {
+    readonly workflowId: string;
+    readonly commandId: string;
+    readonly expectedRevision: string;
+    readonly patch: WorkflowPatch;
+}
+/** Deletion must name the saved revision the owner reviewed. */
+export interface WorkflowDeleteRequest {
+    readonly workflowId: string;
+    readonly expectedRevision: string;
+}
+/** An idempotent deletion receipt; immutable execution history is retained. */
+export interface WorkflowDeleteReceipt {
+    readonly workflowId: string;
+    readonly revision: string;
+    readonly deleted: true;
+}
+/** Metadata pagination carries no node payloads. */
+export interface WorkflowListRequest {
+    readonly limit: number;
+    readonly cursor: WorkflowListCursor | null;
+}
+/** Null resolves the current revision only for the first page. Subsequent pages pin it. */
+export interface WorkflowReadRequest {
+    readonly groupOffset?: number;
+    readonly workflowId: string;
+    readonly revision: string | null;
+    readonly nodeOffset: number;
+    readonly edgeOffset: number;
+}
+/** Bounded manifest page; offsets count references, never bytes or revisions. */
+export interface WorkflowManifestPage {
+    readonly groups?: readonly WorkflowGroupReference[];
+    readonly nextGroupOffset?: number | null;
+    readonly format: 1;
+    readonly workflowId: string;
+    readonly revision: string;
+    readonly details: WorkflowDetails;
+    readonly nodes: readonly WorkflowNodeReference[];
+    readonly edges: readonly WorkflowEdgeReference[];
+    readonly nextNodeOffset: number | null;
+    readonly nextEdgeOffset: number | null;
+}
+/** A reference identifies immutable content within the authenticated owner's workflow. */
+export interface WorkflowRecordRequest {
+    readonly workflowId: string;
+    readonly reference: string;
+    readonly offset: number;
+}
+/** Batches first pages of immutable values; larger records continue through workflows.record. */
+export interface WorkflowRecordsRequest {
+    readonly workflowId: string;
+    readonly references: readonly string[];
+}
+/** The response remains bounded even when a selected record contains a large prompt. */
+export interface WorkflowRecordsPage {
+    readonly workflowId: string;
+    readonly records: readonly WorkflowRecordPage[];
+}
+/** JSON text chunks are concatenated before parsing. Offsets count UTF-16 code units. */
+export interface WorkflowRecordPage {
+    readonly workflowId: string;
+    readonly reference: string;
+    readonly offset: number;
+    readonly totalCharacters: number;
+    readonly content: string;
+    readonly nextOffset: number | null;
+}

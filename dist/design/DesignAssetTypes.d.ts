@@ -1,0 +1,118 @@
+/** Raster formats are identified from bytes before becoming usable design assets. */
+export declare const DesignAssetMime: {
+    readonly Png: 'image/png';
+    readonly Jpeg: 'image/jpeg';
+    readonly Webp: 'image/webp';
+    readonly Gif: 'image/gif';
+};
+export type DesignAssetMime = (typeof DesignAssetMime)[keyof typeof DesignAssetMime];
+/** All asset transfers use one acknowledged bounded chunk at a time. */
+export declare class DesignAssetLimits {
+    /** Library previews never need original-resolution bytes in the browser. */
+    static readonly thumbnailEdge: number;
+    /** One preview remains smaller than an existing acknowledged image slice. */
+    static readonly thumbnailBytes: number;
+    static readonly chunkBytes: number;
+    static readonly fileBytes: bigint;
+    static readonly ownerBytes: bigint;
+    static readonly ownerCount: number;
+    static readonly pixels: number;
+    static readonly edge: number;
+}
+/** Published assets are immutable, and all byte counts remain decimal strings. */
+export interface DesignAsset {
+    readonly id: string;
+    readonly name: string;
+    readonly mime: DesignAssetMime;
+    readonly byteLength: string;
+    readonly sha256: string;
+    readonly width: number;
+    readonly height: number;
+}
+/** Retried admission uses the same client-chosen identity. Ownership comes from the host. */
+export interface DesignAssetStartRequest {
+    readonly id: string;
+    readonly name: string;
+    readonly byteLength: string;
+    readonly sha256: string;
+}
+/** One canonical base64 slice, addressed by exact byte position. */
+export interface DesignAssetChunkRequest {
+    readonly id: string;
+    readonly offset: string;
+    readonly data: string;
+}
+/** Asset addressing is independent of document ownership; both are authorized by the server. */
+export interface DesignAssetIdRequest {
+    readonly id: string;
+}
+/** Reads transfer only a bounded slice of a completed immutable image. */
+export interface DesignAssetReadRequest {
+    readonly id: string;
+    readonly offset: string;
+}
+/** Receipts carry progress without echoing source bytes. */
+export interface DesignAssetPosition {
+    readonly id: string;
+    readonly offset: string;
+    readonly byteLength: string;
+}
+/** The browser pins the metadata identity while assembling slices. */
+export interface DesignAssetSlice {
+    readonly asset: DesignAsset;
+    readonly offset: string;
+    readonly data: string;
+    readonly nextOffset: string | null;
+}
+/** Library projections are metadata only. */
+export interface DesignAssetListRequest {
+    readonly after: string | null;
+    readonly limit: number;
+}
+export interface DesignAssetListPage {
+    readonly items: readonly DesignAsset[];
+    readonly nextAfter: string | null;
+}
+/** A small static preview retains the identity of its original immutable owner asset. */
+export interface DesignAssetThumbnail {
+    readonly asset: DesignAsset;
+    readonly mime: typeof DesignAssetMime.Png;
+    readonly width: number;
+    readonly height: number;
+    readonly byteLength: string;
+    readonly sha256: string;
+    readonly data: string;
+}
+/** Preview delivery is independent of original byte downloads and document writes. */
+export interface DesignAssetThumbnailMethod {
+    readonly params: DesignAssetIdRequest;
+    readonly result: DesignAssetThumbnail;
+}
+export interface DesignAssetStartMethod {
+    readonly params: DesignAssetStartRequest;
+    readonly result: DesignAssetPosition;
+}
+export interface DesignAssetChunkMethod {
+    readonly params: DesignAssetChunkRequest;
+    readonly result: DesignAssetPosition;
+}
+export interface DesignAssetFinishMethod {
+    readonly params: DesignAssetIdRequest;
+    readonly result: DesignAsset;
+}
+export interface DesignAssetCancelMethod {
+    readonly params: DesignAssetIdRequest;
+    readonly result: null;
+}
+export interface DesignAssetReadMethod {
+    readonly params: DesignAssetReadRequest;
+    readonly result: DesignAssetSlice;
+}
+export interface DesignAssetListMethod {
+    readonly params: DesignAssetListRequest;
+    readonly result: DesignAssetListPage;
+}
+export interface DesignAssetRemoveMethod {
+    readonly params: DesignAssetIdRequest;
+    readonly result: null;
+}

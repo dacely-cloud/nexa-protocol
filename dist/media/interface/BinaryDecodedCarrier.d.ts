@@ -1,0 +1,16 @@
+import type { BinaryEncoding } from './BinaryEncoding.js';
+import type { BinaryJsonObject } from './BinaryJsonValue.js';
+import type { BinaryJsonValue } from './BinaryJsonValue.js';
+/** Validated destination in the decoder's owned metadata tree, before carrier expansion. */
+export interface BinaryDecodedCarrier {
+    /** Owned container whose placeholder is replaced only after full plan admission. */
+    readonly target: BinaryJsonObject | BinaryJsonValue[];
+    /** Validated own-property name or array index. */
+    readonly key: string;
+    /** Body offset within the exact incoming frame view. */
+    readonly offset: number;
+    /** Admitted body length. */
+    readonly length: number;
+    /** Required restoration format. */
+    readonly encoding: BinaryEncoding;
+}

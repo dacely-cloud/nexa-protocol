@@ -1,0 +1,96 @@
+import type { DesignSvgImportRequest } from './DesignSvgImportTypes.js';
+import type { DesignArrangeRequest } from './DesignSelectionTypes.js';
+import type { DesignComponentRequest } from './DesignComponentTypes.js';
+import type { DesignClipboardCopyRequest, DesignClipboardCutRequest, DesignClipboardPasteRequest, DesignClipboardReceipt } from './DesignClipboardTypes.js';
+/** Native snapshot capture returns metadata rather than selected source bodies. */
+export interface DesignClipboardCopyMethod {
+    readonly params: DesignClipboardCopyRequest;
+    readonly result: DesignClipboardReceipt;
+}
+/** Native snapshot paste shares the normal destination command journal and undo contract. */
+export interface DesignClipboardPasteMethod {
+    readonly params: DesignClipboardPasteRequest;
+    readonly result: DesignReceipt;
+}
+import type { DesignCreateRequest, DesignDuplicateRequest, DesignImportRequest, DesignSaveRequest, DesignUndoRequest, DesignReadRequest, DesignListRequest, DesignEventsRequest, DesignChangesRequest, DesignLayoutRequest, DesignReceipt, DesignRecordPage, DesignListPage, DesignEventsPage, DesignLayoutPage, DesignDeleteRequest, DesignDeleteReceipt } from './DesignRequests.js';
+import type { DesignTransferRequest } from './DesignTransferTypes.js';
+/** Create-document RPC contract. */
+export interface DesignCreateMethod {
+    readonly params: DesignCreateRequest;
+    readonly result: DesignReceipt;
+}
+/** Atomic owner-scoped saved-document duplication. */
+export interface DesignDuplicateMethod {
+    readonly params: DesignDuplicateRequest;
+    readonly result: DesignReceipt;
+}
+/** Complete user-selected document import, independent of the edit-operation batch size. */
+export interface DesignImportMethod {
+    readonly params: DesignImportRequest;
+    readonly result: DesignReceipt;
+}
+/** Atomic editing RPC contract. */
+export interface DesignSaveMethod {
+    readonly params: DesignSaveRequest;
+    readonly result: DesignReceipt;
+}
+/** Conflict-safe undo RPC contract. */
+export interface DesignUndoMethod {
+    readonly params: DesignUndoRequest;
+    readonly result: DesignReceipt;
+}
+/** Bounded snapshot RPC contract. */
+export interface DesignReadMethod {
+    readonly params: DesignReadRequest;
+    readonly result: DesignRecordPage;
+}
+/** Owner-scoped library RPC contract. */
+export interface DesignListMethod {
+    readonly params: DesignListRequest;
+    readonly result: DesignListPage;
+}
+/** Revision-journal RPC contract. */
+export interface DesignEventsMethod {
+    readonly params: DesignEventsRequest;
+    readonly result: DesignEventsPage;
+}
+/** Forward delta RPC contract. */
+export interface DesignChangesMethod {
+    readonly params: DesignChangesRequest;
+    readonly result: DesignRecordPage;
+}
+/** Computed-geometry RPC contract. */
+export interface DesignLayoutMethod {
+    readonly params: DesignLayoutRequest;
+    readonly result: DesignLayoutPage;
+}
+/** Owner-scoped revision-safe document deletion. */
+export interface DesignDeleteMethod {
+    readonly params: DesignDeleteRequest;
+    readonly result: DesignDeleteReceipt;
+}
+/** Workspace-native arrangement avoids uploading or hydrating selected layer bodies. */
+export interface DesignArrangeMethod {
+    readonly params: DesignArrangeRequest;
+    readonly result: DesignReceipt;
+}
+/** Native component commands keep source forests on the authenticated owner's workspace. */
+export interface DesignComponentMethod {
+    readonly params: DesignComponentRequest;
+    readonly result: DesignReceipt;
+}
+/** Cross-document reusable copying without source-body uploads. */
+export interface DesignTransferMethod {
+    readonly params: DesignTransferRequest;
+    readonly result: DesignReceipt;
+}
+/** Revision-checked SVG imports preserve editable native vectors and paints. */
+export interface DesignSvgImportMethod {
+    readonly params: DesignSvgImportRequest;
+    readonly result: DesignReceipt;
+}
+/** Atomic source cut uses the same durable receipt and undo contract as other native commands. */
+export interface DesignClipboardCutMethod {
+    readonly params: DesignClipboardCutRequest;
+    readonly result: DesignReceipt;
+}
