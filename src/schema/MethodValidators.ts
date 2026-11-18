@@ -114,6 +114,10 @@ import {
     connectorsWorkspaceCreateResult,
     connectorsWorkspaceGetParams,
     connectorsWorkspaceGetResult,
+    connectorsWorkspacePreferenceGetParams,
+    connectorsWorkspacePreferenceGetResult,
+    connectorsWorkspacePreferenceSetParams,
+    connectorsWorkspacePreferenceSetResult,
     connectorsWorkspaceSelectHostParams,
     connectorsWorkspaceSelectHostResult,
     connectorsWorkspaceSelectJointParams,
@@ -708,6 +712,14 @@ export const methodValidators: Readonly<Record<MethodName, MethodValidation>> = 
     'connectors.workspace.get': {
         params: connectorsWorkspaceGetParams,
         result: connectorsWorkspaceGetResult,
+    },
+    'connectors.workspace.preference.get': {
+        params: connectorsWorkspacePreferenceGetParams,
+        result: connectorsWorkspacePreferenceGetResult,
+    },
+    'connectors.workspace.preference.set': {
+        params: connectorsWorkspacePreferenceSetParams,
+        result: connectorsWorkspacePreferenceSetResult,
     },
     'connectors.workspace.select': {
         params: connectorsWorkspaceSelectParams,

@@ -8,6 +8,11 @@ import { SchemaValidator } from './Schema.js';
 import { schema } from './SchemaData.js';
 import type { AgileChanged } from '../agile/interface/AgileView.js';
 import type { ConnectorExecutionStatus } from '../dataplane/ConnectorExecutionTypes.js';
+import type {
+    WorkspacePreferenceGetParams,
+    WorkspacePreferenceSetParams,
+    WorkspacePreferenceView,
+} from '../dataplane/WorkspacePreferenceTypes.js';
 import type { SessionHistoryData, SessionHistoryRecord } from '../gateway/HistoryTypes.js';
 import type {
     ApprovalRequestedData,
@@ -201,6 +206,21 @@ export function turnEvent(value: unknown): value is TurnEventData {
 /** Validates a voice payload and narrows it to its declared type. */
 export function voice(value: unknown): value is VoiceCallEvent {
     return validator.validate('#/definitions/VoiceCallEvent', value);
+}
+
+/** Validates a workspacePreferenceGet payload and narrows it to its declared type. */
+export function workspacePreferenceGet(value: unknown): value is WorkspacePreferenceGetParams {
+    return validator.validate('#/definitions/WorkspacePreferenceGetParams', value);
+}
+
+/** Validates a workspacePreferenceSet payload and narrows it to its declared type. */
+export function workspacePreferenceSet(value: unknown): value is WorkspacePreferenceSetParams {
+    return validator.validate('#/definitions/WorkspacePreferenceSetParams', value);
+}
+
+/** Validates a workspacePreferenceView payload and narrows it to its declared type. */
+export function workspacePreferenceView(value: unknown): value is WorkspacePreferenceView {
+    return validator.validate('#/definitions/WorkspacePreferenceView', value);
 }
 
 /** Validates the params of `accounts.create`. */
@@ -1106,6 +1126,38 @@ export function connectorsWorkspaceGetResult(value: unknown): boolean {
             '#/definitions/GatewayMethods/properties/connectors.workspace.get/properties/result',
             value,
         ) && ConnectorHostChecks.workspace(value)
+    );
+}
+
+/** Validates the params of `connectors.workspace.preference.get`. */
+export function connectorsWorkspacePreferenceGetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/connectors.workspace.preference.get/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `connectors.workspace.preference.get`. */
+export function connectorsWorkspacePreferenceGetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/connectors.workspace.preference.get/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `connectors.workspace.preference.set`. */
+export function connectorsWorkspacePreferenceSetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/connectors.workspace.preference.set/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `connectors.workspace.preference.set`. */
+export function connectorsWorkspacePreferenceSetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/connectors.workspace.preference.set/properties/result',
+        value,
     );
 }
 

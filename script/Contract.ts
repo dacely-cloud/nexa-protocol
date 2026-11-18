@@ -3,6 +3,11 @@
 
 import type { AgileChanged } from '../src/agile/interface/AgileView.js';
 import type {
+    WorkspacePreferenceGetParams,
+    WorkspacePreferenceSetParams,
+    WorkspacePreferenceView,
+} from '../src/dataplane/WorkspacePreferenceTypes.js';
+import type {
     GatewayMethods,
     ConnectChallengeData,
     ChangedData,
@@ -40,6 +45,9 @@ import type { ReverseRunSnapshot } from '../src/reverse/ProgressTypes.js';
  */
 export interface Contract {
     readonly sessionPlanning: AgileChanged;
+    readonly workspacePreferenceGet: WorkspacePreferenceGetParams;
+    readonly workspacePreferenceSet: WorkspacePreferenceSetParams;
+    readonly workspacePreferenceView: WorkspacePreferenceView;
     readonly reverseBrowser: ReverseBrowserPage;
     readonly reverseBrowserStructure: BrowserStructurePage;
     readonly reverseBrowserScreenshot: BrowserScreenshotPage;

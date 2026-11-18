@@ -4691,6 +4691,17 @@ The environment is part of the immutable selected target, never a transport addr
 | `filePolicySha256`      | Yes      | `string`                                           |             |
 | `fileRootId`            | Yes      | `string`                                           |             |
 
+## ConnectorWorkspacePreference
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Prefer a linked computer by its account-owned enrollment identity.
+
+| Field           | Required | Type          | Description |
+| --------------- | -------- | ------------- | ----------- |
+| `environmentId` | Yes      | `string`      |             |
+| `kind`          | Yes      | `"connector"` |             |
+
 ## ConnectorWorkspaceSelectHostMethod
 
 Module: `nexa-protocol/dataplane/ConnectorWorkspaceSelectionTypes.js`.
@@ -9833,280 +9844,282 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 Every gateway method with its params and result; the method name is the key.
 
-| Field                                | Required | Type                  | Description                                                                                            |
-| ------------------------------------ | -------- | --------------------- | ------------------------------------------------------------------------------------------------------ |
-| `accounts.create`                    | Yes      | Object (fields below) |                                                                                                        |
-| `accounts.list`                      | Yes      | Object (fields below) |                                                                                                        |
-| `accounts.remove`                    | Yes      | Object (fields below) |                                                                                                        |
-| `accounts.usage`                     | Yes      | Object (fields below) |                                                                                                        |
-| `agent.ask`                          | Yes      | Object (fields below) |                                                                                                        |
-| `agent.profiles.create`              | Yes      | Object (fields below) | Create a private custom profile.                                                                       |
-| `agent.profiles.delete`              | Yes      | Object (fields below) | Delete one private profile at an exact revision.                                                       |
-| `agent.profiles.list`                | Yes      | Object (fields below) | Read the authenticated account's standalone profiles.                                                  |
-| `agent.profiles.update`              | Yes      | Object (fields below) | Replace editable profile settings at an exact revision.                                                |
-| `agent.profiles.upgrade`             | Yes      | Object (fields below) | Explicitly import an earlier private profile library once.                                             |
-| `agent.steer`                        | Yes      | Object (fields below) |                                                                                                        |
-| `agent.stream`                       | Yes      | Object (fields below) |                                                                                                        |
-| `agents.define`                      | Yes      | Object (fields below) |                                                                                                        |
-| `agents.list`                        | Yes      | Object (fields below) |                                                                                                        |
-| `approvals.list`                     | Yes      | Object (fields below) |                                                                                                        |
-| `approvals.resolve`                  | Yes      | Object (fields below) |                                                                                                        |
-| `channels.deadLetters.list`          | Yes      | Object (fields below) |                                                                                                        |
-| `channels.list`                      | Yes      | Object (fields below) |                                                                                                        |
-| `channels.status`                    | Yes      | Object (fields below) |                                                                                                        |
-| `config.get`                         | Yes      | Object (fields below) |                                                                                                        |
-| `config.set`                         | Yes      | Object (fields below) |                                                                                                        |
-| `config.unset`                       | Yes      | Object (fields below) |                                                                                                        |
-| `connect`                            | Yes      | Object (fields below) |                                                                                                        |
-| `connections.applications.check`     | Yes      | Object (fields below) | `connections.applications.check` contract.                                                             |
-| `connections.applications.setup`     | Yes      | Object (fields below) | `connections.applications.setup` contract.                                                             |
-| `connections.models.list`            | Yes      | Object (fields below) | `connections.models.list` contract.                                                                    |
-| `connections.tools.install`          | Yes      | Object (fields below) | `connections.tools.install` contract.                                                                  |
-| `connections.tools.remove`           | Yes      | Object (fields below) | `connections.tools.remove` contract.                                                                   |
-| `connections.tools.status`           | Yes      | Object (fields below) | `connections.tools.status` contract.                                                                   |
-| `connectors.context.check`           | Yes      | Object (fields below) | Authenticated account RPC contract for conditional connector facts.                                    |
-| `connectors.execution`               | Yes      | Object (fields below) | Public account metadata is proxied only through Nexa.                                                  |
-| `connectors.execution.cancel`        | Yes      | Object (fields below) | Write-level gateway admission remains independent of reading a retained command result.                |
-| `connectors.execution.get`           | Yes      | Object (fields below) | Original command result lookup admits no new effect.                                                   |
-| `connectors.execution.jobs`          | Yes      | Object (fields below) | Read-only original selection supplies exact metadata for a later explicitly authorized stop.           |
-| `connectors.execution.output`        | Yes      | Object (fields below) | Reading the captured original grants no command, stop or enrollment mutation.                          |
-| `connectors.execution.submit`        | Yes      | Object (fields below) | Admission requires write-level gateway authority even for a read-only workspace.                       |
-| `connectors.files.get`               | Yes      | Object (fields below) | Reading an existing result never redispatches or advances its sequence.                                |
-| `connectors.files.submit`            | Yes      | Object (fields below) | New local reads require write-level RPC authority as well as the backend read-only file scope.         |
-| `connectors.filesystem`              | Yes      | Object (fields below) | File grants are read through the authenticated account proxy.                                          |
-| `connectors.get`                     | Yes      | Object (fields below) | Enrollment metadata remains account-authorized.                                                        |
-| `connectors.host.result`             | Yes      | Object (fields below) | Observe one original without submitting another effect.                                                |
-| `connectors.host.status`             | Yes      | Object (fields below) | Read current full-computer consent, native working directory and permanent counters.                   |
-| `connectors.host.submit`             | Yes      | Object (fields below) | Admit an explicit complete original; pairing and confined roots do not grant host authority.           |
-| `connectors.instructions.get`        | Yes      | Object (fields below) | Read one authenticated account's preferences for its linked connector.                                 |
-| `connectors.instructions.update`     | Yes      | Object (fields below) | Replace instructions using compare-and-set so concurrent edits cannot disappear.                       |
-| `connectors.inventory`               | Yes      | Object (fields below) | Nexa forwards an account-bound metadata page through its protected Compute provider.                   |
-| `connectors.link.approve`            | Yes      | Object (fields below) | Explicit approval retains the reviewed key and cannot replace a machine after an uncertain response.   |
-| `connectors.link.deny`               | Yes      | Object (fields below) | An uncertain rejection must be checked under the same original request.                                |
-| `connectors.link.review`             | Yes      | Object (fields below) | Code lookup uses the protected controller and never contacts the customer device directly.             |
-| `connectors.list`                    | Yes      | Object (fields below) | Account list accepts no identity override.                                                             |
-| `connectors.revoke`                  | Yes      | Object (fields below) | Permanent revocation is an explicit write operation.                                                   |
-| `connectors.workspace.catalog`       | Yes      | Object (fields below) | Catalog access is mediated by Nexa and the existing conversation owner.                                |
-| `connectors.workspace.clear`         | Yes      | Object (fields below) | Wire contract for explicitly returning future turns to managed placement.                              |
-| `connectors.workspace.create`        | Yes      | Object (fields below) | Wire contract for idempotent, account-owned conversation admission.                                    |
-| `connectors.workspace.get`           | Yes      | Object (fields below) | Wire contract for reading current owned-conversation file placement.                                   |
-| `connectors.workspace.select`        | Yes      | Object (fields below) | Wire contract for explicitly changing file placement for future turns.                                 |
-| `connectors.workspace.select-host`   | Yes      | Object (fields below) | Full-host selection retains account ownership and ordinary conversation revision control.              |
-| `connectors.workspace.select-joint`  | Yes      | Object (fields below) | Joint selection captures a verified mapping; local execution grants remain independent.                |
-| `credit.budgets`                     | Yes      | Object (fields below) |                                                                                                        |
-| `credit.removeBudget`                | Yes      | Object (fields below) |                                                                                                        |
-| `credit.resetAllowance`              | Yes      | Object (fields below) |                                                                                                        |
-| `credit.resetHistory`                | Yes      | Object (fields below) |                                                                                                        |
-| `credit.resets`                      | Yes      | Object (fields below) |                                                                                                        |
-| `credit.setBudget`                   | Yes      | Object (fields below) |                                                                                                        |
-| `credit.summary`                     | Yes      | Object (fields below) |                                                                                                        |
-| `credit.wallet`                      | Yes      | Object (fields below) |                                                                                                        |
-| `credit.walletHistory`               | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.cancel`                 | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.chunk`                  | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.create`                 | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.finish`                 | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.select`                 | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.start`                  | Yes      | Object (fields below) |                                                                                                        |
-| `data.upload.target`                 | Yes      | Object (fields below) |                                                                                                        |
-| `decision.run`                       | Yes      | Object (fields below) | The stateless `decision.run` method.                                                                   |
-| `design.arrange`                     | Yes      | Object (fields below) | Workspace-native arrangement avoids uploading or hydrating selected layer bodies.                      |
-| `design.asset.cancel`                | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.chunk`                 | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.finish`                | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.list`                  | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.read`                  | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.remove`                | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.start`                 | Yes      | Object (fields below) |                                                                                                        |
-| `design.asset.thumbnail`             | Yes      | Object (fields below) | Preview delivery is independent of original byte downloads and document writes.                        |
-| `design.canvas`                      | Yes      | Object (fields below) | Independently advertised canvas records allow complete-read fallback on older workspaces.              |
-| `design.canvas.metrics`              | Yes      | Object (fields below) | Metric reads retain the exact canvas revision across continuations.                                    |
-| `design.changes`                     | Yes      | Object (fields below) | Forward delta RPC contract.                                                                            |
-| `design.clipboard.copy`              | Yes      | Object (fields below) | Native snapshot capture returns metadata rather than selected source bodies.                           |
-| `design.clipboard.cut`               | Yes      | Object (fields below) | Atomic source cut uses the same durable receipt and undo contract as other native commands.            |
-| `design.clipboard.paste`             | Yes      | Object (fields below) | Native snapshot paste shares the normal destination command journal and undo contract.                 |
-| `design.colors`                      | Yes      | Object (fields below) | Native color pages use the authenticated read-only gateway.                                            |
-| `design.comment.text`                | Yes      | Object (fields below) | Body windows retain the same owner and saved-revision fence as their summary.                          |
-| `design.comments`                    | Yes      | Object (fields below) | Comment summaries use the authenticated read-only connection.                                          |
-| `design.component`                   | Yes      | Object (fields below) | Native component commands keep source forests on the authenticated owner's workspace.                  |
-| `design.create`                      | Yes      | Object (fields below) | Create-document RPC contract.                                                                          |
-| `design.delete`                      | Yes      | Object (fields below) | Owner-scoped revision-safe document deletion.                                                          |
-| `design.duplicate`                   | Yes      | Object (fields below) | Atomic owner-scoped saved-document duplication.                                                        |
-| `design.events`                      | Yes      | Object (fields below) | Revision-journal RPC contract.                                                                         |
-| `design.font.list`                   | Yes      | Object (fields below) | Authenticated metadata discovery does not carry font bodies.                                           |
-| `design.font.read`                   | Yes      | Object (fields below) | Each authenticated WebSocket read transfers one independently bounded immutable slice.                 |
-| `design.import`                      | Yes      | Object (fields below) | Complete user-selected document import, independent of the edit-operation batch size.                  |
-| `design.layout`                      | Yes      | Object (fields below) | Computed-geometry RPC contract.                                                                        |
-| `design.layout.preview`              | Yes      | Object (fields below) | Read-only preview support is advertised independently for older workspaces.                            |
-| `design.list`                        | Yes      | Object (fields below) | Owner-scoped library RPC contract.                                                                     |
-| `design.pattern.tile`                | Yes      | Object (fields below) | A read-only authenticated gateway method samples the saved definition at an exact revision.            |
-| `design.read`                        | Yes      | Object (fields below) | Bounded snapshot RPC contract.                                                                         |
-| `design.save`                        | Yes      | Object (fields below) | Atomic editing RPC contract.                                                                           |
-| `design.svg.import`                  | Yes      | Object (fields below) | Revision-checked SVG imports preserve editable native vectors and paints.                              |
-| `design.text.window`                 | Yes      | Object (fields below) | Independently advertised support allows clients to retain complete-body rendering on older workspaces. |
-| `design.transfer`                    | Yes      | Object (fields below) | Cross-document reusable copying without source-body uploads.                                           |
-| `design.undo`                        | Yes      | Object (fields below) | Conflict-safe undo RPC contract.                                                                       |
-| `design.view`                        | Yes      | Object (fields below) | The gateway advertises view support independently of the legacy complete-record read.                  |
-| `devices.approve`                    | Yes      | Object (fields below) |                                                                                                        |
-| `devices.list`                       | Yes      | Object (fields below) |                                                                                                        |
-| `devices.reject`                     | Yes      | Object (fields below) |                                                                                                        |
-| `devices.revoke`                     | Yes      | Object (fields below) |                                                                                                        |
-| `environment.admin.inspect`          | Yes      | Object (fields below) | Read one managed environment for an explicitly authorized platform operator.                           |
-| `environment.admin.mutate`           | Yes      | Object (fields below) | Admit one lifecycle operation without waiting for or claiming native completion.                       |
-| `environment.admin.network`          | Yes      | Object (fields below) | Only freshly verified platform administrators may request network observations.                        |
-| `environment.admin.usage`            | Yes      | Object (fields below) | Cross-account monitoring is registered only under the explicit administration gate.                    |
-| `environment.prepare`                | Yes      | Object (fields below) | Starts or joins preparation; it never accepts an account, host, command or machine selector.           |
-| `environment.status`                 | Yes      | Object (fields below) | Reads bounded progress after the last acknowledged cursor.                                             |
-| `environment.usage`                  | Yes      | Object (fields below) | A visible owner panel requests only its current authenticated account.                                 |
-| `environment.visit`                  | Yes      | Object (fields below) | The authenticated account is the only target; client hints cannot enable creation.                     |
-| `health`                             | Yes      | Object (fields below) |                                                                                                        |
-| `jobs.add`                           | Yes      | Object (fields below) |                                                                                                        |
-| `jobs.list`                          | Yes      | Object (fields below) |                                                                                                        |
-| `jobs.remove`                        | Yes      | Object (fields below) |                                                                                                        |
-| `logs.tail`                          | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.close`                  | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.commit`                 | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.completion`             | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.definition`             | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.hover`                  | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.stage`                  | Yes      | Object (fields below) |                                                                                                        |
-| `luau.editor.start`                  | Yes      | Object (fields below) |                                                                                                        |
-| `media.acknowledge`                  | Yes      | Object (fields below) |                                                                                                        |
-| `processes.input`                    | Yes      | Object (fields below) |                                                                                                        |
-| `processes.list`                     | Yes      | Object (fields below) |                                                                                                        |
-| `processes.log`                      | Yes      | Object (fields below) |                                                                                                        |
-| `processes.resize`                   | Yes      | Object (fields below) |                                                                                                        |
-| `processes.stop`                     | Yes      | Object (fields below) |                                                                                                        |
-| `redteam.get`                        | Yes      | Object (fields below) | A revision-pinned view of the effort and its ledger.                                                   |
-| `redteam.list`                       | Yes      | Object (fields below) | Bounded metadata directory without agent transcripts.                                                  |
-| `redteam.start`                      | Yes      | Object (fields below) | Durable effort acceptance under the verified socket owner.                                             |
-| `redteam.stop`                       | Yes      | Object (fields below) | An acknowledged cancellation request independent of the viewer connection.                             |
-| `redteam.update`                     | Yes      | Object (fields below) | Compare-and-set changes to the owner's active effort.                                                  |
-| `reverse.browser`                    | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.modules`            | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.screenshot`         | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.sources`            | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.storage`            | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.storage.comparison` | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.structure`          | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.browser.webmcp`             | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.catalog`                    | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.evidence`                   | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.functions`                  | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.graph`                      | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.inspect`                    | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.network`                    | Yes      | Object (fields below) |                                                                                                        |
-| `reverse.network.detail`             | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.credentials.remove`          | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.credentials.set`             | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.credentials.status`          | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.live.close`                  | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.live.export`                 | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.live.start`                  | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.live.step`                   | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.telemetry.funnel`            | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.telemetry.performance`       | Yes      | Object (fields below) |                                                                                                        |
-| `roblox.telemetry.projects`          | Yes      | Object (fields below) |                                                                                                        |
-| `self.emotions`                      | Yes      | Object (fields below) | Account-scoped emotional introspection contract shared by the gateway and generated transport.         |
-| `sessions.delete`                    | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.download`                  | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.files`                     | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.get`                       | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.input`                     | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.list`                      | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.messages`                  | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.pin`                       | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.pins`                      | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.planning`                  | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.rename`                    | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.retry`                     | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.sprint`                    | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.subscribe`                 | Yes      | Object (fields below) | Session fan-out. Explicit rather than implied by scope: a `read` credential holds every                |
-| `sessions.transcript`                | Yes      | Object (fields below) | Compact transcript blocks with original journal byte cursors.                                          |
-| `sessions.unpin`                     | Yes      | Object (fields below) |                                                                                                        |
-| `sessions.unsubscribe`               | Yes      | Object (fields below) |                                                                                                        |
-| `shares.create`                      | Yes      | Object (fields below) |                                                                                                        |
-| `shares.list`                        | Yes      | Object (fields below) |                                                                                                        |
-| `shares.remove`                      | Yes      | Object (fields below) |                                                                                                        |
-| `shares.setMember`                   | Yes      | Object (fields below) |                                                                                                        |
-| `tasks.cancel`                       | Yes      | Object (fields below) |                                                                                                        |
-| `tasks.get`                          | Yes      | Object (fields below) |                                                                                                        |
-| `tasks.list`                         | Yes      | Object (fields below) |                                                                                                        |
-| `teams.create`                       | Yes      | Object (fields below) |                                                                                                        |
-| `teams.list`                         | Yes      | Object (fields below) |                                                                                                        |
-| `teams.remove`                       | Yes      | Object (fields below) |                                                                                                        |
-| `teams.setMember`                    | Yes      | Object (fields below) |                                                                                                        |
-| `voice.audio`                        | Yes      | Object (fields below) |                                                                                                        |
-| `voice.start`                        | Yes      | Object (fields below) |                                                                                                        |
-| `voice.stop`                         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.attention.list`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.catalog`                  | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.create`                   | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.delete`                   | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.list`                     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.models`                   | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.models.image.quote`       | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.models.image.resolve`     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.models.refresh`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.models.resolve`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.planning.cancel`          | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.planning.history`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.planning.read`            | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.planning.send`            | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.planning.sources`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.publications.check`       | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.publications.list`        | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.publications.publish`     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.publications.read`        | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.publications.run`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.read`                     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.record`                   | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.records`                  | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.agent.control`       | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.agent.input`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.agent.read`          | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.approval.decide`     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.artifact`            | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.artifacts`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.attempts`            | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.cancel`              | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.events`              | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.inputs`              | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.list`                | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.loopPricing`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.loopSpending`        | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.output`              | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.question.answer`     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.question.read`       | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.questions`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.read`                | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.start`               | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.steps`               | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.terminal.command`    | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.terminal.read`       | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.usage`               | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.runs.usageBreakdown`      | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.save`                     | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.schedules.disable`        | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.schedules.enable`         | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.schedules.preview`        | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.schedules.read`           | Yes      | Object (fields below) |                                                                                                        |
-| `workflows.validate`                 | Yes      | Object (fields below) |                                                                                                        |
-| `workspace.files.cancel`             | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.chunk`              | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.finish`             | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.list`               | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.mkdir`              | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.read`               | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspace.files.remove`             | Yes      | Object (fields below) | Confined removal of a user file or directory.                                                          |
-| `workspace.files.rename`             | Yes      | Object (fields below) | Confined, non-overwriting sibling rename.                                                              |
-| `workspace.files.start`              | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
-| `workspaces.create`                  | Yes      | Object (fields below) |                                                                                                        |
-| `workspaces.describe`                | Yes      | Object (fields below) |                                                                                                        |
-| `workspaces.destroy`                 | Yes      | Object (fields below) |                                                                                                        |
-| `workspaces.list`                    | Yes      | Object (fields below) |                                                                                                        |
-| `workspaces.page`                    | Yes      | Object (fields below) |                                                                                                        |
-| `workspaces.visit`                   | Yes      | Object (fields below) |                                                                                                        |
+| Field                                 | Required | Type                  | Description                                                                                            |
+| ------------------------------------- | -------- | --------------------- | ------------------------------------------------------------------------------------------------------ |
+| `accounts.create`                     | Yes      | Object (fields below) |                                                                                                        |
+| `accounts.list`                       | Yes      | Object (fields below) |                                                                                                        |
+| `accounts.remove`                     | Yes      | Object (fields below) |                                                                                                        |
+| `accounts.usage`                      | Yes      | Object (fields below) |                                                                                                        |
+| `agent.ask`                           | Yes      | Object (fields below) |                                                                                                        |
+| `agent.profiles.create`               | Yes      | Object (fields below) | Create a private custom profile.                                                                       |
+| `agent.profiles.delete`               | Yes      | Object (fields below) | Delete one private profile at an exact revision.                                                       |
+| `agent.profiles.list`                 | Yes      | Object (fields below) | Read the authenticated account's standalone profiles.                                                  |
+| `agent.profiles.update`               | Yes      | Object (fields below) | Replace editable profile settings at an exact revision.                                                |
+| `agent.profiles.upgrade`              | Yes      | Object (fields below) | Explicitly import an earlier private profile library once.                                             |
+| `agent.steer`                         | Yes      | Object (fields below) |                                                                                                        |
+| `agent.stream`                        | Yes      | Object (fields below) |                                                                                                        |
+| `agents.define`                       | Yes      | Object (fields below) |                                                                                                        |
+| `agents.list`                         | Yes      | Object (fields below) |                                                                                                        |
+| `approvals.list`                      | Yes      | Object (fields below) |                                                                                                        |
+| `approvals.resolve`                   | Yes      | Object (fields below) |                                                                                                        |
+| `channels.deadLetters.list`           | Yes      | Object (fields below) |                                                                                                        |
+| `channels.list`                       | Yes      | Object (fields below) |                                                                                                        |
+| `channels.status`                     | Yes      | Object (fields below) |                                                                                                        |
+| `config.get`                          | Yes      | Object (fields below) |                                                                                                        |
+| `config.set`                          | Yes      | Object (fields below) |                                                                                                        |
+| `config.unset`                        | Yes      | Object (fields below) |                                                                                                        |
+| `connect`                             | Yes      | Object (fields below) |                                                                                                        |
+| `connections.applications.check`      | Yes      | Object (fields below) | `connections.applications.check` contract.                                                             |
+| `connections.applications.setup`      | Yes      | Object (fields below) | `connections.applications.setup` contract.                                                             |
+| `connections.models.list`             | Yes      | Object (fields below) | `connections.models.list` contract.                                                                    |
+| `connections.tools.install`           | Yes      | Object (fields below) | `connections.tools.install` contract.                                                                  |
+| `connections.tools.remove`            | Yes      | Object (fields below) | `connections.tools.remove` contract.                                                                   |
+| `connections.tools.status`            | Yes      | Object (fields below) | `connections.tools.status` contract.                                                                   |
+| `connectors.context.check`            | Yes      | Object (fields below) | Authenticated account RPC contract for conditional connector facts.                                    |
+| `connectors.execution`                | Yes      | Object (fields below) | Public account metadata is proxied only through Nexa.                                                  |
+| `connectors.execution.cancel`         | Yes      | Object (fields below) | Write-level gateway admission remains independent of reading a retained command result.                |
+| `connectors.execution.get`            | Yes      | Object (fields below) | Original command result lookup admits no new effect.                                                   |
+| `connectors.execution.jobs`           | Yes      | Object (fields below) | Read-only original selection supplies exact metadata for a later explicitly authorized stop.           |
+| `connectors.execution.output`         | Yes      | Object (fields below) | Reading the captured original grants no command, stop or enrollment mutation.                          |
+| `connectors.execution.submit`         | Yes      | Object (fields below) | Admission requires write-level gateway authority even for a read-only workspace.                       |
+| `connectors.files.get`                | Yes      | Object (fields below) | Reading an existing result never redispatches or advances its sequence.                                |
+| `connectors.files.submit`             | Yes      | Object (fields below) | New local reads require write-level RPC authority as well as the backend read-only file scope.         |
+| `connectors.filesystem`               | Yes      | Object (fields below) | File grants are read through the authenticated account proxy.                                          |
+| `connectors.get`                      | Yes      | Object (fields below) | Enrollment metadata remains account-authorized.                                                        |
+| `connectors.host.result`              | Yes      | Object (fields below) | Observe one original without submitting another effect.                                                |
+| `connectors.host.status`              | Yes      | Object (fields below) | Read current full-computer consent, native working directory and permanent counters.                   |
+| `connectors.host.submit`              | Yes      | Object (fields below) | Admit an explicit complete original; pairing and confined roots do not grant host authority.           |
+| `connectors.instructions.get`         | Yes      | Object (fields below) | Read one authenticated account's preferences for its linked connector.                                 |
+| `connectors.instructions.update`      | Yes      | Object (fields below) | Replace instructions using compare-and-set so concurrent edits cannot disappear.                       |
+| `connectors.inventory`                | Yes      | Object (fields below) | Nexa forwards an account-bound metadata page through its protected Compute provider.                   |
+| `connectors.link.approve`             | Yes      | Object (fields below) | Explicit approval retains the reviewed key and cannot replace a machine after an uncertain response.   |
+| `connectors.link.deny`                | Yes      | Object (fields below) | An uncertain rejection must be checked under the same original request.                                |
+| `connectors.link.review`              | Yes      | Object (fields below) | Code lookup uses the protected controller and never contacts the customer device directly.             |
+| `connectors.list`                     | Yes      | Object (fields below) | Account list accepts no identity override.                                                             |
+| `connectors.revoke`                   | Yes      | Object (fields below) | Permanent revocation is an explicit write operation.                                                   |
+| `connectors.workspace.catalog`        | Yes      | Object (fields below) | Catalog access is mediated by Nexa and the existing conversation owner.                                |
+| `connectors.workspace.clear`          | Yes      | Object (fields below) | Wire contract for explicitly returning future turns to managed placement.                              |
+| `connectors.workspace.create`         | Yes      | Object (fields below) | Wire contract for idempotent, account-owned conversation admission.                                    |
+| `connectors.workspace.get`            | Yes      | Object (fields below) | Wire contract for reading current owned-conversation file placement.                                   |
+| `connectors.workspace.preference.get` | Yes      | Object (fields below) | Account-scoped workspace preference read.                                                              |
+| `connectors.workspace.preference.set` | Yes      | Object (fields below) | Compare-and-set update for an account's main workspace.                                                |
+| `connectors.workspace.select`         | Yes      | Object (fields below) | Wire contract for explicitly changing file placement for future turns.                                 |
+| `connectors.workspace.select-host`    | Yes      | Object (fields below) | Full-host selection retains account ownership and ordinary conversation revision control.              |
+| `connectors.workspace.select-joint`   | Yes      | Object (fields below) | Joint selection captures a verified mapping; local execution grants remain independent.                |
+| `credit.budgets`                      | Yes      | Object (fields below) |                                                                                                        |
+| `credit.removeBudget`                 | Yes      | Object (fields below) |                                                                                                        |
+| `credit.resetAllowance`               | Yes      | Object (fields below) |                                                                                                        |
+| `credit.resetHistory`                 | Yes      | Object (fields below) |                                                                                                        |
+| `credit.resets`                       | Yes      | Object (fields below) |                                                                                                        |
+| `credit.setBudget`                    | Yes      | Object (fields below) |                                                                                                        |
+| `credit.summary`                      | Yes      | Object (fields below) |                                                                                                        |
+| `credit.wallet`                       | Yes      | Object (fields below) |                                                                                                        |
+| `credit.walletHistory`                | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.cancel`                  | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.chunk`                   | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.create`                  | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.finish`                  | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.select`                  | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.start`                   | Yes      | Object (fields below) |                                                                                                        |
+| `data.upload.target`                  | Yes      | Object (fields below) |                                                                                                        |
+| `decision.run`                        | Yes      | Object (fields below) | The stateless `decision.run` method.                                                                   |
+| `design.arrange`                      | Yes      | Object (fields below) | Workspace-native arrangement avoids uploading or hydrating selected layer bodies.                      |
+| `design.asset.cancel`                 | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.chunk`                  | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.finish`                 | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.list`                   | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.read`                   | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.remove`                 | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.start`                  | Yes      | Object (fields below) |                                                                                                        |
+| `design.asset.thumbnail`              | Yes      | Object (fields below) | Preview delivery is independent of original byte downloads and document writes.                        |
+| `design.canvas`                       | Yes      | Object (fields below) | Independently advertised canvas records allow complete-read fallback on older workspaces.              |
+| `design.canvas.metrics`               | Yes      | Object (fields below) | Metric reads retain the exact canvas revision across continuations.                                    |
+| `design.changes`                      | Yes      | Object (fields below) | Forward delta RPC contract.                                                                            |
+| `design.clipboard.copy`               | Yes      | Object (fields below) | Native snapshot capture returns metadata rather than selected source bodies.                           |
+| `design.clipboard.cut`                | Yes      | Object (fields below) | Atomic source cut uses the same durable receipt and undo contract as other native commands.            |
+| `design.clipboard.paste`              | Yes      | Object (fields below) | Native snapshot paste shares the normal destination command journal and undo contract.                 |
+| `design.colors`                       | Yes      | Object (fields below) | Native color pages use the authenticated read-only gateway.                                            |
+| `design.comment.text`                 | Yes      | Object (fields below) | Body windows retain the same owner and saved-revision fence as their summary.                          |
+| `design.comments`                     | Yes      | Object (fields below) | Comment summaries use the authenticated read-only connection.                                          |
+| `design.component`                    | Yes      | Object (fields below) | Native component commands keep source forests on the authenticated owner's workspace.                  |
+| `design.create`                       | Yes      | Object (fields below) | Create-document RPC contract.                                                                          |
+| `design.delete`                       | Yes      | Object (fields below) | Owner-scoped revision-safe document deletion.                                                          |
+| `design.duplicate`                    | Yes      | Object (fields below) | Atomic owner-scoped saved-document duplication.                                                        |
+| `design.events`                       | Yes      | Object (fields below) | Revision-journal RPC contract.                                                                         |
+| `design.font.list`                    | Yes      | Object (fields below) | Authenticated metadata discovery does not carry font bodies.                                           |
+| `design.font.read`                    | Yes      | Object (fields below) | Each authenticated WebSocket read transfers one independently bounded immutable slice.                 |
+| `design.import`                       | Yes      | Object (fields below) | Complete user-selected document import, independent of the edit-operation batch size.                  |
+| `design.layout`                       | Yes      | Object (fields below) | Computed-geometry RPC contract.                                                                        |
+| `design.layout.preview`               | Yes      | Object (fields below) | Read-only preview support is advertised independently for older workspaces.                            |
+| `design.list`                         | Yes      | Object (fields below) | Owner-scoped library RPC contract.                                                                     |
+| `design.pattern.tile`                 | Yes      | Object (fields below) | A read-only authenticated gateway method samples the saved definition at an exact revision.            |
+| `design.read`                         | Yes      | Object (fields below) | Bounded snapshot RPC contract.                                                                         |
+| `design.save`                         | Yes      | Object (fields below) | Atomic editing RPC contract.                                                                           |
+| `design.svg.import`                   | Yes      | Object (fields below) | Revision-checked SVG imports preserve editable native vectors and paints.                              |
+| `design.text.window`                  | Yes      | Object (fields below) | Independently advertised support allows clients to retain complete-body rendering on older workspaces. |
+| `design.transfer`                     | Yes      | Object (fields below) | Cross-document reusable copying without source-body uploads.                                           |
+| `design.undo`                         | Yes      | Object (fields below) | Conflict-safe undo RPC contract.                                                                       |
+| `design.view`                         | Yes      | Object (fields below) | The gateway advertises view support independently of the legacy complete-record read.                  |
+| `devices.approve`                     | Yes      | Object (fields below) |                                                                                                        |
+| `devices.list`                        | Yes      | Object (fields below) |                                                                                                        |
+| `devices.reject`                      | Yes      | Object (fields below) |                                                                                                        |
+| `devices.revoke`                      | Yes      | Object (fields below) |                                                                                                        |
+| `environment.admin.inspect`           | Yes      | Object (fields below) | Read one managed environment for an explicitly authorized platform operator.                           |
+| `environment.admin.mutate`            | Yes      | Object (fields below) | Admit one lifecycle operation without waiting for or claiming native completion.                       |
+| `environment.admin.network`           | Yes      | Object (fields below) | Only freshly verified platform administrators may request network observations.                        |
+| `environment.admin.usage`             | Yes      | Object (fields below) | Cross-account monitoring is registered only under the explicit administration gate.                    |
+| `environment.prepare`                 | Yes      | Object (fields below) | Starts or joins preparation; it never accepts an account, host, command or machine selector.           |
+| `environment.status`                  | Yes      | Object (fields below) | Reads bounded progress after the last acknowledged cursor.                                             |
+| `environment.usage`                   | Yes      | Object (fields below) | A visible owner panel requests only its current authenticated account.                                 |
+| `environment.visit`                   | Yes      | Object (fields below) | The authenticated account is the only target; client hints cannot enable creation.                     |
+| `health`                              | Yes      | Object (fields below) |                                                                                                        |
+| `jobs.add`                            | Yes      | Object (fields below) |                                                                                                        |
+| `jobs.list`                           | Yes      | Object (fields below) |                                                                                                        |
+| `jobs.remove`                         | Yes      | Object (fields below) |                                                                                                        |
+| `logs.tail`                           | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.close`                   | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.commit`                  | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.completion`              | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.definition`              | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.hover`                   | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.stage`                   | Yes      | Object (fields below) |                                                                                                        |
+| `luau.editor.start`                   | Yes      | Object (fields below) |                                                                                                        |
+| `media.acknowledge`                   | Yes      | Object (fields below) |                                                                                                        |
+| `processes.input`                     | Yes      | Object (fields below) |                                                                                                        |
+| `processes.list`                      | Yes      | Object (fields below) |                                                                                                        |
+| `processes.log`                       | Yes      | Object (fields below) |                                                                                                        |
+| `processes.resize`                    | Yes      | Object (fields below) |                                                                                                        |
+| `processes.stop`                      | Yes      | Object (fields below) |                                                                                                        |
+| `redteam.get`                         | Yes      | Object (fields below) | A revision-pinned view of the effort and its ledger.                                                   |
+| `redteam.list`                        | Yes      | Object (fields below) | Bounded metadata directory without agent transcripts.                                                  |
+| `redteam.start`                       | Yes      | Object (fields below) | Durable effort acceptance under the verified socket owner.                                             |
+| `redteam.stop`                        | Yes      | Object (fields below) | An acknowledged cancellation request independent of the viewer connection.                             |
+| `redteam.update`                      | Yes      | Object (fields below) | Compare-and-set changes to the owner's active effort.                                                  |
+| `reverse.browser`                     | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.modules`             | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.screenshot`          | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.sources`             | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.storage`             | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.storage.comparison`  | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.structure`           | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.browser.webmcp`              | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.catalog`                     | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.evidence`                    | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.functions`                   | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.graph`                       | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.inspect`                     | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.network`                     | Yes      | Object (fields below) |                                                                                                        |
+| `reverse.network.detail`              | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.credentials.remove`           | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.credentials.set`              | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.credentials.status`           | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.live.close`                   | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.live.export`                  | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.live.start`                   | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.live.step`                    | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.telemetry.funnel`             | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.telemetry.performance`        | Yes      | Object (fields below) |                                                                                                        |
+| `roblox.telemetry.projects`           | Yes      | Object (fields below) |                                                                                                        |
+| `self.emotions`                       | Yes      | Object (fields below) | Account-scoped emotional introspection contract shared by the gateway and generated transport.         |
+| `sessions.delete`                     | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.download`                   | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.files`                      | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.get`                        | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.input`                      | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.list`                       | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.messages`                   | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.pin`                        | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.pins`                       | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.planning`                   | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.rename`                     | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.retry`                      | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.sprint`                     | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.subscribe`                  | Yes      | Object (fields below) | Session fan-out. Explicit rather than implied by scope: a `read` credential holds every                |
+| `sessions.transcript`                 | Yes      | Object (fields below) | Compact transcript blocks with original journal byte cursors.                                          |
+| `sessions.unpin`                      | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.unsubscribe`                | Yes      | Object (fields below) |                                                                                                        |
+| `shares.create`                       | Yes      | Object (fields below) |                                                                                                        |
+| `shares.list`                         | Yes      | Object (fields below) |                                                                                                        |
+| `shares.remove`                       | Yes      | Object (fields below) |                                                                                                        |
+| `shares.setMember`                    | Yes      | Object (fields below) |                                                                                                        |
+| `tasks.cancel`                        | Yes      | Object (fields below) |                                                                                                        |
+| `tasks.get`                           | Yes      | Object (fields below) |                                                                                                        |
+| `tasks.list`                          | Yes      | Object (fields below) |                                                                                                        |
+| `teams.create`                        | Yes      | Object (fields below) |                                                                                                        |
+| `teams.list`                          | Yes      | Object (fields below) |                                                                                                        |
+| `teams.remove`                        | Yes      | Object (fields below) |                                                                                                        |
+| `teams.setMember`                     | Yes      | Object (fields below) |                                                                                                        |
+| `voice.audio`                         | Yes      | Object (fields below) |                                                                                                        |
+| `voice.start`                         | Yes      | Object (fields below) |                                                                                                        |
+| `voice.stop`                          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.attention.list`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.catalog`                   | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.create`                    | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.delete`                    | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.list`                      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.models`                    | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.models.image.quote`        | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.models.image.resolve`      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.models.refresh`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.models.resolve`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.planning.cancel`           | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.planning.history`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.planning.read`             | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.planning.send`             | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.planning.sources`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.publications.check`        | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.publications.list`         | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.publications.publish`      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.publications.read`         | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.publications.run`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.read`                      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.record`                    | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.records`                   | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.agent.control`        | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.agent.input`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.agent.read`           | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.approval.decide`      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.artifact`             | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.artifacts`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.attempts`             | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.cancel`               | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.events`               | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.inputs`               | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.list`                 | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.loopPricing`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.loopSpending`         | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.output`               | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.question.answer`      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.question.read`        | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.questions`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.read`                 | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.start`                | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.steps`                | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.terminal.command`     | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.terminal.read`        | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.usage`                | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.runs.usageBreakdown`       | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.save`                      | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.schedules.disable`         | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.schedules.enable`          | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.schedules.preview`         | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.schedules.read`            | Yes      | Object (fields below) |                                                                                                        |
+| `workflows.validate`                  | Yes      | Object (fields below) |                                                                                                        |
+| `workspace.files.cancel`              | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.chunk`               | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.finish`              | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.list`                | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.mkdir`               | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.read`                | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspace.files.remove`              | Yes      | Object (fields below) | Confined removal of a user file or directory.                                                          |
+| `workspace.files.rename`              | Yes      | Object (fields below) | Confined, non-overwriting sibling rename.                                                              |
+| `workspace.files.start`               | Yes      | Object (fields below) | Confined managed workspace browser operation.                                                          |
+| `workspaces.create`                   | Yes      | Object (fields below) |                                                                                                        |
+| `workspaces.describe`                 | Yes      | Object (fields below) |                                                                                                        |
+| `workspaces.destroy`                  | Yes      | Object (fields below) |                                                                                                        |
+| `workspaces.list`                     | Yes      | Object (fields below) |                                                                                                        |
+| `workspaces.page`                     | Yes      | Object (fields below) |                                                                                                        |
+| `workspaces.visit`                    | Yes      | Object (fields below) |                                                                                                        |
 
 **accounts.create**
 
@@ -10504,6 +10517,20 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ------------------------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [ConnectorWorkspaceGetParams](protocol.md#connectorworkspacegetparams)         |             |
 | `result` | Yes      | [ConnectorWorkspaceSelectionView](protocol.md#connectorworkspaceselectionview) |             |
+
+**connectors.workspace.preference.get**
+
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [WorkspacePreferenceGetParams](protocol.md#workspacepreferencegetparams) |             |
+| `result` | Yes      | [WorkspacePreferenceView](protocol.md#workspacepreferenceview)           |             |
+
+**connectors.workspace.preference.set**
+
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [WorkspacePreferenceSetParams](protocol.md#workspacepreferencesetparams) |             |
+| `result` | Yes      | [WorkspacePreferenceView](protocol.md#workspacepreferenceview)           |             |
 
 **connectors.workspace.select**
 
@@ -12891,6 +12918,16 @@ A bounded source chunk stages an immutable revision without checking an incomple
 | `offset`   | Yes      | `number`  |             |
 | `revision` | Yes      | `number`  |             |
 | `source`   | Yes      | `string`  |             |
+
+## ManagedWorkspacePreference
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Use the account's managed VM as the main workspace.
+
+| Field  | Required | Type        | Description |
+| ------ | -------- | ----------- | ----------- |
+| `kind` | Yes      | `"managed"` |             |
 
 ## MediaAcknowledgeParams
 
@@ -19330,6 +19367,58 @@ Bounded owned-workspace discovery never enumerates the entire registry on the wi
 | `cursor`          | No       | `string`  |             |
 | `includePresence` | No       | `boolean` |             |
 | `limit`           | No       | `number`  |             |
+
+## WorkspacePreferenceGetMethod
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Account-scoped workspace preference read.
+
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [WorkspacePreferenceGetParams](protocol.md#workspacepreferencegetparams) |             |
+| `result` | Yes      | [WorkspacePreferenceView](protocol.md#workspacepreferenceview)           |             |
+
+## WorkspacePreferenceGetParams
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Read the preference of the connection's authenticated account.
+
+Type: Dictionary.
+
+## WorkspacePreferenceSetMethod
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Compare-and-set update for an account's main workspace.
+
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [WorkspacePreferenceSetParams](protocol.md#workspacepreferencesetparams) |             |
+| `result` | Yes      | [WorkspacePreferenceView](protocol.md#workspacepreferenceview)           |             |
+
+## WorkspacePreferenceSetParams
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+Replace the observed preference, or clear it to restore per-conversation selection.
+
+| Field              | Required | Type                                                                                                                                                     | Description |
+| ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `expectedRevision` | Yes      | `string`                                                                                                                                                 |             |
+| `preference`       | Yes      | [ManagedWorkspacePreference](protocol.md#managedworkspacepreference) / [ConnectorWorkspacePreference](protocol.md#connectorworkspacepreference) / `null` |             |
+
+## WorkspacePreferenceView
+
+Module: `nexa-protocol/dataplane/WorkspacePreferenceTypes.js`.
+
+The saved preference and the version a subsequent edit must compare.
+
+| Field        | Required | Type                                                                                                                                                     | Description |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `preference` | Yes      | [ManagedWorkspacePreference](protocol.md#managedworkspacepreference) / [ConnectorWorkspacePreference](protocol.md#connectorworkspacepreference) / `null` |             |
+| `revision`   | Yes      | `string`                                                                                                                                                 |             |
 
 ## WorkspacePresenceState
 

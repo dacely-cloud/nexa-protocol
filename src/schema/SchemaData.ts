@@ -8903,6 +8903,23 @@ export const schema: Schema = {
             type: 'object',
             additionalProperties: false,
         },
+        ConnectorWorkspacePreference: {
+            description: 'Prefer a linked computer by its account-owned enrollment identity.',
+            properties: {
+                environmentId: {
+                    type: 'string',
+                    maxLength: 128,
+                    minLength: 1,
+                },
+                kind: {
+                    const: 'connector',
+                    type: 'string',
+                },
+            },
+            required: ['environmentId', 'kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
         ConnectorWorkspaceSelectHostMethod: {
             description:
                 'Full-host selection retains account ownership and ordinary conversation revision control.',
@@ -18492,6 +18509,32 @@ export const schema: Schema = {
                     type: 'object',
                     additionalProperties: false,
                 },
+                'connectors.workspace.preference.get': {
+                    description: 'Account-scoped workspace preference read.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/WorkspacePreferenceGetParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/WorkspacePreferenceView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'connectors.workspace.preference.set': {
+                    description: "Compare-and-set update for an account's main workspace.",
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/WorkspacePreferenceSetParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/WorkspacePreferenceView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'connectors.workspace.select': {
                     description:
                         'Wire contract for explicitly changing file placement for future turns.',
@@ -21372,6 +21415,8 @@ export const schema: Schema = {
                 'connectors.workspace.clear',
                 'connectors.workspace.create',
                 'connectors.workspace.get',
+                'connectors.workspace.preference.get',
+                'connectors.workspace.preference.set',
                 'connectors.workspace.select',
                 'connectors.workspace.select-host',
                 'connectors.workspace.select-joint',
@@ -23116,6 +23161,18 @@ export const schema: Schema = {
             },
             required: ['complete', 'handle', 'id', 'name', 'offset', 'revision', 'source'],
             type: 'object',
+        },
+        ManagedWorkspacePreference: {
+            description: "Use the account's managed VM as the main workspace.",
+            properties: {
+                kind: {
+                    const: 'managed',
+                    type: 'string',
+                },
+            },
+            required: ['kind'],
+            type: 'object',
+            additionalProperties: false,
         },
         MediaAcknowledgeParams: {
             description:
@@ -35375,6 +35432,88 @@ export const schema: Schema = {
             },
             type: 'object',
         },
+        WorkspacePreferenceGetMethod: {
+            description: 'Account-scoped workspace preference read.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/WorkspacePreferenceGetParams',
+                },
+                result: {
+                    $ref: '#/definitions/WorkspacePreferenceView',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        WorkspacePreferenceGetParams: {
+            description: "Read the preference of the connection's authenticated account.",
+            type: 'object',
+            additionalProperties: false,
+        },
+        WorkspacePreferenceSetMethod: {
+            description: "Compare-and-set update for an account's main workspace.",
+            properties: {
+                params: {
+                    $ref: '#/definitions/WorkspacePreferenceSetParams',
+                },
+                result: {
+                    $ref: '#/definitions/WorkspacePreferenceView',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        WorkspacePreferenceSetParams: {
+            description:
+                'Replace the observed preference, or clear it to restore per-conversation selection.',
+            properties: {
+                expectedRevision: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                },
+                preference: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/ManagedWorkspacePreference',
+                        },
+                        {
+                            $ref: '#/definitions/ConnectorWorkspacePreference',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+            },
+            required: ['expectedRevision', 'preference'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        WorkspacePreferenceView: {
+            description: 'The saved preference and the version a subsequent edit must compare.',
+            properties: {
+                preference: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/ManagedWorkspacePreference',
+                        },
+                        {
+                            $ref: '#/definitions/ConnectorWorkspacePreference',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                revision: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                },
+            },
+            required: ['preference', 'revision'],
+            type: 'object',
+            additionalProperties: false,
+        },
         WorkspacePresenceState: {
             description:
                 'Root visibility is metadata only; uncertainty never becomes a negative classification.\nFinite root-presence states shared with the native batch helper.',
@@ -35574,6 +35713,15 @@ export const schema: Schema = {
         voice: {
             $ref: '#/definitions/VoiceCallEvent',
         },
+        workspacePreferenceGet: {
+            $ref: '#/definitions/WorkspacePreferenceGetParams',
+        },
+        workspacePreferenceSet: {
+            $ref: '#/definitions/WorkspacePreferenceSetParams',
+        },
+        workspacePreferenceView: {
+            $ref: '#/definitions/WorkspacePreferenceView',
+        },
     },
     required: [
         'approvalRequested',
@@ -35607,6 +35755,9 @@ export const schema: Schema = {
         'turnEnd',
         'turnEvent',
         'voice',
+        'workspacePreferenceGet',
+        'workspacePreferenceSet',
+        'workspacePreferenceView',
     ],
     type: 'object',
 };

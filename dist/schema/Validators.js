@@ -131,6 +131,18 @@ export function turnEvent(value) {
 export function voice(value) {
     return validator.validate('#/definitions/VoiceCallEvent', value);
 }
+/** Validates a workspacePreferenceGet payload and narrows it to its declared type. */
+export function workspacePreferenceGet(value) {
+    return validator.validate('#/definitions/WorkspacePreferenceGetParams', value);
+}
+/** Validates a workspacePreferenceSet payload and narrows it to its declared type. */
+export function workspacePreferenceSet(value) {
+    return validator.validate('#/definitions/WorkspacePreferenceSetParams', value);
+}
+/** Validates a workspacePreferenceView payload and narrows it to its declared type. */
+export function workspacePreferenceView(value) {
+    return validator.validate('#/definitions/WorkspacePreferenceView', value);
+}
 /** Validates the params of `accounts.create`. */
 export function accountsCreateParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/accounts.create/properties/params', value);
@@ -576,6 +588,22 @@ export function connectorsWorkspaceGetParams(value) {
 /** Validates the result of `connectors.workspace.get`, then its dependent counters, grants and bounded text. */
 export function connectorsWorkspaceGetResult(value) {
     return (validator.validate('#/definitions/GatewayMethods/properties/connectors.workspace.get/properties/result', value) && ConnectorHostChecks.workspace(value));
+}
+/** Validates the params of `connectors.workspace.preference.get`. */
+export function connectorsWorkspacePreferenceGetParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/connectors.workspace.preference.get/properties/params', value);
+}
+/** Validates the result of `connectors.workspace.preference.get`. */
+export function connectorsWorkspacePreferenceGetResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/connectors.workspace.preference.get/properties/result', value);
+}
+/** Validates the params of `connectors.workspace.preference.set`. */
+export function connectorsWorkspacePreferenceSetParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/connectors.workspace.preference.set/properties/params', value);
+}
+/** Validates the result of `connectors.workspace.preference.set`. */
+export function connectorsWorkspacePreferenceSetResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/connectors.workspace.preference.set/properties/result', value);
 }
 /** Validates the params of `connectors.workspace.select`. */
 export function connectorsWorkspaceSelectParams(value) {

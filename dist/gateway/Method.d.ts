@@ -112,6 +112,10 @@ export declare enum Method {
     ConnectorsWorkspaceCreate = "connectors.workspace.create",
     /** Calls `connectors.workspace.get`. */
     ConnectorsWorkspaceGet = "connectors.workspace.get",
+    /** Calls `connectors.workspace.preference.get`. */
+    ConnectorsWorkspacePreferenceGet = "connectors.workspace.preference.get",
+    /** Calls `connectors.workspace.preference.set`. */
+    ConnectorsWorkspacePreferenceSet = "connectors.workspace.preference.set",
     /** Calls `connectors.workspace.select`. */
     ConnectorsWorkspaceSelect = "connectors.workspace.select",
     /** Calls `connectors.workspace.select-host`. */

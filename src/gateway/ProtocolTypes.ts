@@ -90,6 +90,10 @@ import type {
     ConnectorWorkspaceSelectMethod,
 } from '../dataplane/ConnectorWorkspaceSelectionTypes.js';
 import type {
+    WorkspacePreferenceGetMethod,
+    WorkspacePreferenceSetMethod,
+} from '../dataplane/WorkspacePreferenceTypes.js';
+import type {
     EnvironmentPrepareMethod,
     EnvironmentStatusMethod,
 } from '../dataplane/EnvironmentPreparationTypes.js';
@@ -907,6 +911,10 @@ export interface GatewayMethods {
     readonly 'connectors.workspace.select-host': ConnectorWorkspaceSelectHostMethod;
     /** Read one owned conversation's selected customer workspace and checked revision. */
     readonly 'connectors.workspace.get': ConnectorWorkspaceGetMethod;
+    /** Read the authenticated account's main workspace preference. */
+    readonly 'connectors.workspace.preference.get': WorkspacePreferenceGetMethod;
+    /** Save the authenticated account's main workspace preference for future turns. */
+    readonly 'connectors.workspace.preference.set': WorkspacePreferenceSetMethod;
     /** Select an exact current customer root and grant for one owned conversation. */
     readonly 'connectors.workspace.select': ConnectorWorkspaceSelectMethod;
     /** Clear only the selection matching the original checked revision. */

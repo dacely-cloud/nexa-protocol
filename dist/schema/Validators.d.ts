@@ -1,5 +1,6 @@
 import type { AgileChanged } from '../agile/interface/AgileView.js';
 import type { ConnectorExecutionStatus } from '../dataplane/ConnectorExecutionTypes.js';
+import type { WorkspacePreferenceGetParams, WorkspacePreferenceSetParams, WorkspacePreferenceView } from '../dataplane/WorkspacePreferenceTypes.js';
 import type { SessionHistoryData, SessionHistoryRecord } from '../gateway/HistoryTypes.js';
 import type { ApprovalRequestedData, ApprovalResolvedData, SessionMessageData, ToolSitesData, TurnEndData, TurnEventData, WireError } from '../gateway/ProtocolEventTypes.js';
 import type { ChangedData, ConnectChallengeData, GatewayMethods } from '../gateway/ProtocolTypes.js';
@@ -83,6 +84,12 @@ export declare function turnEnd(value: unknown): value is TurnEndData;
 export declare function turnEvent(value: unknown): value is TurnEventData;
 /** Validates a voice payload and narrows it to its declared type. */
 export declare function voice(value: unknown): value is VoiceCallEvent;
+/** Validates a workspacePreferenceGet payload and narrows it to its declared type. */
+export declare function workspacePreferenceGet(value: unknown): value is WorkspacePreferenceGetParams;
+/** Validates a workspacePreferenceSet payload and narrows it to its declared type. */
+export declare function workspacePreferenceSet(value: unknown): value is WorkspacePreferenceSetParams;
+/** Validates a workspacePreferenceView payload and narrows it to its declared type. */
+export declare function workspacePreferenceView(value: unknown): value is WorkspacePreferenceView;
 /** Validates the params of `accounts.create`. */
 export declare function accountsCreateParams(value: unknown): boolean;
 /** Validates the result of `accounts.create`. */
@@ -303,6 +310,14 @@ export declare function connectorsWorkspaceCreateResult(value: unknown): boolean
 export declare function connectorsWorkspaceGetParams(value: unknown): boolean;
 /** Validates the result of `connectors.workspace.get`, then its dependent counters, grants and bounded text. */
 export declare function connectorsWorkspaceGetResult(value: unknown): boolean;
+/** Validates the params of `connectors.workspace.preference.get`. */
+export declare function connectorsWorkspacePreferenceGetParams(value: unknown): boolean;
+/** Validates the result of `connectors.workspace.preference.get`. */
+export declare function connectorsWorkspacePreferenceGetResult(value: unknown): boolean;
+/** Validates the params of `connectors.workspace.preference.set`. */
+export declare function connectorsWorkspacePreferenceSetParams(value: unknown): boolean;
+/** Validates the result of `connectors.workspace.preference.set`. */
+export declare function connectorsWorkspacePreferenceSetResult(value: unknown): boolean;
 /** Validates the params of `connectors.workspace.select`. */
 export declare function connectorsWorkspaceSelectParams(value: unknown): boolean;
 /** Validates the result of `connectors.workspace.select`. */

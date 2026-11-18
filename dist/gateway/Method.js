@@ -115,6 +115,10 @@ export var Method;
     Method["ConnectorsWorkspaceCreate"] = "connectors.workspace.create";
     /** Calls `connectors.workspace.get`. */
     Method["ConnectorsWorkspaceGet"] = "connectors.workspace.get";
+    /** Calls `connectors.workspace.preference.get`. */
+    Method["ConnectorsWorkspacePreferenceGet"] = "connectors.workspace.preference.get";
+    /** Calls `connectors.workspace.preference.set`. */
+    Method["ConnectorsWorkspacePreferenceSet"] = "connectors.workspace.preference.set";
     /** Calls `connectors.workspace.select`. */
     Method["ConnectorsWorkspaceSelect"] = "connectors.workspace.select";
     /** Calls `connectors.workspace.select-host`. */

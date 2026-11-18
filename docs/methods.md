@@ -1,6 +1,6 @@
 # RPC reference
 
-All 272 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 271 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 274 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 273 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -57,6 +57,8 @@ All 272 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [connectors.workspace.clear](#connectorsworkspaceclear)
 - [connectors.workspace.create](#connectorsworkspacecreate)
 - [connectors.workspace.get](#connectorsworkspaceget)
+- [connectors.workspace.preference.get](#connectorsworkspacepreferenceget)
+- [connectors.workspace.preference.set](#connectorsworkspacepreferenceset)
 - [connectors.workspace.select](#connectorsworkspaceselect)
 - [connectors.workspace.select-host](#connectorsworkspaceselect-host)
 - [connectors.workspace.select-joint](#connectorsworkspaceselect-joint)
@@ -1625,6 +1627,52 @@ Parameters: [ConnectorWorkspaceGetParams](protocol.md#connectorworkspacegetparam
 | `sessionId` | Yes      | `string` |             |
 
 Result: [ConnectorWorkspaceSelectionView](protocol.md#connectorworkspaceselectionview).
+
+## connectors.workspace.preference.get
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.ConnectorsWorkspacePreferenceGet> = {};
+const result: ResultOf<typeof Method.ConnectorsWorkspacePreferenceGet> = await client.call(
+    Method.ConnectorsWorkspacePreferenceGet,
+    params,
+);
+```
+
+Parameters: [WorkspacePreferenceGetParams](protocol.md#workspacepreferencegetparams).
+
+Type: Dictionary.
+
+Result: [WorkspacePreferenceView](protocol.md#workspacepreferenceview).
+
+## connectors.workspace.preference.set
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.ConnectorsWorkspacePreferenceSet> = {
+    expectedRevision: 'YOUR_EXPECTEDREVISION',
+    preference: {
+        kind: 'managed',
+    },
+};
+const result: ResultOf<typeof Method.ConnectorsWorkspacePreferenceSet> = await client.call(
+    Method.ConnectorsWorkspacePreferenceSet,
+    params,
+);
+```
+
+Parameters: [WorkspacePreferenceSetParams](protocol.md#workspacepreferencesetparams).
+
+| Field              | Required | Type                                                                                                                                                     | Description |
+| ------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `expectedRevision` | Yes      | `string`                                                                                                                                                 |             |
+| `preference`       | Yes      | [ManagedWorkspacePreference](protocol.md#managedworkspacepreference) / [ConnectorWorkspacePreference](protocol.md#connectorworkspacepreference) / `null` |             |
+
+Result: [WorkspacePreferenceView](protocol.md#workspacepreferenceview).
 
 ## connectors.workspace.select
 
