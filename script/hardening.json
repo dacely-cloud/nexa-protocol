@@ -1,0 +1,1317 @@
+{
+    "constraints": {
+        "AskParams": {
+            "properties/uploadedSources": {
+                "maxItems": 32
+            },
+            "properties/uploadedSources/items": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            }
+        },
+        "BrowserFilesChunkParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/data": {
+                "maxLength": 1398104
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            },
+            "properties/uploadId": {
+                "pattern": "^[a-f0-9]{64}$"
+            }
+        },
+        "BrowserFilesDone": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "BrowserFilesEntry": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            }
+        },
+        "BrowserFilesListParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/cursor": {
+                "maxLength": 256
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "BrowserFilesPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/entries": {
+                "maxItems": 128
+            }
+        },
+        "BrowserFilesPosition": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            }
+        },
+        "BrowserFilesRead": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            },
+            "properties/data": {
+                "maxLength": 1398104
+            },
+            "properties/revision": {
+                "maxLength": 256
+            }
+        },
+        "BrowserFilesReadParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            },
+            "properties/path": {
+                "maxLength": 4096
+            },
+            "properties/revision": {
+                "maxLength": 256
+            }
+        },
+        "BrowserFilesRenameParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/destination": {
+                "maxLength": 4096
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "BrowserFilesStartParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,15})$",
+                "maxLength": 16
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "BrowserFilesTarget": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/assignment": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "BrowserFilesUpload": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/chunkBytes": {
+                "minimum": 1,
+                "maximum": 1048576
+            },
+            "properties/uploadId": {
+                "pattern": "^[a-f0-9]{64}$"
+            }
+        },
+        "BrowserFilesUploadParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/uploadId": {
+                "pattern": "^[a-f0-9]{64}$"
+            }
+        },
+        "ConnectorExecutionCurrentJob": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorExecutionJob": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorExecutionOutputView": {
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorExecutionStopParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorExecutionStopReceipt": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorIndependentAuthorization": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorInteractiveInvocationRule": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/controls": {
+                "maxItems": 3
+            },
+            "properties/maximumControls": {
+                "minimum": 1,
+                "maximum": 256,
+                "type": "integer"
+            },
+            "properties/maximumInputBytes": {
+                "pattern": "^(?:0|[1-9][0-9]{0,4})$",
+                "maxLength": 5
+            },
+            "properties/maximumResizes": {
+                "minimum": 0,
+                "maximum": 16,
+                "type": "integer"
+            },
+            "properties/transports": {
+                "maxItems": 2
+            }
+        },
+        "ConnectorInventoryView": {
+            "properties/instructions": {
+                "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]*$",
+                "maxLength": 16384
+            },
+            "properties/instructionsRevision": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            }
+        },
+        "ConnectorJob": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/admissionHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "minLength": 64,
+                "maxLength": 64
+            }
+        },
+        "ConnectorJointAuthorization": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorJointExecutionJournals": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorJointWorkspaceBinding": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorJointWorkspaceDescriptor": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorMachineCommand": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/alias": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/executableIndex": {
+                "minimum": 0,
+                "maximum": 8,
+                "type": "integer"
+            }
+        },
+        "ConnectorMachineEnvironmentGrant": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/maximumBytes": {
+                "minimum": 0,
+                "maximum": 1024,
+                "type": "integer"
+            },
+            "properties/name": {
+                "pattern": "^(?!NERVA_)[A-Za-z_][A-Za-z0-9_]{0,63}$",
+                "maxLength": 64
+            }
+        },
+        "ConnectorMachineInvocationRule": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/commands": {
+                "maxItems": 9
+            },
+            "properties/environment": {
+                "maxItems": 16
+            },
+            "properties/maximumArgumentBytes": {
+                "minimum": 0,
+                "maximum": 1024,
+                "type": "integer"
+            },
+            "properties/maximumArguments": {
+                "minimum": 0,
+                "maximum": 32,
+                "type": "integer"
+            },
+            "properties/maximumArgumentsBytes": {
+                "minimum": 0,
+                "maximum": 2048,
+                "type": "integer"
+            },
+            "properties/maximumCwdBytes": {
+                "minimum": 1,
+                "maximum": 512,
+                "type": "integer"
+            },
+            "properties/maximumEnvironmentBytes": {
+                "minimum": 0,
+                "maximum": 1024,
+                "type": "integer"
+            },
+            "properties/maximumScriptBytes": {
+                "minimum": 0,
+                "maximum": 2048,
+                "type": "integer"
+            },
+            "properties/maximumStdinBytes": {
+                "minimum": 0,
+                "maximum": 1024,
+                "type": "integer"
+            },
+            "properties/maximumTimeoutMs": {
+                "minimum": 100,
+                "maximum": 30000,
+                "type": "integer"
+            }
+        },
+        "ConnectorMachineShell": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/executableIndex": {
+                "minimum": 0,
+                "maximum": 8,
+                "type": "integer"
+            },
+            "properties/fixedArguments": {
+                "maxItems": 16
+            },
+            "properties/fixedArguments/items": {
+                "maxLength": 1024
+            }
+        },
+        "ConnectorMkdir": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorMkdirResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorRemove": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorRemoveResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceCatalogEntry": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/bindingRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/bindingSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/descriptorSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/executionPolicySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/executionRootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/filePolicySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/fileRootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceCatalogMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceCatalogParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorWorkspaceCatalogView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/entries": {
+                "maxItems": 128
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceClearMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceClearParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/expectedRevision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorWorkspaceCreateMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceCreateParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceFileSelection": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/policySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/rootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceGetMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceGetParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorWorkspaceJointSelection": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/bindingRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/descriptorSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/executionPolicySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/executionRootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/jointBindingSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/policySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/rootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceJointTarget": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/bindingRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/bindingSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/descriptorSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/executionPolicySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/executionRootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/filePolicySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/fileRootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorWorkspaceSelectJointMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceSelectJointParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/expectedRevision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorWorkspaceSelectMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceSelectParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/expectedRevision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/policySha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/rootId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorWorkspaceSelectionView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/revision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "DataUploadChunkParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadIdParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            }
+        },
+        "DataUploadPosition": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadStartParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            },
+            "properties/filename": {
+                "minLength": 1,
+                "maxLength": 120
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "DesignNode": {
+            "properties/arc": {
+                "additionalProperties": false
+            },
+            "properties/polygon": {
+                "additionalProperties": false
+            }
+        },
+        "GatewayMethods": {
+            "properties/connectors.workspace.catalog": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.clear": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.create": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.get": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.select": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.select-joint": {
+                "additionalProperties": false
+            },
+            "properties/connectors.instructions.get": {
+                "additionalProperties": false
+            },
+            "properties/connectors.instructions.update": {
+                "additionalProperties": false
+            },
+            "properties/connectors.host.status": {
+                "additionalProperties": false
+            },
+            "properties/connectors.host.submit": {
+                "additionalProperties": false
+            },
+            "properties/connectors.host.result": {
+                "additionalProperties": false
+            },
+            "properties/connectors.workspace.select-host": {
+                "additionalProperties": false
+            },
+            "properties/connectors.context.check": {
+                "additionalProperties": false
+            },
+            "properties/environment.visit/properties/params": {
+                "additionalProperties": false
+            }
+        },
+        "StreamParams": {
+            "properties/uploadedSources": {
+                "maxItems": 32
+            },
+            "properties/uploadedSources/items": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            }
+        },
+        "ToolProgress": {
+            "properties/outputSnapshot": {
+                "maxLength": 65536
+            }
+        },
+        "ConnectorInstructionsGetParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/enrollmentId": {
+                "pattern": "^conn_[a-f0-9]{64}$"
+            }
+        },
+        "ConnectorInstructionsUpdateParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/enrollmentId": {
+                "pattern": "^conn_[a-f0-9]{64}$"
+            },
+            "properties/instructions": {
+                "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]*$",
+                "maxLength": 16384
+            },
+            "properties/expectedRevision": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorInstructionsView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/enrollmentId": {
+                "pattern": "^conn_[a-f0-9]{64}$"
+            },
+            "properties/instructions": {
+                "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]*$",
+                "maxLength": 16384
+            },
+            "properties/revision": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            }
+        },
+        "ConnectorHostStatusMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorHostStatusParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorHostStatus": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/acknowledgedSequence": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sequence": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            }
+        },
+        "ConnectorHostProfile": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/directory": {
+                "minLength": 1,
+                "maxLength": 4096
+            },
+            "properties/grantId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/tools": {
+                "minItems": 1,
+                "maxItems": 34
+            }
+        },
+        "ConnectorHostSubmitMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorHostSubmitParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/previousSequence": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorHostRequest": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/argumentsJson": {
+                "maxLength": 65536
+            },
+            "properties/grantId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            }
+        },
+        "ConnectorHostJobView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sequence": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            }
+        },
+        "ConnectorHostResponse": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/resultJson": {
+                "maxLength": 131072
+            }
+        },
+        "ConnectorHostResultMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorHostResultParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/jobId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "ConnectorHostSummary": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/grantId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/tools": {
+                "minItems": 1,
+                "maxItems": 34
+            }
+        },
+        "ConnectorWorkspaceHostSelection": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/directory": {
+                "minLength": 1,
+                "maxLength": 4096
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/grantId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            }
+        },
+        "ConnectorWorkspaceSelectHostMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorWorkspaceSelectHostParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/expectedRevision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/grantRevision": {
+                "pattern": "^[1-9][0-9]{0,18}$"
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "ConnectorContextCheckMethod": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectorContextCheckQuery": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/knownVersion": {
+                "pattern": "^[a-f0-9]{64}$"
+            }
+        },
+        "ConnectorContextCheckView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/nextTransitionAtMs": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            },
+            "properties/serverNowMs": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$"
+            },
+            "properties/version": {
+                "pattern": "^[a-f0-9]{64}$"
+            }
+        },
+        "CommandExecutionCleanupUnconfirmed": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/processId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "minLength": 1,
+                "maxLength": 128
+            }
+        },
+        "ConversationDataFile": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            },
+            "properties/filename": {
+                "minLength": 1,
+                "maxLength": 120
+            },
+            "properties/id": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            },
+            "properties/path": {
+                "minLength": 1,
+                "maxLength": 16384
+            }
+        },
+        "ConversationDataUpload": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/byteLength": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            },
+            "properties/filename": {
+                "minLength": 1,
+                "maxLength": 120
+            },
+            "properties/id": {
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "properties/offset": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadContext": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/ownerSha256": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/selectionRevision": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "DataUploadCreateParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "DataUploadSelectHost": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DataUploadSelectManaged": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DataUploadSelectParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            }
+        },
+        "DataUploadSelectionResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DataUploadTargetHost": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/maximumBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadTargetLocal": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/maximumBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadTargetManaged": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/maximumBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,11})$"
+            }
+        },
+        "DataUploadTargetParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
+        },
+        "DataUploadTargetUnselected": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DataUploadTargetUnsupported": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "EnvironmentVisitResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "EnvironmentVisitMethod": {
+            "properties/params": {
+                "additionalProperties": false
+            }
+        },
+        "AgentProfile": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/description": {
+                "minLength": 0
+            },
+            "properties/model": {
+                "minLength": 0
+            },
+            "properties/provider": {
+                "minLength": 0
+            },
+            "properties/tools/anyOf/0": {
+                "maxItems": 128
+            },
+            "properties/tools/anyOf/0/items": {
+                "minLength": 1,
+                "maxLength": 128
+            }
+        },
+        "AgentProfileInput": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/description": {
+                "minLength": 0
+            },
+            "properties/model": {
+                "minLength": 0
+            },
+            "properties/provider": {
+                "minLength": 0
+            },
+            "properties/tools/anyOf/0": {
+                "maxItems": 128
+            },
+            "properties/tools/anyOf/0/items": {
+                "minLength": 1,
+                "maxLength": 128
+            }
+        },
+        "AgentProfileCreateParams": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "AgentProfileUpdateParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/expectedRevision": {
+                "pattern": "^(?:0|[1-9][0-9]{0,19})$",
+                "maxLength": 20
+            },
+            "properties/id": {
+                "pattern": "^profile:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+                "maxLength": 44
+            }
+        },
+        "AgentProfileDeleteParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/expectedRevision": {
+                "pattern": "^(?:0|[1-9][0-9]{0,19})$",
+                "maxLength": 20
+            },
+            "properties/id": {
+                "pattern": "^profile:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+                "maxLength": 44
+            }
+        },
+        "AgentProfilesResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "AgentProfileUpgradeParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/expectedDirectoryRevision": {
+                "pattern": "^(?:0|[1-9][0-9]{0,19})$",
+                "maxLength": 20
+            }
+        },
+        "ChatModelChoice": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ChatModelSelection": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ChatModelsPage": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectionApplicationSetupRequest": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "ConnectionApplicationsPage": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "LicensedToolRequest": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "LicensedToolStatus": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "LicensedToolsPage": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DecisionAction": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/description": {
+                "maxLength": 2048
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{0,63}$"
+            }
+        },
+        "DecisionRunParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/actions": {
+                "minItems": 1,
+                "maxItems": 32
+            },
+            "properties/images": {
+                "maxItems": 3
+            },
+            "properties/input": {
+                "minLength": 1,
+                "maxLength": 32768
+            }
+        },
+        "DecisionRunResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DecisionUsage": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "DecisionImage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/data": {
+                "minLength": 4,
+                "maxLength": 9786712
+            }
+        },
+        "DecisionImageMime": {
+            "": {
+                "additionalProperties": false
+            }
+        }
+    }
+}

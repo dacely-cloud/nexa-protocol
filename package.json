@@ -1,7 +1,7 @@
 {
     "name": "nexa-protocol",
     "version": "0.1.0",
-    "description": "The Nexa gateway wire format: the request, response and event types the public transport sends and receives, the wire enums and limits, and the frame codecs the transport runs (binary envelopes, chunked attachments and the response validators)",
+    "description": "The Nexa gateway wire format: the request, response and event types of every gateway method, the wire enums and limits, the generated JSON schema with its method, event and page validators, and the frame codecs the transport runs (binary envelopes, chunked attachments and the response validators)",
     "type": "module",
     "license": "UNLICENSED",
     "sideEffects": false,
@@ -22,7 +22,8 @@
     "scripts": {
         "build": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\" && tsc -p tsconfig.build.json",
         "typecheck": "tsc -p tsconfig.json",
-        "check": "npm run typecheck && npm run build && git diff --exit-code -- dist && test -z \"$(git status --porcelain -- dist)\""
+        "check": "npm run typecheck && node script/generate.mjs --check && npm run build && git diff --exit-code -- dist && test -z \"$(git status --porcelain -- dist)\"",
+        "generate": "node script/generate.mjs"
     },
     "repository": {
         "type": "git",
@@ -30,6 +31,7 @@
     },
     "devDependencies": {
         "prettier": "3.9.8",
-        "typescript": "7.0.2"
+        "typescript": "7.0.2",
+        "typescript-json-schema": "0.68.0"
     }
 }
