@@ -1,4 +1,5 @@
 import type { AgentDefinition } from '../agent/AgentDefinition.js';
+import type { SteeringImage } from './AttachmentTypes.js';
 import type { AgentProfileCreateParams, AgentProfileDeleteParams, AgentProfileUpdateParams, AgentProfileUpgradeParams, AgentProfilesResult } from '../agent/ProfileTypes.js';
 import type { AgileSessionCommand, AgileView } from '../agile/interface/AgileView.js';
 import type { DataUploadChunkParams, DataUploadIdParams, DataUploadStartParams } from '../analytics/ConversationUploadRequests.js';
@@ -197,6 +198,8 @@ export interface GatewayFeatures {
     readonly transcriptBlocks?: true;
     /** User media attachments are validated and forwarded to the agent. */
     readonly attachments?: true;
+    /** Active turns accept inline images alongside steering text. */
+    readonly steeringImages?: true;
     /** NXMD frames carry outbound file bytes; JSON results contain matching metadata. */
     readonly binaryMedia?: true;
     /** Disk upload chunks retain raw bytes from the wire through durable storage. */
@@ -280,6 +283,7 @@ export interface StreamParams extends AskParams {
 export interface SteerParams {
     readonly runId: string;
     readonly message: string;
+    readonly images?: readonly SteeringImage[];
 }
 /** The acknowledgement of a streaming run. */
 export interface StreamAccepted {

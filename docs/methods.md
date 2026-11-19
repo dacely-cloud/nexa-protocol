@@ -550,10 +550,11 @@ const result: ResultOf<typeof Method.AgentSteer> = await client.call(Method.Agen
 
 Parameters: [SteerParams](protocol.md#steerparams).
 
-| Field     | Required | Type     | Description |
-| --------- | -------- | -------- | ----------- |
-| `message` | Yes      | `string` |             |
-| `runId`   | Yes      | `string` |             |
+| Field     | Required | Type                                                | Description |
+| --------- | -------- | --------------------------------------------------- | ----------- |
+| `images`  | No       | Array of [SteeringImage](protocol.md#steeringimage) |             |
+| `message` | Yes      | `string`                                            |             |
+| `runId`   | Yes      | `string`                                            |             |
 
 Result: Object (fields below).
 

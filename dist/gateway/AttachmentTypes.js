@@ -8,3 +8,9 @@ export const AttachmentType = {
     VideoFrame: 'video-frame',
     Document: 'document',
 };
+/** Bounds a single steering request and the media retained by one active turn. */
+export const SteeringImageLimits = {
+    Count: 8,
+    EncodedChars: 4 * Math.ceil((8 * 1024 * 1024) / 3),
+    TurnEncodedChars: 4 * Math.ceil((16 * 1024 * 1024) / 3),
+};

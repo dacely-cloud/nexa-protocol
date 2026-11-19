@@ -17638,6 +17638,11 @@ export const schema: Schema = {
                         'Session subscriptions notify exact journal ranges for live catch-up.',
                     type: 'boolean',
                 },
+                steeringImages: {
+                    const: true,
+                    description: 'Active turns accept inline images alongside steering text.',
+                    type: 'boolean',
+                },
                 transcriptBlocks: {
                     const: true,
                     description: 'Compact persisted NDJSON blocks, read in bounded byte pages.',
@@ -28791,6 +28796,12 @@ export const schema: Schema = {
         SteerParams: {
             description: 'A correction for the server-minted active run, not a follow-up turn.',
             properties: {
+                images: {
+                    items: {
+                        $ref: '#/definitions/SteeringImage',
+                    },
+                    type: 'array',
+                },
                 message: {
                     type: 'string',
                 },
@@ -28799,6 +28810,36 @@ export const schema: Schema = {
                 },
             },
             required: ['message', 'runId'],
+            type: 'object',
+        },
+        SteeringImage: {
+            description: 'Bytes supplied by the user for a correction to a running turn.',
+            properties: {
+                source: {
+                    properties: {
+                        data: {
+                            type: 'string',
+                        },
+                        kind: {
+                            const: 'base64',
+                            type: 'string',
+                        },
+                        mediaType: {
+                            type: 'string',
+                        },
+                    },
+                    required: ['data', 'kind', 'mediaType'],
+                    type: 'object',
+                },
+                title: {
+                    type: 'string',
+                },
+                type: {
+                    const: 'image',
+                    type: 'string',
+                },
+            },
+            required: ['source', 'type'],
             type: 'object',
         },
         StreamAccepted: {

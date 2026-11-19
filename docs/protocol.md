@@ -9809,6 +9809,7 @@ Methods, events, and additive capabilities supported by this gateway.
 | `robloxTextEditing`        | No       | `true`                                             | Focused TextBoxes accept bounded Unicode edits and logical editing-key gestures.               |
 | `sessionHistory`           | No       | `true`                                             | Durable complete presentation history and binary restoration.                                  |
 | `sessionHistoryUpdates`    | No       | `true`                                             | Session subscriptions notify exact journal ranges for live catch-up.                           |
+| `steeringImages`           | No       | `true`                                             | Active turns accept inline images alongside steering text.                                     |
 | `transcriptBlocks`         | No       | `true`                                             | Compact persisted NDJSON blocks, read in bounded byte pages.                                   |
 | `userRegion`               | No       | `true`                                             | Supports coarse per-turn regional context for news and local information.                      |
 | `workflowDraftsVersion`    | No       | `1`                                                |                                                                                                |
@@ -15884,10 +15885,31 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 A correction for the server-minted active run, not a follow-up turn.
 
-| Field     | Required | Type     | Description |
-| --------- | -------- | -------- | ----------- |
-| `message` | Yes      | `string` |             |
-| `runId`   | Yes      | `string` |             |
+| Field     | Required | Type                                                | Description |
+| --------- | -------- | --------------------------------------------------- | ----------- |
+| `images`  | No       | Array of [SteeringImage](protocol.md#steeringimage) |             |
+| `message` | Yes      | `string`                                            |             |
+| `runId`   | Yes      | `string`                                            |             |
+
+## SteeringImage
+
+Module: `nexa-protocol/gateway/AttachmentTypes.js`.
+
+Bytes supplied by the user for a correction to a running turn.
+
+| Field    | Required | Type                  | Description |
+| -------- | -------- | --------------------- | ----------- |
+| `source` | Yes      | Object (fields below) |             |
+| `title`  | No       | `string`              |             |
+| `type`   | Yes      | `"image"`             |             |
+
+**source**
+
+| Field       | Required | Type       | Description |
+| ----------- | -------- | ---------- | ----------- |
+| `data`      | Yes      | `string`   |             |
+| `kind`      | Yes      | `"base64"` |             |
+| `mediaType` | Yes      | `string`   |             |
 
 ## StreamAccepted
 
