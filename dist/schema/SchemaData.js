@@ -29724,6 +29724,38 @@ export const schema = {
             required: ['cursor'],
             type: 'object',
         },
+        VmUsageNetworkResource: {
+            description: 'Coverage and byte totals for one metric across current, verified guest observations.',
+            properties: {
+                availableBytes: {
+                    type: 'string',
+                },
+                observedVms: {
+                    type: 'string',
+                },
+                totalBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['availableBytes', 'observedVms', 'totalBytes'],
+            type: 'object',
+        },
+        VmUsageNetworkResources: {
+            description: 'Filesystems are reported independently because two mountpoints can share storage.',
+            properties: {
+                memory: {
+                    $ref: '#/definitions/VmUsageNetworkResource',
+                },
+                root: {
+                    $ref: '#/definitions/VmUsageNetworkResource',
+                },
+                workspace: {
+                    $ref: '#/definitions/VmUsageNetworkResource',
+                },
+            },
+            required: ['memory', 'root', 'workspace'],
+            type: 'object',
+        },
         VmUsageNetworkRow: {
             description: 'One passive account observation contains no host route, native authority or guest credential.',
             properties: {
@@ -29748,6 +29780,10 @@ export const schema = {
                 },
                 observedAtMs: {
                     type: 'string',
+                },
+                resources: {
+                    $ref: '#/definitions/VmUsageNetworkResources',
+                    description: 'Absent while older Compute controllers or gateways are in service.',
                 },
                 rows: {
                     items: {

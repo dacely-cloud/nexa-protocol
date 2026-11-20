@@ -16895,6 +16895,30 @@ The cursor selects a page inside protected provider scope and grants no authorit
 | -------- | -------- | ------------- | ----------- |
 | `cursor` | Yes      | `null,string` |             |
 
+## VmUsageNetworkResource
+
+Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
+
+Coverage and byte totals for one metric across current, verified guest observations.
+
+| Field            | Required | Type     | Description |
+| ---------------- | -------- | -------- | ----------- |
+| `availableBytes` | Yes      | `string` |             |
+| `observedVms`    | Yes      | `string` |             |
+| `totalBytes`     | Yes      | `string` |             |
+
+## VmUsageNetworkResources
+
+Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
+
+Filesystems are reported independently because two mountpoints can share storage.
+
+| Field       | Required | Type                                                         | Description |
+| ----------- | -------- | ------------------------------------------------------------ | ----------- |
+| `memory`    | Yes      | [VmUsageNetworkResource](protocol.md#vmusagenetworkresource) |             |
+| `root`      | Yes      | [VmUsageNetworkResource](protocol.md#vmusagenetworkresource) |             |
+| `workspace` | Yes      | [VmUsageNetworkResource](protocol.md#vmusagenetworkresource) |             |
+
 ## VmUsageNetworkRow
 
 Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
@@ -16913,12 +16937,13 @@ Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
 
 A bounded page and full-network totals retain the source's observation time.
 
-| Field          | Required | Type                                                        | Description |
-| -------------- | -------- | ----------------------------------------------------------- | ----------- |
-| `nextCursor`   | Yes      | `null,string`                                               |             |
-| `observedAtMs` | Yes      | `string`                                                    |             |
-| `rows`         | Yes      | Array of [VmUsageNetworkRow](protocol.md#vmusagenetworkrow) |             |
-| `totals`       | Yes      | [VmUsageNetworkTotals](protocol.md#vmusagenetworktotals)    |             |
+| Field          | Required | Type                                                           | Description                                                        |
+| -------------- | -------- | -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `nextCursor`   | Yes      | `null,string`                                                  |                                                                    |
+| `observedAtMs` | Yes      | `string`                                                       |                                                                    |
+| `resources`    | No       | [VmUsageNetworkResources](protocol.md#vmusagenetworkresources) | Absent while older Compute controllers or gateways are in service. |
+| `rows`         | Yes      | Array of [VmUsageNetworkRow](protocol.md#vmusagenetworkrow)    |                                                                    |
+| `totals`       | Yes      | [VmUsageNetworkTotals](protocol.md#vmusagenetworktotals)       |                                                                    |
 
 ## VmUsageNetworkTotals
 

@@ -21,10 +21,26 @@ export interface VmUsageNetworkRow {
     readonly environment: VmUsageEnvironment;
 }
 
+/** Coverage and byte totals for one metric across current, verified guest observations. */
+export interface VmUsageNetworkResource {
+    readonly observedVms: string;
+    readonly totalBytes: string;
+    readonly availableBytes: string;
+}
+
+/** Filesystems are reported independently because two mountpoints can share storage. */
+export interface VmUsageNetworkResources {
+    readonly memory: VmUsageNetworkResource;
+    readonly root: VmUsageNetworkResource;
+    readonly workspace: VmUsageNetworkResource;
+}
+
 /** A bounded page and full-network totals retain the source's observation time. */
 export interface VmUsageNetworkSnapshot {
     readonly observedAtMs: string;
     readonly totals: VmUsageNetworkTotals;
+    /** Absent while older Compute controllers or gateways are in service. */
+    readonly resources?: VmUsageNetworkResources;
     readonly rows: readonly VmUsageNetworkRow[];
     readonly nextCursor: string | null;
 }
