@@ -1,5 +1,5 @@
-import type { ConnectorFileMode } from './ConnectorFileMode.js';
-import type { ConnectorHostPlatform } from './ConnectorHostTypes.js';
+import type { ConnectorFileMode } from 'nerva-connector-protocol/protocol/ConnectorFiles.js';
+import type { ConnectorHostPlatform } from 'nerva-connector-protocol/protocol/ConnectorHost.js';
 import type { ConnectorWorkspaceCatalogView, ConnectorWorkspaceJointTarget } from './ConnectorWorkspaceCatalogTypes.js';
 /** Account-scoped idempotent creation admits an empty owned conversation without starting a turn. */
 export interface ConnectorWorkspaceCreateParams {
@@ -70,7 +70,7 @@ export interface ConnectorWorkspaceHostSelection {
     readonly grantRevision: string;
     readonly platform: ConnectorHostPlatform;
     readonly directory: string;
-    readonly mode: typeof ConnectorFileMode.ReadWrite;
+    readonly mode: ConnectorFileMode.ReadWrite;
 }
 /** Neither selection kind can be inferred from a missing field or an executable name. */
 export type ConnectorWorkspaceSelection = ConnectorWorkspaceFileSelection | ConnectorWorkspaceJointSelection | ConnectorWorkspaceHostSelection;

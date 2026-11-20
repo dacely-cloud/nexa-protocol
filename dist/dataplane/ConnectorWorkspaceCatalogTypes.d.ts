@@ -1,4 +1,4 @@
-import type { ConnectorFileMode } from './ConnectorFileMode.js';
+import type { ConnectorFileMode } from 'nerva-connector-protocol/protocol/ConnectorFiles.js';
 /** A verified catalog offers exact mapping choices without granting any operation. */
 export interface ConnectorWorkspaceCatalogEntry {
     readonly fileRootId: string;

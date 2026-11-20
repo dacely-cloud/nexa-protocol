@@ -1,27 +1,19 @@
 // SPDX-FileCopyrightText: 2026 Nexa contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
 
-import type { ConnectorExecutionLane } from './ConnectorExecutionTypes.js';
-import type {
-    ConnectorEnvironmentParams,
-    ConnectorJobPhase,
-    ConnectorResultParams,
-} from './ConnectorTypes.js';
-
-/** Canonical base64 preserves at most 65536 combined application bytes. */
-export interface ConnectorExecutionOutputData {
-    readonly stdoutBase64: string;
-    readonly stderrBase64: string;
-}
+import type { ConnectorEnvironmentParams, ConnectorResultParams } from './ConnectorTypes.js';
+import type { ExecutionLane } from 'nerva-connector-protocol/execution/ExecutionLane.js';
+import type { ExecutionOutput } from 'nerva-connector-protocol/execution/ExecutionOutput.js';
+import type { ConnectorFileJobPhase } from 'nerva-connector-protocol/protocol/ConnectorFileJobs.js';
 
 /** Provisional output has original identity and phase, never an inferred successful exit. */
 export interface ConnectorExecutionOutputView extends ConnectorEnvironmentParams {
     readonly id: string;
-    readonly lane: ConnectorExecutionLane;
+    readonly lane: ExecutionLane;
     readonly sequence: string;
     readonly admissionHash: string;
-    readonly phase: ConnectorJobPhase;
-    readonly output: ConnectorExecutionOutputData | null;
+    readonly phase: ConnectorFileJobPhase;
+    readonly output: ExecutionOutput | null;
 }
 
 /** Reading the captured original grants no command, stop or enrollment mutation. */

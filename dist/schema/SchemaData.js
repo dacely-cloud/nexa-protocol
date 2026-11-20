@@ -5565,96 +5565,88 @@ export const schema = {
             required: ['params', 'result'],
             type: 'object',
         },
-        ConnectorArgumentBound: {
-            description: 'UTF-8 bytes and relative-path grammar remain enforced independently on the device.',
-            properties: {
-                kind: {
-                    enum: ['relative-path', 'text'],
-                    type: 'string',
-                },
-                maximumBytes: {
-                    type: 'number',
-                },
-            },
-            required: ['kind', 'maximumBytes'],
-            type: 'object',
-        },
-        ConnectorArgumentChoice: {
-            description: 'Finite exact choices never authorize arbitrary extra arguments.',
-            properties: {
-                kind: {
-                    const: 'choice',
-                    type: 'string',
-                },
-                values: {
-                    items: {
-                        type: 'string',
-                    },
-                    type: 'array',
-                },
-            },
-            required: ['kind', 'values'],
-            type: 'object',
-        },
-        ConnectorArgumentRule: {
+        ConnectorAccountFileRequest: {
             anyOf: [
                 {
-                    $ref: '#/definitions/ConnectorMachineInvocationRule',
+                    $ref: '#/definitions/ConnectorFileStat',
                 },
                 {
-                    $ref: '#/definitions/ConnectorInteractiveInvocationRule',
+                    $ref: '#/definitions/ConnectorFileWrite',
                 },
                 {
-                    $ref: '#/definitions/ConnectorArgumentChoice',
+                    $ref: '#/definitions/ConnectorFileRemove',
                 },
                 {
-                    $ref: '#/definitions/ConnectorArgumentBound',
+                    $ref: '#/definitions/ConnectorFileMkdir',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileChmod',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileRename',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileRead%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileList%3Cstring%3E',
                 },
             ],
-            description: 'A declared variable position has exactly one constraint shape.',
+            description: 'Each admitted operation has its original finite action and complete authority fields.',
         },
-        ConnectorChmod: {
-            description: 'Changes permissions only on a pinned single-link regular file.',
+        ConnectorAccountFileResult: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/ConnectorFileMkdirResult',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileReadResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileStatResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileListResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileWriteResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileRemoveResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileChmodResult%3Cstring%3E',
+                },
+                {
+                    $ref: '#/definitions/ConnectorFileRenameResult%3Cstring%3E',
+                },
+            ],
+            description: 'The results of the file actions an account can submit.',
+        },
+        ConnectorAccountFileSuccess: {
+            description: 'Successful file results cannot contain an error branch.',
             properties: {
-                action: {
-                    const: 'chmod',
-                    type: 'string',
+                ok: {
+                    const: true,
+                    type: 'boolean',
                 },
-                mode: {
-                    $ref: '#/definitions/ConnectorFilePermissionMode',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
+                result: {
+                    $ref: '#/definitions/ConnectorAccountFileResult',
                 },
             },
-            required: ['action', 'mode', 'path', 'policySha256', 'requestId', 'rootId'],
+            required: ['ok', 'result'],
             type: 'object',
         },
-        ConnectorChmodResult: {
-            description: 'Permission success reports the actual requested private mode on the original regular file.',
-            properties: {
-                action: {
-                    const: 'chmod',
-                    type: 'string',
+        'ConnectorAuthorization<string>': {
+            anyOf: [
+                {
+                    $ref: '#/definitions/ConnectorIndependentAuthorization',
                 },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
+                {
+                    $ref: '#/definitions/ConnectorJointAuthorization%3Cstring%3E',
                 },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'metadata', 'requestId'],
-            type: 'object',
+            ],
+            description: "Structural decoding and logical admission hashing never verify or grant the descriptor's signed authority.",
         },
         ConnectorContextCheckMethod: {
             description: 'Authenticated account RPC contract for conditional connector facts.',
@@ -5705,43 +5697,66 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorDirectoryEntry: {
-            description: 'Untrusted names remain display/path data.',
+        'ConnectorEnrollmentList<string>': {
+            description: 'Account management can recover invitation IDs after a caller process loses its local response.',
             properties: {
-                kind: {
-                    $ref: '#/definitions/ConnectorFileKind',
+                enrollments: {
+                    items: {
+                        $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
+                    },
+                    type: 'array',
+                },
+            },
+            required: ['enrollments'],
+            type: 'object',
+        },
+        ConnectorEnrollmentPhase: {
+            description: 'Enrollment binds a customer device; it does not grant execution or report a tunnel as online.',
+            enum: ['pending', 'enrolled-offline', 'revoked'],
+            type: 'string',
+        },
+        'ConnectorEnrollmentView<string>': {
+            description: 'Public metadata contains neither bootstrap authorization nor infrastructure connection details.',
+            properties: {
+                enrolledAtMs: {
+                    type: ['null', 'string'],
+                },
+                environmentId: {
+                    type: 'string',
+                },
+                expiresAtMs: {
+                    type: 'string',
+                },
+                id: {
+                    type: 'string',
+                },
+                issuedAtMs: {
+                    type: 'string',
                 },
                 name: {
                     type: 'string',
                 },
-            },
-            required: ['kind', 'name'],
-            type: 'object',
-        },
-        ConnectorDirectoryResult: {
-            description: 'A directory page has a finite entry count and original request identity.',
-            properties: {
-                action: {
-                    const: 'list',
+                phase: {
+                    $ref: '#/definitions/ConnectorEnrollmentPhase',
+                },
+                revision: {
                     type: 'string',
                 },
-                entries: {
-                    items: {
-                        $ref: '#/definitions/ConnectorDirectoryEntry',
-                    },
-                    type: 'array',
-                },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
-                },
-                nextCursor: {
+                revokedAtMs: {
                     type: ['null', 'string'],
                 },
-                requestId: {
-                    type: 'string',
-                },
             },
-            required: ['action', 'entries', 'metadata', 'nextCursor', 'requestId'],
+            required: [
+                'enrolledAtMs',
+                'environmentId',
+                'expiresAtMs',
+                'id',
+                'issuedAtMs',
+                'name',
+                'phase',
+                'revision',
+                'revokedAtMs',
+            ],
             type: 'object',
         },
         ConnectorEnvironmentParams: {
@@ -5767,11 +5782,6 @@ export const schema = {
             required: ['params', 'result'],
             type: 'object',
         },
-        ConnectorExecutionAccess: {
-            description: 'Local workspace mutation and cloud write delegation must both permit an operation.',
-            enum: ['read-only', 'read-write'],
-            type: 'string',
-        },
         ConnectorExecutionCurrentJob: {
             description: "Latest original metadata has the retained workspace grant rather than the device's possibly newer profile.",
             properties: {
@@ -5785,10 +5795,10 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 phase: {
-                    $ref: '#/definitions/ConnectorJobPhase',
+                    $ref: '#/definitions/ConnectorFileJobPhase',
                 },
                 programId: {
                     type: 'string',
@@ -5803,7 +5813,7 @@ export const schema = {
                     type: 'string',
                 },
                 workspaceAccess: {
-                    $ref: '#/definitions/ConnectorExecutionAccess',
+                    $ref: '#/definitions/ExecutionWorkspaceAccess',
                 },
             },
             required: [
@@ -5866,7 +5876,7 @@ export const schema = {
                     ],
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 sequence: {
                     type: 'string',
@@ -5885,7 +5895,7 @@ export const schema = {
                     maxLength: 64,
                 },
                 authorization: {
-                    $ref: '#/definitions/ConnectorOperationAuthorization',
+                    $ref: '#/definitions/ConnectorAuthorization%3Cstring%3E',
                 },
                 environmentId: {
                     type: 'string',
@@ -5894,18 +5904,18 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 phase: {
-                    $ref: '#/definitions/ConnectorJobPhase',
+                    $ref: '#/definitions/ConnectorFileJobPhase',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorExecutionRequest',
+                    $ref: '#/definitions/ExecutionRequest',
                 },
                 response: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorExecutionResult',
+                            $ref: '#/definitions/ExecutionResult',
                         },
                         {
                             type: 'null',
@@ -5930,11 +5940,6 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorExecutionLane: {
-            description: 'Fixed command lanes retain separate original dispatch and compaction history.',
-            enum: ['first', 'second'],
-            type: 'string',
-        },
         ConnectorExecutionLaneStatus: {
             description: 'Current publication and permanent lane counters serve different purposes.',
             properties: {
@@ -5942,7 +5947,7 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 online: {
                     type: 'boolean',
@@ -5950,7 +5955,7 @@ export const schema = {
                 profile: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorExecutionProfile',
+                            $ref: '#/definitions/ExecutionProfile%3Cstring%3E',
                         },
                         {
                             type: 'null',
@@ -5975,19 +5980,6 @@ export const schema = {
                 },
             },
             required: ['params', 'result'],
-            type: 'object',
-        },
-        ConnectorExecutionOutputData: {
-            description: 'Canonical base64 preserves at most 65536 combined application bytes.',
-            properties: {
-                stderrBase64: {
-                    type: 'string',
-                },
-                stdoutBase64: {
-                    type: 'string',
-                },
-            },
-            required: ['stderrBase64', 'stdoutBase64'],
             type: 'object',
         },
         ConnectorExecutionOutputMethod: {
@@ -6019,12 +6011,12 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 output: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorExecutionOutputData',
+                            $ref: '#/definitions/ExecutionOutput',
                         },
                         {
                             type: 'null',
@@ -6032,7 +6024,7 @@ export const schema = {
                     ],
                 },
                 phase: {
-                    $ref: '#/definitions/ConnectorJobPhase',
+                    $ref: '#/definitions/ConnectorFileJobPhase',
                 },
                 sequence: {
                     type: 'string',
@@ -6049,159 +6041,6 @@ export const schema = {
             ],
             type: 'object',
         },
-        ConnectorExecutionProfile: {
-            description: 'Customer-reported public execution grants are not a network endpoint or authorization to run unlisted code.',
-            properties: {
-                maximumAddressBytes: {
-                    type: 'string',
-                },
-                maximumFileBytes: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                programs: {
-                    items: {
-                        $ref: '#/definitions/ConnectorProgramGrant',
-                    },
-                    type: 'array',
-                },
-                resources: {
-                    $ref: '#/definitions/ConnectorExecutionResources',
-                },
-                revision: {
-                    type: 'string',
-                },
-                roots: {
-                    items: {
-                        $ref: '#/definitions/ConnectorExecutionRoot',
-                    },
-                    type: 'array',
-                },
-                timeoutMs: {
-                    type: 'number',
-                },
-            },
-            required: [
-                'maximumAddressBytes',
-                'maximumFileBytes',
-                'policySha256',
-                'programs',
-                'resources',
-                'revision',
-                'roots',
-                'timeoutMs',
-            ],
-            type: 'object',
-        },
-        ConnectorExecutionRequest: {
-            description: 'Original input selects only a reviewed local program, workspace and positional arguments.',
-            properties: {
-                arguments: {
-                    items: {
-                        type: 'string',
-                    },
-                    type: 'array',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                programId: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['arguments', 'policySha256', 'programId', 'requestId', 'rootId'],
-            type: 'object',
-        },
-        ConnectorExecutionResources: {
-            description: 'Resource quantities stay exact decimal strings at the JSON gateway.',
-            properties: {
-                cpuQuotaMicros: {
-                    type: 'number',
-                },
-                maximumTasks: {
-                    type: 'number',
-                },
-                memoryBytes: {
-                    type: 'string',
-                },
-            },
-            required: ['cpuQuotaMicros', 'maximumTasks', 'memoryBytes'],
-            type: 'object',
-        },
-        ConnectorExecutionResult: {
-            description: 'Original terminal output is bounded, canonical and signed; contents remain untrusted data.',
-            properties: {
-                exitCode: {
-                    type: ['null', 'number'],
-                },
-                failure: {
-                    anyOf: [
-                        {
-                            enum: [
-                                'ambiguous-exit',
-                                'cancelled',
-                                'expired',
-                                'interrupted',
-                                'output-limit',
-                                'sandbox',
-                                'signal',
-                                'timeout',
-                            ],
-                            type: 'string',
-                        },
-                        {
-                            type: 'null',
-                        },
-                    ],
-                },
-                setupFailure: {
-                    anyOf: [
-                        {
-                            enum: [
-                                'apparmor',
-                                'bootstrap',
-                                'cgroup',
-                                'configuration',
-                                'confinement',
-                                'execute',
-                                'mounts',
-                                'namespaces',
-                            ],
-                            type: 'string',
-                        },
-                        {
-                            type: 'null',
-                        },
-                    ],
-                },
-                stderrBase64: {
-                    type: 'string',
-                },
-                stdoutBase64: {
-                    type: 'string',
-                },
-                termination: {
-                    $ref: '#/definitions/ConnectorExecutionTermination',
-                },
-            },
-            required: [
-                'exitCode',
-                'failure',
-                'setupFailure',
-                'stderrBase64',
-                'stdoutBase64',
-                'termination',
-            ],
-            type: 'object',
-        },
         ConnectorExecutionResultMethod: {
             description: 'Original command result lookup admits no new effect.',
             properties: {
@@ -6213,19 +6052,6 @@ export const schema = {
                 },
             },
             required: ['params', 'result'],
-            type: 'object',
-        },
-        ConnectorExecutionRoot: {
-            description: 'A root alias has independently enforced read-only or writable access.',
-            properties: {
-                access: {
-                    $ref: '#/definitions/ConnectorExecutionAccess',
-                },
-                id: {
-                    type: 'string',
-                },
-            },
-            required: ['access', 'id'],
             type: 'object',
         },
         ConnectorExecutionStatus: {
@@ -6273,7 +6099,7 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 requestId: {
                     type: 'string',
@@ -6282,7 +6108,7 @@ export const schema = {
                     type: 'string',
                 },
                 workspaceAccess: {
-                    $ref: '#/definitions/ConnectorExecutionAccess',
+                    $ref: '#/definitions/ExecutionWorkspaceAccess',
                 },
             },
             required: [
@@ -6313,10 +6139,10 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 phase: {
-                    $ref: '#/definitions/ConnectorJobPhase',
+                    $ref: '#/definitions/ConnectorFileJobPhase',
                 },
                 requestId: {
                     type: 'string',
@@ -6348,28 +6174,79 @@ export const schema = {
                     type: 'string',
                 },
                 lane: {
-                    $ref: '#/definitions/ConnectorExecutionLane',
+                    $ref: '#/definitions/ExecutionLane',
                 },
                 previousSequence: {
                     type: 'string',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorExecutionRequest',
+                    $ref: '#/definitions/ExecutionRequest',
                 },
                 workspaceAccess: {
-                    $ref: '#/definitions/ConnectorExecutionAccess',
+                    $ref: '#/definitions/ExecutionWorkspaceAccess',
                 },
             },
             required: ['environmentId', 'lane', 'previousSequence', 'request', 'workspaceAccess'],
             type: 'object',
         },
-        ConnectorExecutionTermination: {
-            description: 'Transport loss and uncertain commands must never be presented as successful exits.',
-            enum: ['exited', 'indeterminate'],
-            type: 'string',
+        ConnectorFileChmod: {
+            description: "Change only the captured regular file's permissions under an explicit read-write root grant.",
+            properties: {
+                action: {
+                    const: 'chmod',
+                    type: 'string',
+                },
+                mode: {
+                    $ref: '#/definitions/ConnectorFilePermissionMode',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'mode', 'path', 'policySha256', 'requestId', 'rootId'],
+            type: 'object',
+        },
+        'ConnectorFileChmodResult<string>': {
+            description: 'The regular-file metadata must confirm the exact requested private permission mode.',
+            properties: {
+                action: {
+                    const: 'chmod',
+                    type: 'string',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'metadata', 'requestId'],
+            type: 'object',
+        },
+        ConnectorFileEntry: {
+            description: 'Directory names are untrusted display/path components and are never followed during listing.',
+            properties: {
+                kind: {
+                    $ref: '#/definitions/ConnectorFileKind',
+                },
+                name: {
+                    type: 'string',
+                },
+            },
+            required: ['kind', 'name'],
+            type: 'object',
         },
         ConnectorFileError: {
-            description: 'Denied file results cannot carry an accidental content payload.',
+            description: 'A denied request cannot include an accidental content payload.',
             properties: {
                 error: {
                     $ref: '#/definitions/ConnectorFileFailure',
@@ -6383,95 +6260,369 @@ export const schema = {
             type: 'object',
         },
         ConnectorFileFailure: {
-            description: 'No backend or native error text is forwarded as file diagnostics.\nOne ConnectorFileFailure value.',
-            enum: ['changed', 'denied', 'indeterminate', 'invalid', 'unavailable'],
+            description: 'Stable safe failures omit host paths, native errors and file content.',
+            enum: ['invalid', 'denied', 'unavailable', 'changed', 'indeterminate'],
+            type: 'string',
+        },
+        ConnectorFileJobPhase: {
+            description: 'One original dispatch persists through transport replacement; no timeout silently reruns it.',
+            enum: ['queued', 'dispatched', 'completed'],
             type: 'string',
         },
         ConnectorFileKind: {
-            description: 'Listed links and special files carry no authority to follow or execute them.\nOne ConnectorFileKind value.',
-            enum: ['directory', 'file', 'other', 'symbolic-link'],
+            description: 'Entry types are metadata, never executable authority.',
+            enum: ['file', 'directory', 'symbolic-link', 'other'],
             type: 'string',
         },
+        'ConnectorFileList<string>': {
+            description: 'Directory cookies are opaque exact filesystem offsets, not stable snapshot promises.',
+            properties: {
+                action: {
+                    const: 'list',
+                    type: 'string',
+                },
+                cursor: {
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'cursor', 'path', 'policySha256', 'requestId', 'rootId'],
+            type: 'object',
+        },
+        'ConnectorFileListResult<string>': {
+            description: "A page's cursor can be reused only as an explicit new request.",
+            properties: {
+                action: {
+                    const: 'list',
+                    type: 'string',
+                },
+                entries: {
+                    items: {
+                        $ref: '#/definitions/ConnectorFileEntry',
+                    },
+                    type: 'array',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                nextCursor: {
+                    type: ['null', 'string'],
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'entries', 'metadata', 'nextCursor', 'requestId'],
+            type: 'object',
+        },
+        'ConnectorFileMetadata<string>': {
+            description: 'Metadata preserves exact size and modification time without host inode/owner identifiers.',
+            properties: {
+                kind: {
+                    enum: ['directory', 'file'],
+                    type: 'string',
+                },
+                mode: {
+                    type: 'number',
+                },
+                modifiedAtNs: {
+                    type: 'string',
+                },
+                sizeBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['kind', 'mode', 'modifiedAtNs', 'sizeBytes'],
+            type: 'object',
+        },
+        ConnectorFileMkdir: {
+            description: 'Create exactly one private directory; existing entries and missing parents are refused.',
+            properties: {
+                action: {
+                    const: 'mkdir',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'path', 'policySha256', 'requestId', 'rootId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ConnectorFileMkdirResult: {
+            description: 'Success confirms directory creation and parent synchronization; later path mutations remain possible.',
+            properties: {
+                action: {
+                    const: 'mkdir',
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'requestId'],
+            type: 'object',
+            additionalProperties: false,
+        },
         ConnectorFileMode: {
-            description: "Explicit local permission profiles have no implied broader mode or default.\nA file grant's access, with the same values as the connector protocol's file mode.",
+            description: 'Explicit local permission profiles have no implied broader mode or default.',
             enum: ['read-only', 'read-write'],
             type: 'string',
         },
         ConnectorFilePermissionMode: {
-            description: 'Permission changes never add access for another OS user or set special bits.\nOne ConnectorFilePermissionMode value.',
+            description: 'Permission changes can only select private regular-file access; no group/world or special bits are granted.',
             enum: [384, 448],
             type: 'number',
         },
-        ConnectorFileRequest: {
-            anyOf: [
-                {
-                    $ref: '#/definitions/ConnectorRead',
-                },
-                {
-                    $ref: '#/definitions/ConnectorStat',
-                },
-                {
-                    $ref: '#/definitions/ConnectorListDirectory',
-                },
-                {
-                    $ref: '#/definitions/ConnectorWrite',
-                },
-                {
-                    $ref: '#/definitions/ConnectorRemove',
-                },
-                {
-                    $ref: '#/definitions/ConnectorMkdir',
-                },
-                {
-                    $ref: '#/definitions/ConnectorChmod',
-                },
-                {
-                    $ref: '#/definitions/ConnectorRename',
-                },
-            ],
-            description: 'Each admitted operation has its original finite action and complete authority fields.',
-        },
-        ConnectorFileSuccess: {
-            description: 'Successful file results cannot contain an error branch.',
+        'ConnectorFileProfile<string>': {
+            description: 'Public profile contains aliases and commitments; local absolute paths remain private.',
             properties: {
-                ok: {
-                    const: true,
-                    type: 'boolean',
+                maximumReadBytes: {
+                    type: 'number',
                 },
-                result: {
-                    anyOf: [
-                        {
-                            $ref: '#/definitions/ConnectorReadResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorStatResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorDirectoryResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorWriteResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorRemoveResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorMkdirResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorChmodResult',
-                        },
-                        {
-                            $ref: '#/definitions/ConnectorRenameResult',
-                        },
-                    ],
+                maximumWriteBytes: {
+                    type: 'number',
+                },
+                mode: {
+                    $ref: '#/definitions/ConnectorFileMode',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                revision: {
+                    type: 'string',
+                },
+                roots: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
                 },
             },
-            required: ['ok', 'result'],
+            required: [
+                'maximumReadBytes',
+                'maximumWriteBytes',
+                'mode',
+                'policySha256',
+                'revision',
+                'roots',
+            ],
             type: 'object',
         },
-        ConnectorFilesystem: {
-            description: 'A recent matching signed profile is separate from installed tooling and execution permission.',
+        'ConnectorFileRead<string>': {
+            description: 'Offset remains exact until the native boundary.',
+            properties: {
+                action: {
+                    const: 'read',
+                    type: 'string',
+                },
+                limit: {
+                    type: 'number',
+                },
+                offset: {
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'limit', 'offset', 'path', 'policySha256', 'requestId', 'rootId'],
+            type: 'object',
+        },
+        'ConnectorFileReadResult<string>': {
+            description: 'A chunk is correlated to the original offset and bounded request.',
+            properties: {
+                action: {
+                    const: 'read',
+                    type: 'string',
+                },
+                dataBase64: {
+                    type: 'string',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                offset: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'dataBase64', 'metadata', 'offset', 'requestId'],
+            type: 'object',
+        },
+        ConnectorFileRemove: {
+            description: 'Removal never follows links, crosses mounts or removes the granted root itself.',
+            properties: {
+                action: {
+                    const: 'remove',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                recursive: {
+                    type: 'boolean',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'path', 'policySha256', 'recursive', 'requestId', 'rootId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        'ConnectorFileRemoveResult<string>': {
+            description: 'Success confirms complete removal within the finite entry budget, including the selected target.',
+            properties: {
+                action: {
+                    const: 'remove',
+                    type: 'string',
+                },
+                entriesRemoved: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'entriesRemoved', 'requestId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ConnectorFileRename: {
+            description: 'Move a regular file within one captured root; destination authority cannot select another root.',
+            properties: {
+                action: {
+                    const: 'rename',
+                    type: 'string',
+                },
+                destination: {
+                    type: 'string',
+                },
+                mode: {
+                    $ref: '#/definitions/ConnectorWriteMode',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: [
+                'action',
+                'destination',
+                'mode',
+                'path',
+                'policySha256',
+                'requestId',
+                'rootId',
+            ],
+            type: 'object',
+        },
+        'ConnectorFileRenameResult<string>': {
+            description: 'Destination metadata belongs to the moved regular file; identity races remain indeterminate rather than replayable.',
+            properties: {
+                action: {
+                    const: 'rename',
+                    type: 'string',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'metadata', 'requestId'],
+            type: 'object',
+        },
+        ConnectorFileStat: {
+            description: 'Metadata never follows symlinks or opens devices.',
+            properties: {
+                action: {
+                    const: 'stat',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'path', 'policySha256', 'requestId', 'rootId'],
+            type: 'object',
+        },
+        'ConnectorFileStatResult<string>': {
+            description: 'Metadata has one current strict contract.',
+            properties: {
+                action: {
+                    const: 'stat',
+                    type: 'string',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'metadata', 'requestId'],
+            type: 'object',
+        },
+        'ConnectorFileStatus<string>': {
+            description: 'Current signed local grants are separate from recent device authentication.',
             properties: {
                 acknowledgedSequence: {
                     type: 'string',
@@ -6485,7 +6636,7 @@ export const schema = {
                 profile: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorProfile',
+                            $ref: '#/definitions/ConnectorFileProfile%3Cstring%3E',
                         },
                         {
                             type: 'null',
@@ -6499,6 +6650,63 @@ export const schema = {
             required: ['acknowledgedSequence', 'environmentId', 'online', 'profile', 'sequence'],
             type: 'object',
         },
+        ConnectorFileWrite: {
+            description: 'Writes publish a complete bounded private regular file; no append, shell or mode escalation is implied.',
+            properties: {
+                action: {
+                    const: 'write',
+                    type: 'string',
+                },
+                dataBase64: {
+                    type: 'string',
+                },
+                mode: {
+                    $ref: '#/definitions/ConnectorWriteMode',
+                },
+                path: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: [
+                'action',
+                'dataBase64',
+                'mode',
+                'path',
+                'policySha256',
+                'requestId',
+                'rootId',
+            ],
+            type: 'object',
+        },
+        'ConnectorFileWriteResult<string>': {
+            description: "A successful publication reports the exact request's byte count and the published file's metadata.",
+            properties: {
+                action: {
+                    const: 'write',
+                    type: 'string',
+                },
+                bytesWritten: {
+                    type: 'string',
+                },
+                metadata: {
+                    $ref: '#/definitions/ConnectorFileMetadata%3Cstring%3E',
+                },
+                requestId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'bytesWritten', 'metadata', 'requestId'],
+            type: 'object',
+        },
         ConnectorFilesystemMethod: {
             description: 'File grants are read through the authenticated account proxy.',
             properties: {
@@ -6506,7 +6714,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorEnvironmentParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorFilesystem',
+                    $ref: '#/definitions/ConnectorFileStatus%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6519,7 +6727,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorGetParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorView',
+                    $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6535,63 +6743,42 @@ export const schema = {
             required: ['enrollmentId'],
             type: 'object',
         },
-        ConnectorGpuInventoryState: {
-            description: 'Missing driver access is different from a successful empty inventory.\nOne ConnectorGpuInventoryState value.',
-            enum: ['reported', 'unavailable'],
-            type: 'string',
-        },
-        ConnectorGpuSpecification: {
-            description: 'Device identifiers and available VRAM support explicit selection without model-authored shell probing.',
+        ConnectorHostInventoryView: {
+            description: 'Host availability is metadata only; no private working directory, lease or execution credential is included.',
             properties: {
-                availableVramBytes: {
-                    type: ['null', 'string'],
+                enabled: {
+                    type: 'boolean',
                 },
-                id: {
+                grantId: {
                     type: 'string',
+                    pattern: '^[a-f0-9]{64}$',
                 },
-                model: {
+                grantRevision: {
                     type: 'string',
+                    pattern: '^[1-9][0-9]{0,18}$',
                 },
-                totalVramBytes: {
-                    type: ['null', 'string'],
+                platform: {
+                    $ref: '#/definitions/ConnectorHostPlatform',
                 },
-                vendor: {
-                    $ref: '#/definitions/ConnectorGpuVendor',
+                tools: {
+                    items: {
+                        $ref: '#/definitions/ConnectorHostTool',
+                    },
+                    type: 'array',
+                    minItems: 1,
+                    maxItems: 34,
                 },
             },
-            required: ['availableVramBytes', 'id', 'model', 'totalVramBytes', 'vendor'],
+            required: ['enabled', 'grantId', 'grantRevision', 'platform', 'tools'],
             type: 'object',
-        },
-        ConnectorGpuUsage: {
-            description: "One GPU's load, taken in the same sample as its computer's usage.",
-            properties: {
-                id: {
-                    description: 'The reported GPU this load belongs to.',
-                    type: 'string',
-                },
-                usedVramBytes: {
-                    description: 'Video memory in use at sampling time; null when the driver does not say.',
-                    type: ['null', 'string'],
-                },
-                utilizationBasisPoints: {
-                    description: 'Busy share of the sampling interval in basis points (0 to 10000); null when the driver does not say.',
-                    type: ['null', 'number'],
-                },
-            },
-            required: ['id', 'usedVramBytes', 'utilizationBasisPoints'],
-            type: 'object',
-        },
-        ConnectorGpuVendor: {
-            description: 'Vendor identities remain separate from compute support and memory availability.\nOne ConnectorGpuVendor value.',
-            enum: ['amd', 'intel', 'nvidia', 'other'],
-            type: 'string',
+            additionalProperties: false,
         },
         ConnectorHostJobPhase: {
             description: 'A queued original retains its identity across reconnects and account replicas.\nAllowed values derive from the current runtime mapping.',
             enum: ['completed', 'dispatched', 'queued'],
             type: 'string',
         },
-        ConnectorHostJobView: {
+        'ConnectorHostJobView<string>': {
             description: 'An account can poll only its original job in its own environment.',
             properties: {
                 environmentId: {
@@ -6606,7 +6793,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorHostJobPhase',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorHostRequest',
+                    $ref: '#/definitions/ConnectorHostRequest%3Cstring%3E',
                 },
                 response: {
                     anyOf: [
@@ -6637,7 +6824,7 @@ export const schema = {
             enum: ['linux', 'macos', 'windows'],
             type: 'string',
         },
-        ConnectorHostProfile: {
+        'ConnectorHostProfile<string>': {
             description: 'Local consent and default task directory are signed under the enrolled device identity.',
             properties: {
                 directory: {
@@ -6672,7 +6859,7 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorHostRequest: {
+        'ConnectorHostRequest<string>': {
             description: 'Only exact bounded JSON text crosses the transport; the tool runtime validates its operation shape again.',
             properties: {
                 argumentsJson: {
@@ -6696,7 +6883,7 @@ export const schema = {
             additionalProperties: false,
         },
         ConnectorHostResponse: {
-            description: 'Successful JSON text contains exact decimal file/process quantities; failure text contains no private diagnostics.',
+            description: 'Successful JSON text contains exact decimal quantities; failed outcomes expose only a finite code.',
             properties: {
                 errorCode: {
                     anyOf: [
@@ -6744,7 +6931,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorHostResultParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorHostJobView',
+                    $ref: '#/definitions/ConnectorHostJobView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6767,7 +6954,7 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorHostStatus: {
+        'ConnectorHostStatus<string>': {
             description: 'Sequence counters remain permanent after bounded result compaction.',
             properties: {
                 acknowledgedSequence: {
@@ -6784,7 +6971,7 @@ export const schema = {
                 profile: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorHostProfile',
+                            $ref: '#/definitions/ConnectorHostProfile%3Cstring%3E',
                         },
                         {
                             type: 'null',
@@ -6807,7 +6994,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorHostStatusParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorHostStatus',
+                    $ref: '#/definitions/ConnectorHostStatus%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6833,7 +7020,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorHostSubmitParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorHostJobView',
+                    $ref: '#/definitions/ConnectorHostJobView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6852,7 +7039,7 @@ export const schema = {
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorHostRequest',
+                    $ref: '#/definitions/ConnectorHostRequest%3Cstring%3E',
                 },
                 requestId: {
                     type: 'string',
@@ -6860,36 +7047,6 @@ export const schema = {
                 },
             },
             required: ['environmentId', 'previousSequence', 'request', 'requestId'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorHostSummary: {
-            description: 'Inventory exposes consent/tool metadata without disclosing native private working directories.',
-            properties: {
-                enabled: {
-                    type: 'boolean',
-                },
-                grantId: {
-                    type: 'string',
-                    pattern: '^[a-f0-9]{64}$',
-                },
-                grantRevision: {
-                    type: 'string',
-                    pattern: '^[1-9][0-9]{0,18}$',
-                },
-                platform: {
-                    $ref: '#/definitions/ConnectorHostPlatform',
-                },
-                tools: {
-                    items: {
-                        $ref: '#/definitions/ConnectorHostTool',
-                    },
-                    type: 'array',
-                    minItems: 1,
-                    maxItems: 34,
-                },
-            },
-            required: ['enabled', 'grantId', 'grantRevision', 'platform', 'tools'],
             type: 'object',
             additionalProperties: false,
         },
@@ -6934,7 +7091,7 @@ export const schema = {
             type: 'string',
         },
         ConnectorIndependentAuthorization: {
-            description: 'This envelope is selected by trusted preparation, never by model parameters or a missing historical field.',
+            description: 'This envelope claims no physical association between separately granted file and command roots.',
             properties: {
                 kind: {
                     const: 'independent',
@@ -6945,11 +7102,6 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorInputKind: {
-            description: 'Data, pipe EOF and terminal resize are distinct immutable operations.',
-            enum: ['data', 'end', 'resize'],
-            type: 'string',
-        },
         ConnectorInstructionsGetMethod: {
             description: "Read one authenticated account's preferences for its linked connector.",
             properties: {
@@ -6957,7 +7109,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorInstructionsGetParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorInstructionsView',
+                    $ref: '#/definitions/ConnectorInstructionsView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -6982,7 +7134,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorInstructionsUpdateParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorInstructionsView',
+                    $ref: '#/definitions/ConnectorInstructionsView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -7013,8 +7165,8 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorInstructionsView: {
-            description: "User-authored preferences never broaden the connector's operating-system permissions.",
+        'ConnectorInstructionsView<string>': {
+            description: 'Account-owned connector guidance never grants filesystem, execution or device authority.',
             properties: {
                 enrollmentId: {
                     type: 'string',
@@ -7034,83 +7186,25 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorInteractiveInvocationRule: {
-            description: 'The complete live-input policy supplements one independently bounded Machine invocation.',
-            properties: {
-                controls: {
-                    items: {
-                        $ref: '#/definitions/ConnectorInputKind',
-                    },
-                    type: 'array',
-                    maxItems: 3,
-                },
-                invocation: {
-                    $ref: '#/definitions/ConnectorMachineInvocationRule',
-                },
-                kind: {
-                    const: 'interactive-invocation',
-                    type: 'string',
-                },
-                maximumControls: {
-                    type: 'integer',
-                    minimum: 1,
-                    maximum: 256,
-                },
-                maximumInputBytes: {
-                    description: 'Canonical decimal bytes include the explicitly admitted initial input.',
-                    type: 'string',
-                    pattern: '^(?:0|[1-9][0-9]{0,4})$',
-                    maxLength: 5,
-                },
-                maximumResizes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 16,
-                },
-                transports: {
-                    items: {
-                        $ref: '#/definitions/ConnectorInteractiveTransport',
-                    },
-                    type: 'array',
-                    maxItems: 2,
-                },
-            },
-            required: [
-                'controls',
-                'invocation',
-                'kind',
-                'maximumControls',
-                'maximumInputBytes',
-                'maximumResizes',
-                'transports',
-            ],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorInteractiveTransport: {
-            description: 'An explicit signed grant selects the native I/O mechanism.',
-            enum: ['pipe', 'pty'],
-            type: 'string',
-        },
         ConnectorInventoryMethod: {
             description: 'Nexa forwards an account-bound metadata page through its protected Compute provider.',
             properties: {
                 params: {
-                    $ref: '#/definitions/ConnectorInventoryParams',
+                    $ref: '#/definitions/ConnectorInventoryQuery',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorInventoryPage',
+                    $ref: '#/definitions/ConnectorInventoryPage%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
             type: 'object',
         },
-        ConnectorInventoryPage: {
-            description: 'At most three connector snapshots are returned by one account RPC.',
+        'ConnectorInventoryPage<string>': {
+            description: 'A bounded page avoids one UI request per connector or unbounded metadata amplification.',
             properties: {
                 items: {
                     items: {
-                        $ref: '#/definitions/ConnectorInventoryView',
+                        $ref: '#/definitions/ConnectorInventoryView%3Cstring%3E',
                     },
                     type: 'array',
                 },
@@ -7121,8 +7215,8 @@ export const schema = {
             required: ['items', 'next'],
             type: 'object',
         },
-        ConnectorInventoryParams: {
-            description: 'An account page accepts only an opaque ordered enrollment cursor.',
+        ConnectorInventoryQuery: {
+            description: 'Pagination never accepts an account, provider or network address.',
             properties: {
                 after: {
                     type: ['null', 'string'],
@@ -7131,31 +7225,31 @@ export const schema = {
             required: ['after'],
             type: 'object',
         },
-        ConnectorInventoryView: {
-            description: 'Public inventory contains no customer paths, workload credentials or transport authority.',
+        'ConnectorInventoryView<string>': {
+            description: 'Safe account metadata contains no transport credentials or customer paths.',
             properties: {
                 enrollment: {
-                    $ref: '#/definitions/ConnectorView',
+                    $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                 },
                 host: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorHostSummary',
+                            $ref: '#/definitions/ConnectorHostInventoryView',
                         },
                         {
                             type: 'null',
                         },
                     ],
-                    description: 'Published full-host consent metadata excludes private working directories.',
+                    description: 'Last signed local host consent remains visible when disabled or disconnected.',
                 },
                 instructions: {
-                    description: 'Account-owned standing instructions are separate from device-reported metadata.',
+                    description: 'Account-owned guidance is separate from device-reported system facts.',
                     type: 'string',
                     pattern: '^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]*$',
                     maxLength: 16384,
                 },
                 instructionsRevision: {
-                    description: "Independent compare-and-set revision for the user's instruction edits.",
+                    description: 'Canonical decimal revision for the account guidance.',
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                 },
@@ -7168,7 +7262,7 @@ export const schema = {
                 specification: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorSystemSpecification',
+                            $ref: '#/definitions/SystemSpecification',
                         },
                         {
                             type: 'null',
@@ -7202,7 +7296,7 @@ export const schema = {
                     maxLength: 64,
                 },
                 authorization: {
-                    $ref: '#/definitions/ConnectorOperationAuthorization',
+                    $ref: '#/definitions/ConnectorAuthorization%3Cstring%3E',
                 },
                 environmentId: {
                     type: 'string',
@@ -7211,15 +7305,15 @@ export const schema = {
                     type: 'string',
                 },
                 phase: {
-                    $ref: '#/definitions/ConnectorJobPhase',
+                    $ref: '#/definitions/ConnectorFileJobPhase',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorFileRequest',
+                    $ref: '#/definitions/ConnectorAccountFileRequest',
                 },
                 response: {
                     anyOf: [
                         {
-                            $ref: '#/definitions/ConnectorFileSuccess',
+                            $ref: '#/definitions/ConnectorAccountFileSuccess',
                         },
                         {
                             $ref: '#/definitions/ConnectorFileError',
@@ -7246,16 +7340,11 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorJobPhase: {
-            description: 'Shared dispatch state is independent of the Nexa process handling the request.',
-            enum: ['queued', 'dispatched', 'completed'],
-            type: 'string',
-        },
-        ConnectorJointAuthorization: {
-            description: 'Full signed association remains data until the pinned SDK/backend/device separately authorize the operation.',
+        'ConnectorJointAuthorization<string>': {
+            description: 'The entire original signed descriptor remains available for independent identity/scope verification after head rotation.',
             properties: {
                 binding: {
-                    $ref: '#/definitions/ConnectorJointWorkspaceDescriptor',
+                    $ref: '#/definitions/JointWorkspaceDescriptor%3Cstring%3E',
                 },
                 kind: {
                     const: 'joint',
@@ -7266,91 +7355,6 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorJointExecutionJournals: {
-            description: 'Three permanent operation journals remain distinct across reconnects and controller replicas.',
-            properties: {
-                first: {
-                    type: 'string',
-                },
-                second: {
-                    type: 'string',
-                },
-            },
-            required: ['first', 'second'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorJointWorkspaceBinding: {
-            description: 'Public wire metadata preserves exact revisions without exposing physical paths or derivation keys.',
-            properties: {
-                access: {
-                    $ref: '#/definitions/ConnectorFileMode',
-                },
-                authorityId: {
-                    type: 'string',
-                },
-                enrollmentId: {
-                    type: 'string',
-                },
-                environmentId: {
-                    type: 'string',
-                },
-                executionJournals: {
-                    $ref: '#/definitions/ConnectorJointExecutionJournals',
-                },
-                executionPolicySha256: {
-                    type: 'string',
-                },
-                executionRootId: {
-                    type: 'string',
-                },
-                fileJournalId: {
-                    type: 'string',
-                },
-                filePolicySha256: {
-                    type: 'string',
-                },
-                fileRootId: {
-                    type: 'string',
-                },
-                physicalRootCommitment: {
-                    type: 'string',
-                },
-                revision: {
-                    type: 'string',
-                },
-            },
-            required: [
-                'access',
-                'authorityId',
-                'enrollmentId',
-                'environmentId',
-                'executionJournals',
-                'executionPolicySha256',
-                'executionRootId',
-                'fileJournalId',
-                'filePolicySha256',
-                'fileRootId',
-                'physicalRootCommitment',
-                'revision',
-            ],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorJointWorkspaceDescriptor: {
-            description: 'The complete signature is retained unchanged; structural decoding does not authenticate or activate this descriptor.',
-            properties: {
-                binding: {
-                    $ref: '#/definitions/ConnectorJointWorkspaceBinding',
-                },
-                signature: {
-                    type: 'string',
-                },
-            },
-            required: ['binding', 'signature'],
-            type: 'object',
-            additionalProperties: false,
-        },
         ConnectorLinkApproveMethod: {
             description: 'Explicit approval retains the reviewed key and cannot replace a machine after an uncertain response.',
             properties: {
@@ -7358,7 +7362,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorLinkApproveParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorLinkApproved',
+                    $ref: '#/definitions/ConnectorLinkApproved%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -7386,11 +7390,11 @@ export const schema = {
             required: ['code', 'linkId', 'name', 'publicKey', 'requestId'],
             type: 'object',
         },
-        ConnectorLinkApproved: {
-            description: 'Registered metadata establishes neither an online connection nor file or execution permission.',
+        'ConnectorLinkApproved<string>': {
+            description: 'Approval responses echo the captured reviewed identity for strict trusted-controller correlation.',
             properties: {
                 enrollment: {
-                    $ref: '#/definitions/ConnectorView',
+                    $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                 },
                 linkId: {
                     type: 'string',
@@ -7453,8 +7457,8 @@ export const schema = {
             required: ['code', 'linkId', 'publicKey', 'requestId'],
             type: 'object',
         },
-        ConnectorLinkReview: {
-            description: 'Only public machine identity and the original finite approval window are disclosed.',
+        'ConnectorLinkReview<string>': {
+            description: 'Explicit approval captures exactly the machine shown during review.',
             properties: {
                 code: {
                     type: 'string',
@@ -7482,7 +7486,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorLinkReviewParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorLinkReview',
+                    $ref: '#/definitions/ConnectorLinkReview%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -7501,45 +7505,6 @@ export const schema = {
             required: ['code', 'requestId'],
             type: 'object',
         },
-        ConnectorList: {
-            description: 'The backend independently binds every list element to the current account.',
-            properties: {
-                enrollments: {
-                    items: {
-                        $ref: '#/definitions/ConnectorView',
-                    },
-                    type: 'array',
-                },
-            },
-            required: ['enrollments'],
-            type: 'object',
-        },
-        ConnectorListDirectory: {
-            description: 'Directory cursors are opaque exact offsets, not a promise of snapshot consistency.',
-            properties: {
-                action: {
-                    const: 'list',
-                    type: 'string',
-                },
-                cursor: {
-                    type: 'string',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'cursor', 'path', 'policySha256', 'requestId', 'rootId'],
-            type: 'object',
-        },
         ConnectorListMethod: {
             description: 'Account list accepts no identity override.',
             properties: {
@@ -7547,445 +7512,16 @@ export const schema = {
                     $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorList',
+                    $ref: '#/definitions/ConnectorEnrollmentList%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
             type: 'object',
         },
-        ConnectorMachineCommand: {
-            description: "This index refers only to the owning program's pinned [program, ...children] table.",
-            properties: {
-                alias: {
-                    type: 'string',
-                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
-                    maxLength: 128,
-                },
-                executableIndex: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 8,
-                },
-            },
-            required: ['alias', 'executableIndex'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorMachineEnvironmentGrant: {
-            description: 'A permitted environment name has its own UTF-8 value ceiling.',
-            properties: {
-                maximumBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 1024,
-                },
-                name: {
-                    type: 'string',
-                    pattern: '^(?!NERVA_)[A-Za-z_][A-Za-z0-9_]{0,63}$',
-                    maxLength: 64,
-                },
-            },
-            required: ['maximumBytes', 'name'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorMachineInvocationRule: {
-            description: "The complete explicit local opt-in is published under the device's existing signed profile.",
-            properties: {
-                commands: {
-                    items: {
-                        $ref: '#/definitions/ConnectorMachineCommand',
-                    },
-                    type: 'array',
-                    maxItems: 9,
-                },
-                environment: {
-                    items: {
-                        $ref: '#/definitions/ConnectorMachineEnvironmentGrant',
-                    },
-                    type: 'array',
-                    maxItems: 16,
-                },
-                kind: {
-                    const: 'machine-invocation',
-                    type: 'string',
-                },
-                maximumArgumentBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 1024,
-                },
-                maximumArguments: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 32,
-                },
-                maximumArgumentsBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 2048,
-                },
-                maximumCwdBytes: {
-                    type: 'integer',
-                    minimum: 1,
-                    maximum: 512,
-                },
-                maximumEnvironmentBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 1024,
-                },
-                maximumScriptBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 2048,
-                },
-                maximumStdinBytes: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 1024,
-                },
-                maximumTimeoutMs: {
-                    type: 'integer',
-                    minimum: 100,
-                    maximum: 30000,
-                },
-                shell: {
-                    anyOf: [
-                        {
-                            $ref: '#/definitions/ConnectorMachineShell',
-                        },
-                        {
-                            type: 'null',
-                        },
-                    ],
-                },
-            },
-            required: [
-                'commands',
-                'environment',
-                'kind',
-                'maximumArgumentBytes',
-                'maximumArguments',
-                'maximumArgumentsBytes',
-                'maximumCwdBytes',
-                'maximumEnvironmentBytes',
-                'maximumScriptBytes',
-                'maximumStdinBytes',
-                'maximumTimeoutMs',
-                'shell',
-            ],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorMachineShell: {
-            description: 'Fixed local switches precede the signed script, without guessing shell syntax from an executable name.',
-            properties: {
-                executableIndex: {
-                    type: 'integer',
-                    minimum: 0,
-                    maximum: 8,
-                },
-                fixedArguments: {
-                    items: {
-                        type: 'string',
-                        maxLength: 1024,
-                    },
-                    type: 'array',
-                    maxItems: 16,
-                },
-            },
-            required: ['executableIndex', 'fixedArguments'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorMetadata: {
-            description: 'Exact sizes and nanosecond timestamps remain strings at JSON boundaries.',
-            properties: {
-                kind: {
-                    enum: ['directory', 'file'],
-                    type: 'string',
-                },
-                mode: {
-                    type: 'number',
-                },
-                modifiedAtNs: {
-                    type: 'string',
-                },
-                sizeBytes: {
-                    type: 'string',
-                },
-            },
-            required: ['kind', 'mode', 'modifiedAtNs', 'sizeBytes'],
-            type: 'object',
-        },
-        ConnectorMkdir: {
-            description: 'One private directory beneath an existing parent; no implicit recursion or replacement.',
-            properties: {
-                action: {
-                    const: 'mkdir',
-                    type: 'string',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'path', 'policySha256', 'requestId', 'rootId'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorMkdirResult: {
-            description: 'Confirms one directory creation and parent synchronization under the original request.',
-            properties: {
-                action: {
-                    const: 'mkdir',
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'requestId'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorOperationAuthorization: {
-            anyOf: [
-                {
-                    $ref: '#/definitions/ConnectorIndependentAuthorization',
-                },
-                {
-                    $ref: '#/definitions/ConnectorJointAuthorization',
-                },
-            ],
-            description: 'Both current alternatives are explicit; missing or malformed metadata cannot select Independent.',
-        },
-        ConnectorPhase: {
-            description: 'Enrollment state is separate from a current authenticated transport or file grant.\nOne ConnectorPhase value.',
-            enum: ['enrolled-offline', 'pending', 'revoked'],
-            type: 'string',
-        },
         ConnectorPresence: {
-            description: "Presence is based on the authenticated backend's lease clock and revocation state.\nOne ConnectorPresence value.",
-            enum: ['offline', 'online', 'pending', 'revoked'],
+            description: 'Status derives from server ownership, current lease lifetime and revocation, never a device-supplied online flag.',
+            enum: ['pending', 'online', 'offline', 'revoked'],
             type: 'string',
-        },
-        ConnectorProfile: {
-            description: 'Root aliases and commitments keep absolute private paths on the customer machine.',
-            properties: {
-                maximumReadBytes: {
-                    type: 'number',
-                },
-                maximumWriteBytes: {
-                    type: 'number',
-                },
-                mode: {
-                    $ref: '#/definitions/ConnectorFileMode',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                revision: {
-                    type: 'string',
-                },
-                roots: {
-                    items: {
-                        type: 'string',
-                    },
-                    type: 'array',
-                },
-            },
-            required: [
-                'maximumReadBytes',
-                'maximumWriteBytes',
-                'mode',
-                'policySha256',
-                'revision',
-                'roots',
-            ],
-            type: 'object',
-        },
-        ConnectorProgramGrant: {
-            description: 'Public program aliases cannot become host executable paths.',
-            properties: {
-                arguments: {
-                    items: {
-                        $ref: '#/definitions/ConnectorArgumentRule',
-                    },
-                    type: 'array',
-                },
-                id: {
-                    type: 'string',
-                },
-                rootIds: {
-                    items: {
-                        type: 'string',
-                    },
-                    type: 'array',
-                },
-            },
-            required: ['arguments', 'id', 'rootIds'],
-            type: 'object',
-        },
-        ConnectorRead: {
-            description: 'Reads are bounded chunks; offsets remain exact decimal strings.',
-            properties: {
-                action: {
-                    const: 'read',
-                    type: 'string',
-                },
-                limit: {
-                    type: 'number',
-                },
-                offset: {
-                    type: 'string',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'limit', 'offset', 'path', 'policySha256', 'requestId', 'rootId'],
-            type: 'object',
-        },
-        ConnectorReadResult: {
-            description: 'Successful read data is canonical base64 with its original identity and exact offset.',
-            properties: {
-                action: {
-                    const: 'read',
-                    type: 'string',
-                },
-                dataBase64: {
-                    type: 'string',
-                },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
-                },
-                offset: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'dataBase64', 'metadata', 'offset', 'requestId'],
-            type: 'object',
-        },
-        ConnectorRemove: {
-            description: 'Explicit recursive intent cannot select the root itself, follow links or cross mounts.',
-            properties: {
-                action: {
-                    const: 'remove',
-                    type: 'string',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                recursive: {
-                    type: 'boolean',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'path', 'policySha256', 'recursive', 'requestId', 'rootId'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorRemoveResult: {
-            description: 'Complete bounded removal includes the selected target in its exact decimal entry count.',
-            properties: {
-                action: {
-                    const: 'remove',
-                    type: 'string',
-                },
-                entriesRemoved: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'entriesRemoved', 'requestId'],
-            type: 'object',
-            additionalProperties: false,
-        },
-        ConnectorRename: {
-            description: 'Both paths use one captured root alias and preserve explicit replacement intent.',
-            properties: {
-                action: {
-                    const: 'rename',
-                    type: 'string',
-                },
-                destination: {
-                    type: 'string',
-                },
-                mode: {
-                    $ref: '#/definitions/ConnectorWriteMode',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: [
-                'action',
-                'destination',
-                'mode',
-                'path',
-                'policySha256',
-                'requestId',
-                'rootId',
-            ],
-            type: 'object',
-        },
-        ConnectorRenameResult: {
-            description: 'Successful movement reports regular-file metadata after source identity verification and parent sync.',
-            properties: {
-                action: {
-                    const: 'rename',
-                    type: 'string',
-                },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'metadata', 'requestId'],
-            type: 'object',
         },
         ConnectorResultMethod: {
             description: 'Reading an existing result never redispatches or advances its sequence.',
@@ -8020,7 +7556,7 @@ export const schema = {
                     $ref: '#/definitions/ConnectorRevokeParams',
                 },
                 result: {
-                    $ref: '#/definitions/ConnectorView',
+                    $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                 },
             },
             required: ['params', 'result'],
@@ -8040,46 +7576,6 @@ export const schema = {
                 },
             },
             required: ['enrollmentId', 'observedRevision', 'requestId'],
-            type: 'object',
-        },
-        ConnectorStat: {
-            description: 'Metadata never follows links or opens devices.',
-            properties: {
-                action: {
-                    const: 'stat',
-                    type: 'string',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'path', 'policySha256', 'requestId', 'rootId'],
-            type: 'object',
-        },
-        ConnectorStatResult: {
-            description: 'Only bounded safe metadata is returned to the account.',
-            properties: {
-                action: {
-                    const: 'stat',
-                    type: 'string',
-                },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'metadata', 'requestId'],
             type: 'object',
         },
         ConnectorSubmitMethod: {
@@ -8105,150 +7601,10 @@ export const schema = {
                     type: 'string',
                 },
                 request: {
-                    $ref: '#/definitions/ConnectorFileRequest',
+                    $ref: '#/definitions/ConnectorAccountFileRequest',
                 },
             },
             required: ['environmentId', 'previousSequence', 'request'],
-            type: 'object',
-        },
-        ConnectorSystemPlatform: {
-            description: 'Platform labels are finite; unsupported platforms cannot masquerade as qualified Linux installations.\nOne ConnectorSystemPlatform value.',
-            enum: ['linux', 'macos', 'other', 'windows'],
-            type: 'string',
-        },
-        ConnectorSystemSpecification: {
-            description: 'Account-visible metadata contains no IP address, username, process list, mount paths or credentials.',
-            properties: {
-                architecture: {
-                    type: 'string',
-                },
-                availableMemoryBytes: {
-                    type: 'string',
-                },
-                cpuModel: {
-                    type: 'string',
-                },
-                gpuState: {
-                    $ref: '#/definitions/ConnectorGpuInventoryState',
-                },
-                gpus: {
-                    items: {
-                        $ref: '#/definitions/ConnectorGpuSpecification',
-                    },
-                    type: 'array',
-                },
-                logicalCpuCount: {
-                    type: 'number',
-                },
-                observedAtMs: {
-                    type: 'string',
-                },
-                osRelease: {
-                    type: 'string',
-                },
-                platform: {
-                    $ref: '#/definitions/ConnectorSystemPlatform',
-                },
-                totalMemoryBytes: {
-                    type: 'string',
-                },
-                usage: {
-                    $ref: '#/definitions/ConnectorSystemUsage',
-                    description: 'Live load from a connector that samples it; absent from older connectors.',
-                },
-            },
-            required: [
-                'architecture',
-                'availableMemoryBytes',
-                'cpuModel',
-                'gpuState',
-                'gpus',
-                'logicalCpuCount',
-                'observedAtMs',
-                'osRelease',
-                'platform',
-                'totalMemoryBytes',
-            ],
-            type: 'object',
-        },
-        ConnectorSystemUsage: {
-            description: 'How busy a connected computer was over one short sampling interval.',
-            properties: {
-                cpuBasisPoints: {
-                    type: 'number',
-                },
-                gpus: {
-                    items: {
-                        $ref: '#/definitions/ConnectorGpuUsage',
-                    },
-                    type: 'array',
-                },
-                intervalMs: {
-                    description: 'Length of the interval the CPU share and rates were measured over.',
-                    type: 'number',
-                },
-                networkReceiveBytesPerSecond: {
-                    type: ['null', 'string'],
-                },
-                networkTransmitBytesPerSecond: {
-                    type: ['null', 'string'],
-                },
-                sampledAtMs: {
-                    type: 'string',
-                },
-            },
-            required: [
-                'cpuBasisPoints',
-                'gpus',
-                'intervalMs',
-                'networkReceiveBytesPerSecond',
-                'networkTransmitBytesPerSecond',
-                'sampledAtMs',
-            ],
-            type: 'object',
-        },
-        ConnectorView: {
-            description: 'Safe metadata includes no device key, workload proof, controller endpoint or host pathname.',
-            properties: {
-                enrolledAtMs: {
-                    type: ['null', 'string'],
-                },
-                environmentId: {
-                    type: 'string',
-                },
-                expiresAtMs: {
-                    type: 'string',
-                },
-                id: {
-                    type: 'string',
-                },
-                issuedAtMs: {
-                    type: 'string',
-                },
-                name: {
-                    type: 'string',
-                },
-                phase: {
-                    $ref: '#/definitions/ConnectorPhase',
-                },
-                revision: {
-                    type: 'string',
-                },
-                revokedAtMs: {
-                    type: ['null', 'string'],
-                },
-            },
-            required: [
-                'enrolledAtMs',
-                'environmentId',
-                'expiresAtMs',
-                'id',
-                'issuedAtMs',
-                'name',
-                'phase',
-                'revision',
-                'revokedAtMs',
-            ],
             type: 'object',
         },
         ConnectorWorkspaceCatalogEntry: {
@@ -8815,67 +8171,10 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
-        ConnectorWrite: {
-            description: 'Complete file contents are bounded by the explicit local read-write grant.',
-            properties: {
-                action: {
-                    const: 'write',
-                    type: 'string',
-                },
-                dataBase64: {
-                    type: 'string',
-                },
-                mode: {
-                    $ref: '#/definitions/ConnectorWriteMode',
-                },
-                path: {
-                    type: 'string',
-                },
-                policySha256: {
-                    type: 'string',
-                },
-                requestId: {
-                    type: 'string',
-                },
-                rootId: {
-                    type: 'string',
-                },
-            },
-            required: [
-                'action',
-                'dataBase64',
-                'mode',
-                'path',
-                'policySha256',
-                'requestId',
-                'rootId',
-            ],
-            type: 'object',
-        },
         ConnectorWriteMode: {
-            description: 'Atomic publication choices never grant append, removal or program execution.\nOne ConnectorWriteMode value.',
+            description: 'Atomic create never replaces an existing entry; replace deliberately publishes over an existing regular file.',
             enum: ['create', 'replace'],
             type: 'string',
-        },
-        ConnectorWriteResult: {
-            description: 'Successful atomic writes retain exact original byte counts and published metadata.',
-            properties: {
-                action: {
-                    const: 'write',
-                    type: 'string',
-                },
-                bytesWritten: {
-                    type: 'string',
-                },
-                metadata: {
-                    $ref: '#/definitions/ConnectorMetadata',
-                },
-                requestId: {
-                    type: 'string',
-                },
-            },
-            required: ['action', 'bytesWritten', 'metadata', 'requestId'],
-            type: 'object',
         },
         ContentBlock: {
             anyOf: [
@@ -16688,6 +15987,496 @@ export const schema = {
             ],
             type: 'string',
         },
+        ExecutionChoiceArgument: {
+            description: 'Choices are finite exact bytes, not prefix matches or command names.',
+            properties: {
+                kind: {
+                    const: 'choice',
+                    type: 'string',
+                },
+                values: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
+            },
+            required: ['kind', 'values'],
+            type: 'object',
+        },
+        ExecutionInputKind: {
+            description: 'Control intent is explicit and is never inferred from an empty write or a shell name.',
+            enum: ['data', 'end', 'resize'],
+            type: 'string',
+        },
+        'ExecutionInputRule<string>': {
+            anyOf: [
+                {
+                    $ref: '#/definitions/ExecutionMachineInvocationRule',
+                },
+                {
+                    $ref: '#/definitions/ExecutionChoiceArgument',
+                },
+                {
+                    $ref: '#/definitions/ExecutionTextArgument',
+                },
+                {
+                    $ref: '#/definitions/ExecutionPathArgument',
+                },
+                {
+                    $ref: '#/definitions/ExecutionInteractiveInvocationRule%3Cstring%3E',
+                },
+            ],
+            description: 'Fixed argument values are private local configuration and are never a public input grant.',
+        },
+        'ExecutionInteractiveInvocationRule<string>': {
+            description: 'Live input requires a separate complete grant; a foreground Machine rule grants no controls.',
+            properties: {
+                controls: {
+                    items: {
+                        $ref: '#/definitions/ExecutionInputKind',
+                    },
+                    type: 'array',
+                    maxItems: 3,
+                },
+                invocation: {
+                    $ref: '#/definitions/ExecutionMachineInvocationRule',
+                },
+                kind: {
+                    const: 'interactive-invocation',
+                    type: 'string',
+                },
+                maximumControls: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 256,
+                },
+                maximumInputBytes: {
+                    description: 'Initial input record zero consumes both this byte budget and one control.',
+                    type: 'string',
+                    pattern: '^(?:0|[1-9][0-9]{0,4})$',
+                    maxLength: 5,
+                },
+                maximumResizes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 16,
+                },
+                transports: {
+                    items: {
+                        $ref: '#/definitions/ExecutionInteractiveTransport',
+                    },
+                    type: 'array',
+                    maxItems: 2,
+                },
+            },
+            required: [
+                'controls',
+                'invocation',
+                'kind',
+                'maximumControls',
+                'maximumInputBytes',
+                'maximumResizes',
+                'transports',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ExecutionInteractiveTransport: {
+            description: 'Neither application pipes nor PTYs are implied by an existing foreground grant.',
+            enum: ['pipe', 'pty'],
+            type: 'string',
+        },
+        ExecutionLane: {
+            description: 'Two fixed command lanes bound parallel effects and retain independent permanent watermarks.',
+            enum: ['first', 'second'],
+            type: 'string',
+        },
+        ExecutionMachineCommand: {
+            description: "This index refers only to the owning program's pinned [program, ...children] table.",
+            properties: {
+                alias: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                executableIndex: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 8,
+                },
+            },
+            required: ['alias', 'executableIndex'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ExecutionMachineEnvironmentGrant: {
+            description: 'A permitted environment name has its own UTF-8 value ceiling.',
+            properties: {
+                maximumBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 1024,
+                },
+                name: {
+                    type: 'string',
+                    pattern: '^(?!NERVA_)[A-Za-z_][A-Za-z0-9_]{0,63}$',
+                    maxLength: 64,
+                },
+            },
+            required: ['maximumBytes', 'name'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ExecutionMachineInvocationRule: {
+            description: "The complete explicit local opt-in is published under the device's existing signed profile.",
+            properties: {
+                commands: {
+                    items: {
+                        $ref: '#/definitions/ExecutionMachineCommand',
+                    },
+                    type: 'array',
+                    maxItems: 9,
+                },
+                environment: {
+                    items: {
+                        $ref: '#/definitions/ExecutionMachineEnvironmentGrant',
+                    },
+                    type: 'array',
+                    maxItems: 16,
+                },
+                kind: {
+                    const: 'machine-invocation',
+                    type: 'string',
+                },
+                maximumArgumentBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 1024,
+                },
+                maximumArguments: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 32,
+                },
+                maximumArgumentsBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 2048,
+                },
+                maximumCwdBytes: {
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 512,
+                },
+                maximumEnvironmentBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 1024,
+                },
+                maximumScriptBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 2048,
+                },
+                maximumStdinBytes: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 1024,
+                },
+                maximumTimeoutMs: {
+                    type: 'integer',
+                    minimum: 100,
+                    maximum: 30000,
+                },
+                shell: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/ExecutionMachineShell',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+            },
+            required: [
+                'commands',
+                'environment',
+                'kind',
+                'maximumArgumentBytes',
+                'maximumArguments',
+                'maximumArgumentsBytes',
+                'maximumCwdBytes',
+                'maximumEnvironmentBytes',
+                'maximumScriptBytes',
+                'maximumStdinBytes',
+                'maximumTimeoutMs',
+                'shell',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ExecutionMachineShell: {
+            description: 'Fixed local switches precede the signed script, without guessing shell syntax from an executable name.',
+            properties: {
+                executableIndex: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 8,
+                },
+                fixedArguments: {
+                    items: {
+                        type: 'string',
+                        maxLength: 1024,
+                    },
+                    type: 'array',
+                    maxItems: 16,
+                },
+            },
+            required: ['executableIndex', 'fixedArguments'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ExecutionOutput: {
+            description: 'Canonical binary stdout/stderr share one 65536-byte aggregate budget.',
+            properties: {
+                stderrBase64: {
+                    type: 'string',
+                },
+                stdoutBase64: {
+                    type: 'string',
+                },
+            },
+            required: ['stderrBase64', 'stdoutBase64'],
+            type: 'object',
+        },
+        ExecutionPathArgument: {
+            description: 'Relative arguments cannot introduce traversal, absolute references or option prefixes.',
+            properties: {
+                kind: {
+                    const: 'relative-path',
+                    type: 'string',
+                },
+                maximumBytes: {
+                    type: 'number',
+                },
+            },
+            required: ['kind', 'maximumBytes'],
+            type: 'object',
+        },
+        'ExecutionProfile<string>': {
+            description: 'Exact local policy and hard ceilings are independently published under device proof.',
+            properties: {
+                maximumAddressBytes: {
+                    type: 'string',
+                },
+                maximumFileBytes: {
+                    type: 'string',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                programs: {
+                    items: {
+                        $ref: '#/definitions/ExecutionProgramGrant%3Cstring%3E',
+                    },
+                    type: 'array',
+                },
+                resources: {
+                    $ref: '#/definitions/ExecutionResourceLimits%3Cstring%3E',
+                },
+                revision: {
+                    type: 'string',
+                },
+                roots: {
+                    items: {
+                        $ref: '#/definitions/ExecutionRootGrant',
+                    },
+                    type: 'array',
+                },
+                timeoutMs: {
+                    type: 'number',
+                },
+            },
+            required: [
+                'maximumAddressBytes',
+                'maximumFileBytes',
+                'policySha256',
+                'programs',
+                'resources',
+                'revision',
+                'roots',
+                'timeoutMs',
+            ],
+            type: 'object',
+        },
+        'ExecutionProgramGrant<string>': {
+            description: 'Public grants expose aliases and input rules, never executable paths, fixed private arguments or local state paths.',
+            properties: {
+                arguments: {
+                    items: {
+                        $ref: '#/definitions/ExecutionInputRule%3Cstring%3E',
+                    },
+                    type: 'array',
+                },
+                id: {
+                    type: 'string',
+                },
+                rootIds: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
+            },
+            required: ['arguments', 'id', 'rootIds'],
+            type: 'object',
+        },
+        ExecutionRequest: {
+            description: 'An explicit application request identity is part of the original payload commitment.',
+            properties: {
+                arguments: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
+                policySha256: {
+                    type: 'string',
+                },
+                programId: {
+                    type: 'string',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                rootId: {
+                    type: 'string',
+                },
+            },
+            required: ['arguments', 'policySha256', 'programId', 'requestId', 'rootId'],
+            type: 'object',
+        },
+        'ExecutionResourceLimits<string>': {
+            description: 'Aggregate controls apply outside the namespace to every descendant, including forked background processes.',
+            properties: {
+                cpuQuotaMicros: {
+                    type: 'number',
+                },
+                maximumTasks: {
+                    type: 'number',
+                },
+                memoryBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['cpuQuotaMicros', 'maximumTasks', 'memoryBytes'],
+            type: 'object',
+        },
+        ExecutionResult: {
+            description: 'Bounded local results remain unsigned until the separately authorized durable remote operation owner admits them.',
+            properties: {
+                exitCode: {
+                    type: ['null', 'number'],
+                },
+                failure: {
+                    anyOf: [
+                        {
+                            enum: [
+                                'ambiguous-exit',
+                                'cancelled',
+                                'expired',
+                                'interrupted',
+                                'output-limit',
+                                'sandbox',
+                                'signal',
+                                'timeout',
+                            ],
+                            type: 'string',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                setupFailure: {
+                    anyOf: [
+                        {
+                            enum: [
+                                'apparmor',
+                                'bootstrap',
+                                'cgroup',
+                                'configuration',
+                                'confinement',
+                                'execute',
+                                'mounts',
+                                'namespaces',
+                            ],
+                            type: 'string',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                stderrBase64: {
+                    type: 'string',
+                },
+                stdoutBase64: {
+                    type: 'string',
+                },
+                termination: {
+                    $ref: '#/definitions/ExecutionTermination',
+                },
+            },
+            required: [
+                'exitCode',
+                'failure',
+                'setupFailure',
+                'stderrBase64',
+                'stdoutBase64',
+                'termination',
+            ],
+            type: 'object',
+        },
+        ExecutionRootGrant: {
+            description: 'Workspace mutation is explicit and cannot be inferred from a file scope or an executable name.',
+            properties: {
+                access: {
+                    $ref: '#/definitions/ExecutionWorkspaceAccess',
+                },
+                id: {
+                    type: 'string',
+                },
+            },
+            required: ['access', 'id'],
+            type: 'object',
+        },
+        ExecutionTermination: {
+            description: 'A closed connection or interrupted process is never treated as a successful completed command.',
+            enum: ['exited', 'indeterminate'],
+            type: 'string',
+        },
+        ExecutionTextArgument: {
+            description: 'Free text is a deliberate grant at a particular argument position and remains bounded UTF-8 data.',
+            properties: {
+                kind: {
+                    const: 'text',
+                    type: 'string',
+                },
+                maximumBytes: {
+                    type: 'number',
+                },
+            },
+            required: ['kind', 'maximumBytes'],
+            type: 'object',
+        },
+        ExecutionWorkspaceAccess: {
+            description: 'Execution authority is distinct from a file-read grant; this controls persistent workspace mutation.',
+            enum: ['read-only', 'read-write'],
+            type: 'string',
+        },
         FinishReason: {
             description: 'Why a turn stopped.\nWhy a model turn ended.',
             enum: [
@@ -17647,7 +17436,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorEnvironmentParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorFilesystem',
+                            $ref: '#/definitions/ConnectorFileStatus%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17660,7 +17449,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorGetParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorView',
+                            $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17673,7 +17462,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorHostResultParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorHostJobView',
+                            $ref: '#/definitions/ConnectorHostJobView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17687,7 +17476,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorHostStatusParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorHostStatus',
+                            $ref: '#/definitions/ConnectorHostStatus%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17701,7 +17490,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorHostSubmitParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorHostJobView',
+                            $ref: '#/definitions/ConnectorHostJobView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17715,7 +17504,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorInstructionsGetParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorInstructionsView',
+                            $ref: '#/definitions/ConnectorInstructionsView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17729,7 +17518,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorInstructionsUpdateParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorInstructionsView',
+                            $ref: '#/definitions/ConnectorInstructionsView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17740,10 +17529,10 @@ export const schema = {
                     description: 'Nexa forwards an account-bound metadata page through its protected Compute provider.',
                     properties: {
                         params: {
-                            $ref: '#/definitions/ConnectorInventoryParams',
+                            $ref: '#/definitions/ConnectorInventoryQuery',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorInventoryPage',
+                            $ref: '#/definitions/ConnectorInventoryPage%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17756,7 +17545,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorLinkApproveParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorLinkApproved',
+                            $ref: '#/definitions/ConnectorLinkApproved%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17782,7 +17571,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorLinkReviewParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorLinkReview',
+                            $ref: '#/definitions/ConnectorLinkReview%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17795,7 +17584,7 @@ export const schema = {
                             $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorList',
+                            $ref: '#/definitions/ConnectorEnrollmentList%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -17808,7 +17597,7 @@ export const schema = {
                             $ref: '#/definitions/ConnectorRevokeParams',
                         },
                         result: {
-                            $ref: '#/definitions/ConnectorView',
+                            $ref: '#/definitions/ConnectorEnrollmentView%3Cstring%3E',
                         },
                     },
                     required: ['params', 'result'],
@@ -21069,6 +20858,57 @@ export const schema = {
             enum: ['gaussian_ply', 'glb'],
             type: 'string',
         },
+        GpuInventoryState: {
+            description: 'Missing driver access is different from a successful empty inventory.',
+            enum: ['reported', 'unavailable'],
+            type: 'string',
+        },
+        GpuSpecification: {
+            description: 'Device identifiers and available VRAM support explicit selection without model-authored shell probing.',
+            properties: {
+                availableVramBytes: {
+                    type: ['null', 'string'],
+                },
+                id: {
+                    type: 'string',
+                },
+                model: {
+                    type: 'string',
+                },
+                totalVramBytes: {
+                    type: ['null', 'string'],
+                },
+                vendor: {
+                    $ref: '#/definitions/GpuVendor',
+                },
+            },
+            required: ['availableVramBytes', 'id', 'model', 'totalVramBytes', 'vendor'],
+            type: 'object',
+        },
+        GpuUsage: {
+            description: "One GPU's load, taken in the same sample as its computer's usage.",
+            properties: {
+                id: {
+                    description: 'The reported GPU this load belongs to.',
+                    type: 'string',
+                },
+                usedVramBytes: {
+                    description: 'Video memory in use at sampling time; null when the driver does not say.',
+                    type: ['null', 'string'],
+                },
+                utilizationBasisPoints: {
+                    description: 'Busy share of the sampling interval, from 0 to 10000 basis points; null when the driver does not say.',
+                    type: ['null', 'number'],
+                },
+            },
+            required: ['id', 'usedVramBytes', 'utilizationBasisPoints'],
+            type: 'object',
+        },
+        GpuVendor: {
+            description: 'Vendor identities remain separate from compute support and memory availability.',
+            enum: ['nvidia', 'amd', 'intel', 'other'],
+            type: 'string',
+        },
         GraphIssue: {
             description: 'Stable identities let all surfaces focus the same problem without parsing its message.',
             properties: {
@@ -21952,6 +21792,91 @@ export const schema = {
                 },
             ],
             description: 'When a job fires.',
+        },
+        'JointWorkspaceBinding<string>': {
+            description: 'Immutable public metadata binds two separately granted policies without exporting any raw physical identity.',
+            properties: {
+                access: {
+                    $ref: '#/definitions/ConnectorFileMode',
+                },
+                authorityId: {
+                    type: 'string',
+                },
+                enrollmentId: {
+                    type: 'string',
+                },
+                environmentId: {
+                    type: 'string',
+                },
+                executionJournals: {
+                    $ref: '#/definitions/JointWorkspaceExecutionJournals',
+                },
+                executionPolicySha256: {
+                    type: 'string',
+                },
+                executionRootId: {
+                    type: 'string',
+                },
+                fileJournalId: {
+                    type: 'string',
+                },
+                filePolicySha256: {
+                    type: 'string',
+                },
+                fileRootId: {
+                    type: 'string',
+                },
+                physicalRootCommitment: {
+                    type: 'string',
+                },
+                revision: {
+                    type: 'string',
+                },
+            },
+            required: [
+                'access',
+                'authorityId',
+                'enrollmentId',
+                'environmentId',
+                'executionJournals',
+                'executionPolicySha256',
+                'executionRootId',
+                'fileJournalId',
+                'filePolicySha256',
+                'fileRootId',
+                'physicalRootCommitment',
+                'revision',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        'JointWorkspaceDescriptor<string>': {
+            description: 'The signature authenticates the exact immutable body; its presence alone is not publication, activation or execution authority.',
+            properties: {
+                binding: {
+                    $ref: '#/definitions/JointWorkspaceBinding%3Cstring%3E',
+                },
+                signature: {
+                    type: 'string',
+                },
+            },
+            required: ['binding', 'signature'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        JointWorkspaceExecutionJournals: {
+            description: 'Both fixed execution lanes retain their own permanent journal identity; ordering is receiver-selected.',
+            properties: {
+                first: {
+                    type: 'string',
+                },
+                second: {
+                    type: 'string',
+                },
+            },
+            required: ['first', 'second'],
+            type: 'object',
+            additionalProperties: false,
         },
         JsonObject: {
             additionalProperties: {
@@ -27993,6 +27918,102 @@ export const schema = {
                 },
             },
             required: ['message'],
+            type: 'object',
+        },
+        SystemPlatform: {
+            description: 'Platform labels are finite; unsupported platforms cannot masquerade as qualified Linux installations.',
+            enum: ['linux', 'windows', 'macos', 'other'],
+            type: 'string',
+        },
+        SystemSpecification: {
+            description: 'Account-visible metadata contains no IP address, username, process list, mount paths or credentials.',
+            properties: {
+                architecture: {
+                    type: 'string',
+                },
+                availableMemoryBytes: {
+                    type: 'string',
+                },
+                cpuModel: {
+                    type: 'string',
+                },
+                gpuState: {
+                    $ref: '#/definitions/GpuInventoryState',
+                },
+                gpus: {
+                    items: {
+                        $ref: '#/definitions/GpuSpecification',
+                    },
+                    type: 'array',
+                },
+                logicalCpuCount: {
+                    type: 'number',
+                },
+                observedAtMs: {
+                    type: 'string',
+                },
+                osRelease: {
+                    type: 'string',
+                },
+                platform: {
+                    $ref: '#/definitions/SystemPlatform',
+                },
+                totalMemoryBytes: {
+                    type: 'string',
+                },
+                usage: {
+                    $ref: '#/definitions/SystemUsage',
+                    description: 'Live load from a connector that samples it; absent from older connectors.',
+                },
+            },
+            required: [
+                'architecture',
+                'availableMemoryBytes',
+                'cpuModel',
+                'gpuState',
+                'gpus',
+                'logicalCpuCount',
+                'observedAtMs',
+                'osRelease',
+                'platform',
+                'totalMemoryBytes',
+            ],
+            type: 'object',
+        },
+        SystemUsage: {
+            description: 'How busy the computer was over one short sampling interval.',
+            properties: {
+                cpuBasisPoints: {
+                    type: 'number',
+                },
+                gpus: {
+                    items: {
+                        $ref: '#/definitions/GpuUsage',
+                    },
+                    type: 'array',
+                },
+                intervalMs: {
+                    description: 'Length of the interval the CPU share and rates were measured over.',
+                    type: 'number',
+                },
+                networkReceiveBytesPerSecond: {
+                    type: ['null', 'string'],
+                },
+                networkTransmitBytesPerSecond: {
+                    type: ['null', 'string'],
+                },
+                sampledAtMs: {
+                    type: 'string',
+                },
+            },
+            required: [
+                'cpuBasisPoints',
+                'gpus',
+                'intervalMs',
+                'networkReceiveBytesPerSecond',
+                'networkTransmitBytesPerSecond',
+                'sampledAtMs',
+            ],
             type: 'object',
         },
         TaskRecord: {

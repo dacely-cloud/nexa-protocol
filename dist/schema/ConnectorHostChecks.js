@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Nexa contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
-import { ConnectorHostJson } from '../dataplane/ConnectorHostJson.js';
+import { ConnectorHostJson } from 'nerva-connector-protocol/protocol/ConnectorHostJson.js';
 /** Dependent int64, native-path and JSON limits complement the closed full-host wire schemas. */
 export class ConnectorHostChecks {
     /** Exact server clocks and finite future transitions fence one conditional connector snapshot. */

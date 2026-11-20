@@ -1,6 +1,6 @@
 /**
  * Generates the gateway schema, its validators, the method catalog and the protocol reference from this
- * package's own type declarations. It reads no other repository.
+ * package's type declarations and those of its pinned nerva-connector-protocol dependency.
  *
  * Usage: `node script/generate.mjs` rewrites the generated files; `node script/generate.mjs --check` fails when any
  * of them differs from what the declarations produce.

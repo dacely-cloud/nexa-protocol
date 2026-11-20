@@ -2838,82 +2838,56 @@ Module: `nexa-protocol/connections/ConnectionTypes.js`.
 | `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
 | `result` | Yes      | [LicensedToolsPage](protocol.md#licensedtoolspage) |             |
 
-## ConnectorArgumentBound
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-UTF-8 bytes and relative-path grammar remain enforced independently on the device.
-
-| Field          | Required | Type                         | Description |
-| -------------- | -------- | ---------------------------- | ----------- |
-| `kind`         | Yes      | `"relative-path"` / `"text"` |             |
-| `maximumBytes` | Yes      | `number`                     |             |
-
-## ConnectorArgumentChoice
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Finite exact choices never authorize arbitrary extra arguments.
-
-| Field    | Required | Type              | Description |
-| -------- | -------- | ----------------- | ----------- |
-| `kind`   | Yes      | `"choice"`        |             |
-| `values` | Yes      | Array of `string` |             |
-
-## ConnectorArgumentRule
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-A declared variable position has exactly one constraint shape.
-
-Variant 1: [ConnectorMachineInvocationRule](protocol.md#connectormachineinvocationrule)
-
-| Field                     | Required | Type                                                                                      | Description |
-| ------------------------- | -------- | ----------------------------------------------------------------------------------------- | ----------- |
-| `commands`                | Yes      | Array of [ConnectorMachineCommand](protocol.md#connectormachinecommand)                   |             |
-| `environment`             | Yes      | Array of [ConnectorMachineEnvironmentGrant](protocol.md#connectormachineenvironmentgrant) |             |
-| `kind`                    | Yes      | `"machine-invocation"`                                                                    |             |
-| `maximumArgumentBytes`    | Yes      | `integer`                                                                                 |             |
-| `maximumArguments`        | Yes      | `integer`                                                                                 |             |
-| `maximumArgumentsBytes`   | Yes      | `integer`                                                                                 |             |
-| `maximumCwdBytes`         | Yes      | `integer`                                                                                 |             |
-| `maximumEnvironmentBytes` | Yes      | `integer`                                                                                 |             |
-| `maximumScriptBytes`      | Yes      | `integer`                                                                                 |             |
-| `maximumStdinBytes`       | Yes      | `integer`                                                                                 |             |
-| `maximumTimeoutMs`        | Yes      | `integer`                                                                                 |             |
-| `shell`                   | Yes      | [ConnectorMachineShell](protocol.md#connectormachineshell) / `null`                       |             |
-
-Variant 2: [ConnectorInteractiveInvocationRule](protocol.md#connectorinteractiveinvocationrule)
-
-| Field               | Required | Type                                                                                | Description                                                            |
-| ------------------- | -------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `controls`          | Yes      | Array of [ConnectorInputKind](protocol.md#connectorinputkind)                       |                                                                        |
-| `invocation`        | Yes      | [ConnectorMachineInvocationRule](protocol.md#connectormachineinvocationrule)        |                                                                        |
-| `kind`              | Yes      | `"interactive-invocation"`                                                          |                                                                        |
-| `maximumControls`   | Yes      | `integer`                                                                           |                                                                        |
-| `maximumInputBytes` | Yes      | `string`                                                                            | Canonical decimal bytes include the explicitly admitted initial input. |
-| `maximumResizes`    | Yes      | `integer`                                                                           |                                                                        |
-| `transports`        | Yes      | Array of [ConnectorInteractiveTransport](protocol.md#connectorinteractivetransport) |                                                                        |
-
-Variant 3: [ConnectorArgumentChoice](protocol.md#connectorargumentchoice)
-
-| Field    | Required | Type              | Description |
-| -------- | -------- | ----------------- | ----------- |
-| `kind`   | Yes      | `"choice"`        |             |
-| `values` | Yes      | Array of `string` |             |
-
-Variant 4: [ConnectorArgumentBound](protocol.md#connectorargumentbound)
-
-| Field          | Required | Type                         | Description |
-| -------------- | -------- | ---------------------------- | ----------- |
-| `kind`         | Yes      | `"relative-path"` / `"text"` |             |
-| `maximumBytes` | Yes      | `number`                     |             |
-
-## ConnectorChmod
+## ConnectorAccountFileRequest
 
 Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
-Changes permissions only on a pinned single-link regular file.
+Each admitted operation has its original finite action and complete authority fields.
+
+Variant 1: [ConnectorFileStat](protocol.md#connectorfilestat)
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `action`       | Yes      | `"stat"` |             |
+| `path`         | Yes      | `string` |             |
+| `policySha256` | Yes      | `string` |             |
+| `requestId`    | Yes      | `string` |             |
+| `rootId`       | Yes      | `string` |             |
+
+Variant 2: [ConnectorFileWrite](protocol.md#connectorfilewrite)
+
+| Field          | Required | Type                                                 | Description |
+| -------------- | -------- | ---------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"write"`                                            |             |
+| `dataBase64`   | Yes      | `string`                                             |             |
+| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
+| `path`         | Yes      | `string`                                             |             |
+| `policySha256` | Yes      | `string`                                             |             |
+| `requestId`    | Yes      | `string`                                             |             |
+| `rootId`       | Yes      | `string`                                             |             |
+
+Variant 3: [ConnectorFileRemove](protocol.md#connectorfileremove)
+
+| Field          | Required | Type       | Description |
+| -------------- | -------- | ---------- | ----------- |
+| `action`       | Yes      | `"remove"` |             |
+| `path`         | Yes      | `string`   |             |
+| `policySha256` | Yes      | `string`   |             |
+| `recursive`    | Yes      | `boolean`  |             |
+| `requestId`    | Yes      | `string`   |             |
+| `rootId`       | Yes      | `string`   |             |
+
+Variant 4: [ConnectorFileMkdir](protocol.md#connectorfilemkdir)
+
+| Field          | Required | Type      | Description |
+| -------------- | -------- | --------- | ----------- |
+| `action`       | Yes      | `"mkdir"` |             |
+| `path`         | Yes      | `string`  |             |
+| `policySha256` | Yes      | `string`  |             |
+| `requestId`    | Yes      | `string`  |             |
+| `rootId`       | Yes      | `string`  |             |
+
+Variant 5: [ConnectorFileChmod](protocol.md#connectorfilechmod)
 
 | Field          | Required | Type                                                                   | Description |
 | -------------- | -------- | ---------------------------------------------------------------------- | ----------- |
@@ -2924,17 +2898,142 @@ Changes permissions only on a pinned single-link regular file.
 | `requestId`    | Yes      | `string`                                                               |             |
 | `rootId`       | Yes      | `string`                                                               |             |
 
-## ConnectorChmodResult
+Variant 6: [ConnectorFileRename](protocol.md#connectorfilerename)
+
+| Field          | Required | Type                                                 | Description |
+| -------------- | -------- | ---------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"rename"`                                           |             |
+| `destination`  | Yes      | `string`                                             |             |
+| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
+| `path`         | Yes      | `string`                                             |             |
+| `policySha256` | Yes      | `string`                                             |             |
+| `requestId`    | Yes      | `string`                                             |             |
+| `rootId`       | Yes      | `string`                                             |             |
+
+Variant 7: [ConnectorFileReadstring](protocol.md#connectorfilereadstring)
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `action`       | Yes      | `"read"` |             |
+| `limit`        | Yes      | `number` |             |
+| `offset`       | Yes      | `string` |             |
+| `path`         | Yes      | `string` |             |
+| `policySha256` | Yes      | `string` |             |
+| `requestId`    | Yes      | `string` |             |
+| `rootId`       | Yes      | `string` |             |
+
+Variant 8: [ConnectorFileListstring](protocol.md#connectorfileliststring)
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `action`       | Yes      | `"list"` |             |
+| `cursor`       | Yes      | `string` |             |
+| `path`         | Yes      | `string` |             |
+| `policySha256` | Yes      | `string` |             |
+| `requestId`    | Yes      | `string` |             |
+| `rootId`       | Yes      | `string` |             |
+
+## ConnectorAccountFileResult
 
 Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
-Permission success reports the actual requested private mode on the original regular file.
+The results of the file actions an account can submit.
 
-| Field       | Required | Type                                               | Description |
-| ----------- | -------- | -------------------------------------------------- | ----------- |
-| `action`    | Yes      | `"chmod"`                                          |             |
-| `metadata`  | Yes      | [ConnectorMetadata](protocol.md#connectormetadata) |             |
-| `requestId` | Yes      | `string`                                           |             |
+Variant 1: [ConnectorFileMkdirResult](protocol.md#connectorfilemkdirresult)
+
+| Field       | Required | Type      | Description |
+| ----------- | -------- | --------- | ----------- |
+| `action`    | Yes      | `"mkdir"` |             |
+| `requestId` | Yes      | `string`  |             |
+
+Variant 2: [ConnectorFileReadResultstring](protocol.md#connectorfilereadresultstring)
+
+| Field        | Required | Type                                                                   | Description |
+| ------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`     | Yes      | `"read"`                                                               |             |
+| `dataBase64` | Yes      | `string`                                                               |             |
+| `metadata`   | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `offset`     | Yes      | `string`                                                               |             |
+| `requestId`  | Yes      | `string`                                                               |             |
+
+Variant 3: [ConnectorFileStatResultstring](protocol.md#connectorfilestatresultstring)
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"stat"`                                                               |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
+
+Variant 4: [ConnectorFileListResultstring](protocol.md#connectorfilelistresultstring)
+
+| Field        | Required | Type                                                                   | Description |
+| ------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`     | Yes      | `"list"`                                                               |             |
+| `entries`    | Yes      | Array of [ConnectorFileEntry](protocol.md#connectorfileentry)          |             |
+| `metadata`   | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `nextCursor` | Yes      | `null,string`                                                          |             |
+| `requestId`  | Yes      | `string`                                                               |             |
+
+Variant 5: [ConnectorFileWriteResultstring](protocol.md#connectorfilewriteresultstring)
+
+| Field          | Required | Type                                                                   | Description |
+| -------------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"write"`                                                              |             |
+| `bytesWritten` | Yes      | `string`                                                               |             |
+| `metadata`     | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId`    | Yes      | `string`                                                               |             |
+
+Variant 6: [ConnectorFileRemoveResultstring](protocol.md#connectorfileremoveresultstring)
+
+| Field            | Required | Type       | Description |
+| ---------------- | -------- | ---------- | ----------- |
+| `action`         | Yes      | `"remove"` |             |
+| `entriesRemoved` | Yes      | `string`   |             |
+| `requestId`      | Yes      | `string`   |             |
+
+Variant 7: [ConnectorFileChmodResultstring](protocol.md#connectorfilechmodresultstring)
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"chmod"`                                                              |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
+
+Variant 8: [ConnectorFileRenameResultstring](protocol.md#connectorfilerenameresultstring)
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"rename"`                                                             |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
+
+## ConnectorAccountFileSuccess
+
+Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+
+Successful file results cannot contain an error branch.
+
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `ok`     | Yes      | `true`                                                               |             |
+| `result` | Yes      | [ConnectorAccountFileResult](protocol.md#connectoraccountfileresult) |             |
+
+## ConnectorAuthorizationstring
+
+Structural decoding and logical admission hashing never verify or grant the descriptor's signed authority.
+
+Variant 1: [ConnectorIndependentAuthorization](protocol.md#connectorindependentauthorization)
+
+| Field  | Required | Type            | Description |
+| ------ | -------- | --------------- | ----------- |
+| `kind` | Yes      | `"independent"` |             |
+
+Variant 2: [ConnectorJointAuthorizationstring](protocol.md#connectorjointauthorizationstring)
+
+| Field     | Required | Type                                                                         | Description |
+| --------- | -------- | ---------------------------------------------------------------------------- | ----------- |
+| `binding` | Yes      | [JointWorkspaceDescriptorstring](protocol.md#jointworkspacedescriptorstring) |             |
+| `kind`    | Yes      | `"joint"`                                                                    |             |
 
 ## ConnectorContextCheckMethod
 
@@ -2970,30 +3069,35 @@ The current metadata version and server clock bound time-derived presence observ
 | `serverNowMs`        | Yes      | `string`      |             |
 | `version`            | Yes      | `string`      |             |
 
-## ConnectorDirectoryEntry
+## ConnectorEnrollmentListstring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Account management can recover invitation IDs after a caller process loses its local response.
 
-Untrusted names remain display/path data.
+| Field         | Required | Type                                                                                | Description |
+| ------------- | -------- | ----------------------------------------------------------------------------------- | ----------- |
+| `enrollments` | Yes      | Array of [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
 
-| Field  | Required | Type                                               | Description |
-| ------ | -------- | -------------------------------------------------- | ----------- |
-| `kind` | Yes      | [ConnectorFileKind](protocol.md#connectorfilekind) |             |
-| `name` | Yes      | `string`                                           |             |
+## ConnectorEnrollmentPhase
 
-## ConnectorDirectoryResult
+Enrollment binds a customer device; it does not grant execution or report a tunnel as online.
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Type: `"pending"` / `"enrolled-offline"` / `"revoked"`.
 
-A directory page has a finite entry count and original request identity.
+## ConnectorEnrollmentViewstring
 
-| Field        | Required | Type                                                                    | Description |
-| ------------ | -------- | ----------------------------------------------------------------------- | ----------- |
-| `action`     | Yes      | `"list"`                                                                |             |
-| `entries`    | Yes      | Array of [ConnectorDirectoryEntry](protocol.md#connectordirectoryentry) |             |
-| `metadata`   | Yes      | [ConnectorMetadata](protocol.md#connectormetadata)                      |             |
-| `nextCursor` | Yes      | `null,string`                                                           |             |
-| `requestId`  | Yes      | `string`                                                                |             |
+Public metadata contains neither bootstrap authorization nor infrastructure connection details.
+
+| Field           | Required | Type                                                             | Description |
+| --------------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `enrolledAtMs`  | Yes      | `null,string`                                                    |             |
+| `environmentId` | Yes      | `string`                                                         |             |
+| `expiresAtMs`   | Yes      | `string`                                                         |             |
+| `id`            | Yes      | `string`                                                         |             |
+| `issuedAtMs`    | Yes      | `string`                                                         |             |
+| `name`          | Yes      | `string`                                                         |             |
+| `phase`         | Yes      | [ConnectorEnrollmentPhase](protocol.md#connectorenrollmentphase) |             |
+| `revision`      | Yes      | `string`                                                         |             |
+| `revokedAtMs`   | Yes      | `null,string`                                                    |             |
 
 ## ConnectorEnvironmentParams
 
@@ -3016,14 +3120,6 @@ Admission requires write-level gateway authority even for a read-only workspace.
 | `params` | Yes      | [ConnectorExecutionSubmitParams](protocol.md#connectorexecutionsubmitparams) |             |
 | `result` | Yes      | [ConnectorExecutionJob](protocol.md#connectorexecutionjob)                   |             |
 
-## ConnectorExecutionAccess
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Local workspace mutation and cloud write delegation must both permit an operation.
-
-Type: `"read-only"` / `"read-write"`.
-
 ## ConnectorExecutionCurrentJob
 
 Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
@@ -3034,13 +3130,13 @@ Latest original metadata has the retained workspace grant rather than the device
 | ----------------- | -------- | ---------------------------------------------------------------- | ----------- |
 | `admissionHash`   | Yes      | `string`                                                         |             |
 | `jobId`           | Yes      | `string`                                                         |             |
-| `lane`            | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)     |             |
-| `phase`           | Yes      | [ConnectorJobPhase](protocol.md#connectorjobphase)               |             |
+| `lane`            | Yes      | [ExecutionLane](protocol.md#executionlane)                       |             |
+| `phase`           | Yes      | [ConnectorFileJobPhase](protocol.md#connectorfilejobphase)       |             |
 | `programId`       | Yes      | `string`                                                         |             |
 | `requestId`       | Yes      | `string`                                                         |             |
 | `rootId`          | Yes      | `string`                                                         |             |
 | `sequence`        | Yes      | `string`                                                         |             |
-| `workspaceAccess` | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess) |             |
+| `workspaceAccess` | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
 
 ## ConnectorExecutionCurrentJobs
 
@@ -3074,7 +3170,7 @@ One account snapshot correlates its permanent counter with the exact latest orig
 | ---------------------- | -------- | --------------------------------------------------------------------------------- | ----------- |
 | `acknowledgedSequence` | Yes      | `string`                                                                          |             |
 | `job`                  | Yes      | [ConnectorExecutionCurrentJob](protocol.md#connectorexecutioncurrentjob) / `null` |             |
-| `lane`                 | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)                      |             |
+| `lane`                 | Yes      | [ExecutionLane](protocol.md#executionlane)                                        |             |
 | `sequence`             | Yes      | `string`                                                                          |             |
 
 ## ConnectorExecutionJob
@@ -3083,25 +3179,17 @@ Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
 
 Reads and retries preserve the same admitted original and selected command lane.
 
-| Field           | Required | Type                                                                           | Description |
-| --------------- | -------- | ------------------------------------------------------------------------------ | ----------- |
-| `admissionHash` | Yes      | `string`                                                                       |             |
-| `authorization` | Yes      | [ConnectorOperationAuthorization](protocol.md#connectoroperationauthorization) |             |
-| `environmentId` | Yes      | `string`                                                                       |             |
-| `id`            | Yes      | `string`                                                                       |             |
-| `lane`          | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)                   |             |
-| `phase`         | Yes      | [ConnectorJobPhase](protocol.md#connectorjobphase)                             |             |
-| `request`       | Yes      | [ConnectorExecutionRequest](protocol.md#connectorexecutionrequest)             |             |
-| `response`      | Yes      | [ConnectorExecutionResult](protocol.md#connectorexecutionresult) / `null`      |             |
-| `sequence`      | Yes      | `string`                                                                       |             |
-
-## ConnectorExecutionLane
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Fixed command lanes retain separate original dispatch and compaction history.
-
-Type: `"first"` / `"second"`.
+| Field           | Required | Type                                                                     | Description |
+| --------------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `admissionHash` | Yes      | `string`                                                                 |             |
+| `authorization` | Yes      | [ConnectorAuthorizationstring](protocol.md#connectorauthorizationstring) |             |
+| `environmentId` | Yes      | `string`                                                                 |             |
+| `id`            | Yes      | `string`                                                                 |             |
+| `lane`          | Yes      | [ExecutionLane](protocol.md#executionlane)                               |             |
+| `phase`         | Yes      | [ConnectorFileJobPhase](protocol.md#connectorfilejobphase)               |             |
+| `request`       | Yes      | [ExecutionRequest](protocol.md#executionrequest)                         |             |
+| `response`      | Yes      | [ExecutionResult](protocol.md#executionresult) / `null`                  |             |
+| `sequence`      | Yes      | `string`                                                                 |             |
 
 ## ConnectorExecutionLaneStatus
 
@@ -3109,13 +3197,13 @@ Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
 
 Current publication and permanent lane counters serve different purposes.
 
-| Field                  | Required | Type                                                                        | Description |
-| ---------------------- | -------- | --------------------------------------------------------------------------- | ----------- |
-| `acknowledgedSequence` | Yes      | `string`                                                                    |             |
-| `lane`                 | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)                |             |
-| `online`               | Yes      | `boolean`                                                                   |             |
-| `profile`              | Yes      | [ConnectorExecutionProfile](protocol.md#connectorexecutionprofile) / `null` |             |
-| `sequence`             | Yes      | `string`                                                                    |             |
+| Field                  | Required | Type                                                                  | Description |
+| ---------------------- | -------- | --------------------------------------------------------------------- | ----------- |
+| `acknowledgedSequence` | Yes      | `string`                                                              |             |
+| `lane`                 | Yes      | [ExecutionLane](protocol.md#executionlane)                            |             |
+| `online`               | Yes      | `boolean`                                                             |             |
+| `profile`              | Yes      | [ExecutionProfilestring](protocol.md#executionprofilestring) / `null` |             |
+| `sequence`             | Yes      | `string`                                                              |             |
 
 ## ConnectorExecutionMethod
 
@@ -3127,17 +3215,6 @@ Public account metadata is proxied only through Nexa.
 | -------- | -------- | -------------------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorEnvironmentParams](protocol.md#connectorenvironmentparams) |             |
 | `result` | Yes      | [ConnectorExecutionStatus](protocol.md#connectorexecutionstatus)     |             |
-
-## ConnectorExecutionOutputData
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionOutput.js`.
-
-Canonical base64 preserves at most 65536 combined application bytes.
-
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `stderrBase64` | Yes      | `string` |             |
-| `stdoutBase64` | Yes      | `string` |             |
 
 ## ConnectorExecutionOutputMethod
 
@@ -3156,73 +3233,15 @@ Module: `nexa-protocol/dataplane/ConnectorExecutionOutput.js`.
 
 Provisional output has original identity and phase, never an inferred successful exit.
 
-| Field           | Required | Type                                                                              | Description |
-| --------------- | -------- | --------------------------------------------------------------------------------- | ----------- |
-| `admissionHash` | Yes      | `string`                                                                          |             |
-| `environmentId` | Yes      | `string`                                                                          |             |
-| `id`            | Yes      | `string`                                                                          |             |
-| `lane`          | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)                      |             |
-| `output`        | Yes      | [ConnectorExecutionOutputData](protocol.md#connectorexecutionoutputdata) / `null` |             |
-| `phase`         | Yes      | [ConnectorJobPhase](protocol.md#connectorjobphase)                                |             |
-| `sequence`      | Yes      | `string`                                                                          |             |
-
-## ConnectorExecutionProfile
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Customer-reported public execution grants are not a network endpoint or authorization to run unlisted code.
-
-| Field                 | Required | Type                                                                   | Description |
-| --------------------- | -------- | ---------------------------------------------------------------------- | ----------- |
-| `maximumAddressBytes` | Yes      | `string`                                                               |             |
-| `maximumFileBytes`    | Yes      | `string`                                                               |             |
-| `policySha256`        | Yes      | `string`                                                               |             |
-| `programs`            | Yes      | Array of [ConnectorProgramGrant](protocol.md#connectorprogramgrant)    |             |
-| `resources`           | Yes      | [ConnectorExecutionResources](protocol.md#connectorexecutionresources) |             |
-| `revision`            | Yes      | `string`                                                               |             |
-| `roots`               | Yes      | Array of [ConnectorExecutionRoot](protocol.md#connectorexecutionroot)  |             |
-| `timeoutMs`           | Yes      | `number`                                                               |             |
-
-## ConnectorExecutionRequest
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Original input selects only a reviewed local program, workspace and positional arguments.
-
-| Field          | Required | Type              | Description |
-| -------------- | -------- | ----------------- | ----------- |
-| `arguments`    | Yes      | Array of `string` |             |
-| `policySha256` | Yes      | `string`          |             |
-| `programId`    | Yes      | `string`          |             |
-| `requestId`    | Yes      | `string`          |             |
-| `rootId`       | Yes      | `string`          |             |
-
-## ConnectorExecutionResources
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Resource quantities stay exact decimal strings at the JSON gateway.
-
-| Field            | Required | Type     | Description |
-| ---------------- | -------- | -------- | ----------- |
-| `cpuQuotaMicros` | Yes      | `number` |             |
-| `maximumTasks`   | Yes      | `number` |             |
-| `memoryBytes`    | Yes      | `string` |             |
-
-## ConnectorExecutionResult
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Original terminal output is bounded, canonical and signed; contents remain untrusted data.
-
-| Field          | Required | Type                                                                                                                                    | Description |
-| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `exitCode`     | Yes      | `null,number`                                                                                                                           |             |
-| `failure`      | Yes      | `"ambiguous-exit"` / `"cancelled"` / `"expired"` / `"interrupted"` / `"output-limit"` / `"sandbox"` / `"signal"` / `"timeout"` / `null` |             |
-| `setupFailure` | Yes      | `"apparmor"` / `"bootstrap"` / `"cgroup"` / `"configuration"` / `"confinement"` / `"execute"` / `"mounts"` / `"namespaces"` / `null`    |             |
-| `stderrBase64` | Yes      | `string`                                                                                                                                |             |
-| `stdoutBase64` | Yes      | `string`                                                                                                                                |             |
-| `termination`  | Yes      | [ConnectorExecutionTermination](protocol.md#connectorexecutiontermination)                                                              |             |
+| Field           | Required | Type                                                       | Description |
+| --------------- | -------- | ---------------------------------------------------------- | ----------- |
+| `admissionHash` | Yes      | `string`                                                   |             |
+| `environmentId` | Yes      | `string`                                                   |             |
+| `id`            | Yes      | `string`                                                   |             |
+| `lane`          | Yes      | [ExecutionLane](protocol.md#executionlane)                 |             |
+| `output`        | Yes      | [ExecutionOutput](protocol.md#executionoutput) / `null`    |             |
+| `phase`         | Yes      | [ConnectorFileJobPhase](protocol.md#connectorfilejobphase) |             |
+| `sequence`      | Yes      | `string`                                                   |             |
 
 ## ConnectorExecutionResultMethod
 
@@ -3234,17 +3253,6 @@ Original command result lookup admits no new effect.
 | -------- | -------- | ---------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorResultParams](protocol.md#connectorresultparams) |             |
 | `result` | Yes      | [ConnectorExecutionJob](protocol.md#connectorexecutionjob) |             |
-
-## ConnectorExecutionRoot
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-A root alias has independently enforced read-only or writable access.
-
-| Field    | Required | Type                                                             | Description |
-| -------- | -------- | ---------------------------------------------------------------- | ----------- |
-| `access` | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess) |             |
-| `id`     | Yes      | `string`                                                         |             |
 
 ## ConnectorExecutionStatus
 
@@ -3279,10 +3287,10 @@ An explicit stop captures the original command rather than selecting current lan
 | `admissionHash`   | Yes      | `string`                                                         |             |
 | `environmentId`   | Yes      | `string`                                                         |             |
 | `jobId`           | Yes      | `string`                                                         |             |
-| `lane`            | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)     |             |
+| `lane`            | Yes      | [ExecutionLane](protocol.md#executionlane)                       |             |
 | `requestId`       | Yes      | `string`                                                         |             |
 | `sequence`        | Yes      | `string`                                                         |             |
-| `workspaceAccess` | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess) |             |
+| `workspaceAccess` | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
 
 ## ConnectorExecutionStopReceipt
 
@@ -3290,16 +3298,16 @@ Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
 
 Stop admission contains no program arguments or output and does not by itself prove the command ended.
 
-| Field           | Required | Type                                                         | Description |
-| --------------- | -------- | ------------------------------------------------------------ | ----------- |
-| `admissionHash` | Yes      | `string`                                                     |             |
-| `environmentId` | Yes      | `string`                                                     |             |
-| `jobId`         | Yes      | `string`                                                     |             |
-| `lane`          | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane) |             |
-| `phase`         | Yes      | [ConnectorJobPhase](protocol.md#connectorjobphase)           |             |
-| `requestId`     | Yes      | `string`                                                     |             |
-| `requestedAtMs` | Yes      | `null,string`                                                |             |
-| `sequence`      | Yes      | `string`                                                     |             |
+| Field           | Required | Type                                                       | Description |
+| --------------- | -------- | ---------------------------------------------------------- | ----------- |
+| `admissionHash` | Yes      | `string`                                                   |             |
+| `environmentId` | Yes      | `string`                                                   |             |
+| `jobId`         | Yes      | `string`                                                   |             |
+| `lane`          | Yes      | [ExecutionLane](protocol.md#executionlane)                 |             |
+| `phase`         | Yes      | [ConnectorFileJobPhase](protocol.md#connectorfilejobphase) |             |
+| `requestId`     | Yes      | `string`                                                   |             |
+| `requestedAtMs` | Yes      | `null,string`                                              |             |
+| `sequence`      | Yes      | `string`                                                   |             |
 
 ## ConnectorExecutionSubmitParams
 
@@ -3307,27 +3315,49 @@ Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
 
 Delegation intent is explicit; the API checks actual retained workspace access independently.
 
-| Field              | Required | Type                                                               | Description |
-| ------------------ | -------- | ------------------------------------------------------------------ | ----------- |
-| `environmentId`    | Yes      | `string`                                                           |             |
-| `lane`             | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)       |             |
-| `previousSequence` | Yes      | `string`                                                           |             |
-| `request`          | Yes      | [ConnectorExecutionRequest](protocol.md#connectorexecutionrequest) |             |
-| `workspaceAccess`  | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess)   |             |
+| Field              | Required | Type                                                             | Description |
+| ------------------ | -------- | ---------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                         |             |
+| `lane`             | Yes      | [ExecutionLane](protocol.md#executionlane)                       |             |
+| `previousSequence` | Yes      | `string`                                                         |             |
+| `request`          | Yes      | [ExecutionRequest](protocol.md#executionrequest)                 |             |
+| `workspaceAccess`  | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
 
-## ConnectorExecutionTermination
+## ConnectorFileChmod
 
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
+Change only the captured regular file's permissions under an explicit read-write root grant.
 
-Transport loss and uncertain commands must never be presented as successful exits.
+| Field          | Required | Type                                                                   | Description |
+| -------------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"chmod"`                                                              |             |
+| `mode`         | Yes      | [ConnectorFilePermissionMode](protocol.md#connectorfilepermissionmode) |             |
+| `path`         | Yes      | `string`                                                               |             |
+| `policySha256` | Yes      | `string`                                                               |             |
+| `requestId`    | Yes      | `string`                                                               |             |
+| `rootId`       | Yes      | `string`                                                               |             |
 
-Type: `"exited"` / `"indeterminate"`.
+## ConnectorFileChmodResultstring
+
+The regular-file metadata must confirm the exact requested private permission mode.
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"chmod"`                                                              |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
+
+## ConnectorFileEntry
+
+Directory names are untrusted display/path components and are never followed during listing.
+
+| Field  | Required | Type                                               | Description |
+| ------ | -------- | -------------------------------------------------- | ----------- |
+| `kind` | Yes      | [ConnectorFileKind](protocol.md#connectorfilekind) |             |
+| `name` | Yes      | `string`                                           |             |
 
 ## ConnectorFileError
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Denied file results cannot carry an accidental content payload.
+A denied request cannot include an accidental content payload.
 
 | Field   | Required | Type                                                     | Description |
 | ------- | -------- | -------------------------------------------------------- | ----------- |
@@ -3336,23 +3366,80 @@ Denied file results cannot carry an accidental content payload.
 
 ## ConnectorFileFailure
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Stable safe failures omit host paths, native errors and file content.
 
-No backend or native error text is forwarded as file diagnostics.
+Type: `"invalid"` / `"denied"` / `"unavailable"` / `"changed"` / `"indeterminate"`.
 
-Type: `"changed"` / `"denied"` / `"indeterminate"` / `"invalid"` / `"unavailable"`.
+## ConnectorFileJobPhase
+
+One original dispatch persists through transport replacement; no timeout silently reruns it.
+
+Type: `"queued"` / `"dispatched"` / `"completed"`.
 
 ## ConnectorFileKind
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Entry types are metadata, never executable authority.
 
-Listed links and special files carry no authority to follow or execute them.
+Type: `"file"` / `"directory"` / `"symbolic-link"` / `"other"`.
 
-Type: `"directory"` / `"file"` / `"other"` / `"symbolic-link"`.
+## ConnectorFileListstring
+
+Directory cookies are opaque exact filesystem offsets, not stable snapshot promises.
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `action`       | Yes      | `"list"` |             |
+| `cursor`       | Yes      | `string` |             |
+| `path`         | Yes      | `string` |             |
+| `policySha256` | Yes      | `string` |             |
+| `requestId`    | Yes      | `string` |             |
+| `rootId`       | Yes      | `string` |             |
+
+## ConnectorFileListResultstring
+
+A page's cursor can be reused only as an explicit new request.
+
+| Field        | Required | Type                                                                   | Description |
+| ------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`     | Yes      | `"list"`                                                               |             |
+| `entries`    | Yes      | Array of [ConnectorFileEntry](protocol.md#connectorfileentry)          |             |
+| `metadata`   | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `nextCursor` | Yes      | `null,string`                                                          |             |
+| `requestId`  | Yes      | `string`                                                               |             |
+
+## ConnectorFileMetadatastring
+
+Metadata preserves exact size and modification time without host inode/owner identifiers.
+
+| Field          | Required | Type                     | Description |
+| -------------- | -------- | ------------------------ | ----------- |
+| `kind`         | Yes      | `"directory"` / `"file"` |             |
+| `mode`         | Yes      | `number`                 |             |
+| `modifiedAtNs` | Yes      | `string`                 |             |
+| `sizeBytes`    | Yes      | `string`                 |             |
+
+## ConnectorFileMkdir
+
+Create exactly one private directory; existing entries and missing parents are refused.
+
+| Field          | Required | Type      | Description |
+| -------------- | -------- | --------- | ----------- |
+| `action`       | Yes      | `"mkdir"` |             |
+| `path`         | Yes      | `string`  |             |
+| `policySha256` | Yes      | `string`  |             |
+| `requestId`    | Yes      | `string`  |             |
+| `rootId`       | Yes      | `string`  |             |
+
+## ConnectorFileMkdirResult
+
+Success confirms directory creation and parent synchronization; later path mutations remain possible.
+
+| Field       | Required | Type      | Description |
+| ----------- | -------- | --------- | ----------- |
+| `action`    | Yes      | `"mkdir"` |             |
+| `requestId` | Yes      | `string`  |             |
 
 ## ConnectorFileMode
-
-Module: `nexa-protocol/dataplane/ConnectorFileMode.js`.
 
 Explicit local permission profiles have no implied broader mode or default.
 
@@ -3360,19 +3447,26 @@ Type: `"read-only"` / `"read-write"`.
 
 ## ConnectorFilePermissionMode
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Permission changes never add access for another OS user or set special bits.
+Permission changes can only select private regular-file access; no group/world or special bits are granted.
 
 Type: `384` / `448`.
 
-## ConnectorFileRequest
+## ConnectorFileProfilestring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Public profile contains aliases and commitments; local absolute paths remain private.
 
-Each admitted operation has its original finite action and complete authority fields.
+| Field               | Required | Type                                               | Description |
+| ------------------- | -------- | -------------------------------------------------- | ----------- |
+| `maximumReadBytes`  | Yes      | `number`                                           |             |
+| `maximumWriteBytes` | Yes      | `number`                                           |             |
+| `mode`              | Yes      | [ConnectorFileMode](protocol.md#connectorfilemode) |             |
+| `policySha256`      | Yes      | `string`                                           |             |
+| `revision`          | Yes      | `string`                                           |             |
+| `roots`             | Yes      | Array of `string`                                  |             |
 
-Variant 1: [ConnectorRead](protocol.md#connectorread)
+## ConnectorFileReadstring
+
+Offset remains exact until the native boundary.
 
 | Field          | Required | Type     | Description |
 | -------------- | -------- | -------- | ----------- |
@@ -3384,40 +3478,21 @@ Variant 1: [ConnectorRead](protocol.md#connectorread)
 | `requestId`    | Yes      | `string` |             |
 | `rootId`       | Yes      | `string` |             |
 
-Variant 2: [ConnectorStat](protocol.md#connectorstat)
+## ConnectorFileReadResultstring
 
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `action`       | Yes      | `"stat"` |             |
-| `path`         | Yes      | `string` |             |
-| `policySha256` | Yes      | `string` |             |
-| `requestId`    | Yes      | `string` |             |
-| `rootId`       | Yes      | `string` |             |
+A chunk is correlated to the original offset and bounded request.
 
-Variant 3: [ConnectorListDirectory](protocol.md#connectorlistdirectory)
+| Field        | Required | Type                                                                   | Description |
+| ------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`     | Yes      | `"read"`                                                               |             |
+| `dataBase64` | Yes      | `string`                                                               |             |
+| `metadata`   | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `offset`     | Yes      | `string`                                                               |             |
+| `requestId`  | Yes      | `string`                                                               |             |
 
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `action`       | Yes      | `"list"` |             |
-| `cursor`       | Yes      | `string` |             |
-| `path`         | Yes      | `string` |             |
-| `policySha256` | Yes      | `string` |             |
-| `requestId`    | Yes      | `string` |             |
-| `rootId`       | Yes      | `string` |             |
+## ConnectorFileRemove
 
-Variant 4: [ConnectorWrite](protocol.md#connectorwrite)
-
-| Field          | Required | Type                                                 | Description |
-| -------------- | -------- | ---------------------------------------------------- | ----------- |
-| `action`       | Yes      | `"write"`                                            |             |
-| `dataBase64`   | Yes      | `string`                                             |             |
-| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
-| `path`         | Yes      | `string`                                             |             |
-| `policySha256` | Yes      | `string`                                             |             |
-| `requestId`    | Yes      | `string`                                             |             |
-| `rootId`       | Yes      | `string`                                             |             |
-
-Variant 5: [ConnectorRemove](protocol.md#connectorremove)
+Removal never follows links, crosses mounts or removes the granted root itself.
 
 | Field          | Required | Type       | Description |
 | -------------- | -------- | ---------- | ----------- |
@@ -3428,28 +3503,19 @@ Variant 5: [ConnectorRemove](protocol.md#connectorremove)
 | `requestId`    | Yes      | `string`   |             |
 | `rootId`       | Yes      | `string`   |             |
 
-Variant 6: [ConnectorMkdir](protocol.md#connectormkdir)
+## ConnectorFileRemoveResultstring
 
-| Field          | Required | Type      | Description |
-| -------------- | -------- | --------- | ----------- |
-| `action`       | Yes      | `"mkdir"` |             |
-| `path`         | Yes      | `string`  |             |
-| `policySha256` | Yes      | `string`  |             |
-| `requestId`    | Yes      | `string`  |             |
-| `rootId`       | Yes      | `string`  |             |
+Success confirms complete removal within the finite entry budget, including the selected target.
 
-Variant 7: [ConnectorChmod](protocol.md#connectorchmod)
+| Field            | Required | Type       | Description |
+| ---------------- | -------- | ---------- | ----------- |
+| `action`         | Yes      | `"remove"` |             |
+| `entriesRemoved` | Yes      | `string`   |             |
+| `requestId`      | Yes      | `string`   |             |
 
-| Field          | Required | Type                                                                   | Description |
-| -------------- | -------- | ---------------------------------------------------------------------- | ----------- |
-| `action`       | Yes      | `"chmod"`                                                              |             |
-| `mode`         | Yes      | [ConnectorFilePermissionMode](protocol.md#connectorfilepermissionmode) |             |
-| `path`         | Yes      | `string`                                                               |             |
-| `policySha256` | Yes      | `string`                                                               |             |
-| `requestId`    | Yes      | `string`                                                               |             |
-| `rootId`       | Yes      | `string`                                                               |             |
+## ConnectorFileRename
 
-Variant 8: [ConnectorRename](protocol.md#connectorrename)
+Move a regular file within one captured root; destination authority cannot select another root.
 
 | Field          | Required | Type                                                 | Description |
 | -------------- | -------- | ---------------------------------------------------- | ----------- |
@@ -3461,30 +3527,74 @@ Variant 8: [ConnectorRename](protocol.md#connectorrename)
 | `requestId`    | Yes      | `string`                                             |             |
 | `rootId`       | Yes      | `string`                                             |             |
 
-## ConnectorFileSuccess
+## ConnectorFileRenameResultstring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Destination metadata belongs to the moved regular file; identity races remain indeterminate rather than replayable.
 
-Successful file results cannot contain an error branch.
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"rename"`                                                             |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
 
-| Field    | Required | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Description |
-| -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `ok`     | Yes      | `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |             |
-| `result` | Yes      | [ConnectorReadResult](protocol.md#connectorreadresult) / [ConnectorStatResult](protocol.md#connectorstatresult) / [ConnectorDirectoryResult](protocol.md#connectordirectoryresult) / [ConnectorWriteResult](protocol.md#connectorwriteresult) / [ConnectorRemoveResult](protocol.md#connectorremoveresult) / [ConnectorMkdirResult](protocol.md#connectormkdirresult) / [ConnectorChmodResult](protocol.md#connectorchmodresult) / [ConnectorRenameResult](protocol.md#connectorrenameresult) |             |
+## ConnectorFileStat
 
-## ConnectorFilesystem
+Metadata never follows symlinks or opens devices.
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `action`       | Yes      | `"stat"` |             |
+| `path`         | Yes      | `string` |             |
+| `policySha256` | Yes      | `string` |             |
+| `requestId`    | Yes      | `string` |             |
+| `rootId`       | Yes      | `string` |             |
 
-A recent matching signed profile is separate from installed tooling and execution permission.
+## ConnectorFileStatResultstring
 
-| Field                  | Required | Type                                                      | Description |
-| ---------------------- | -------- | --------------------------------------------------------- | ----------- |
-| `acknowledgedSequence` | Yes      | `string`                                                  |             |
-| `environmentId`        | Yes      | `string`                                                  |             |
-| `online`               | Yes      | `boolean`                                                 |             |
-| `profile`              | Yes      | [ConnectorProfile](protocol.md#connectorprofile) / `null` |             |
-| `sequence`             | Yes      | `string`                                                  |             |
+Metadata has one current strict contract.
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"stat"`                                                               |             |
+| `metadata`  | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId` | Yes      | `string`                                                               |             |
+
+## ConnectorFileStatusstring
+
+Current signed local grants are separate from recent device authentication.
+
+| Field                  | Required | Type                                                                          | Description |
+| ---------------------- | -------- | ----------------------------------------------------------------------------- | ----------- |
+| `acknowledgedSequence` | Yes      | `string`                                                                      |             |
+| `environmentId`        | Yes      | `string`                                                                      |             |
+| `online`               | Yes      | `boolean`                                                                     |             |
+| `profile`              | Yes      | [ConnectorFileProfilestring](protocol.md#connectorfileprofilestring) / `null` |             |
+| `sequence`             | Yes      | `string`                                                                      |             |
+
+## ConnectorFileWrite
+
+Writes publish a complete bounded private regular file; no append, shell or mode escalation is implied.
+
+| Field          | Required | Type                                                 | Description |
+| -------------- | -------- | ---------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"write"`                                            |             |
+| `dataBase64`   | Yes      | `string`                                             |             |
+| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
+| `path`         | Yes      | `string`                                             |             |
+| `policySha256` | Yes      | `string`                                             |             |
+| `requestId`    | Yes      | `string`                                             |             |
+| `rootId`       | Yes      | `string`                                             |             |
+
+## ConnectorFileWriteResultstring
+
+A successful publication reports the exact request's byte count and the published file's metadata.
+
+| Field          | Required | Type                                                                   | Description |
+| -------------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `action`       | Yes      | `"write"`                                                              |             |
+| `bytesWritten` | Yes      | `string`                                                               |             |
+| `metadata`     | Yes      | [ConnectorFileMetadatastring](protocol.md#connectorfilemetadatastring) |             |
+| `requestId`    | Yes      | `string`                                                               |             |
 
 ## ConnectorFilesystemMethod
 
@@ -3495,7 +3605,7 @@ File grants are read through the authenticated account proxy.
 | Field    | Required | Type                                                                 | Description |
 | -------- | -------- | -------------------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorEnvironmentParams](protocol.md#connectorenvironmentparams) |             |
-| `result` | Yes      | [ConnectorFilesystem](protocol.md#connectorfilesystem)               |             |
+| `result` | Yes      | [ConnectorFileStatusstring](protocol.md#connectorfilestatusstring)   |             |
 
 ## ConnectorGetMethod
 
@@ -3503,10 +3613,10 @@ Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Enrollment metadata remains account-authorized.
 
-| Field    | Required | Type                                                 | Description |
-| -------- | -------- | ---------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorGetParams](protocol.md#connectorgetparams) |             |
-| `result` | Yes      | [ConnectorView](protocol.md#connectorview)           |             |
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorGetParams](protocol.md#connectorgetparams)                       |             |
+| `result` | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
 
 ## ConnectorGetParams
 
@@ -3518,74 +3628,38 @@ IDs cannot override the authenticated account.
 | -------------- | -------- | -------- | ----------- |
 | `enrollmentId` | Yes      | `string` |             |
 
-## ConnectorGpuInventoryState
+## ConnectorHostInventoryView
 
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
+Host availability is metadata only; no private working directory, lease or execution credential is included.
 
-Missing driver access is different from a successful empty inventory.
-
-Type: `"reported"` / `"unavailable"`.
-
-## ConnectorGpuSpecification
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-Device identifiers and available VRAM support explicit selection without model-authored shell probing.
-
-| Field                | Required | Type                                                 | Description |
-| -------------------- | -------- | ---------------------------------------------------- | ----------- |
-| `availableVramBytes` | Yes      | `null,string`                                        |             |
-| `id`                 | Yes      | `string`                                             |             |
-| `model`              | Yes      | `string`                                             |             |
-| `totalVramBytes`     | Yes      | `null,string`                                        |             |
-| `vendor`             | Yes      | [ConnectorGpuVendor](protocol.md#connectorgpuvendor) |             |
-
-## ConnectorGpuUsage
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-One GPU's load, taken in the same sample as its computer's usage.
-
-| Field                    | Required | Type          | Description                                                                                          |
-| ------------------------ | -------- | ------------- | ---------------------------------------------------------------------------------------------------- |
-| `id`                     | Yes      | `string`      | The reported GPU this load belongs to.                                                               |
-| `usedVramBytes`          | Yes      | `null,string` | Video memory in use at sampling time; null when the driver does not say.                             |
-| `utilizationBasisPoints` | Yes      | `null,number` | Busy share of the sampling interval in basis points (0 to 10000); null when the driver does not say. |
-
-## ConnectorGpuVendor
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-Vendor identities remain separate from compute support and memory availability.
-
-Type: `"amd"` / `"intel"` / `"nvidia"` / `"other"`.
+| Field           | Required | Type                                                        | Description |
+| --------------- | -------- | ----------------------------------------------------------- | ----------- |
+| `enabled`       | Yes      | `boolean`                                                   |             |
+| `grantId`       | Yes      | `string`                                                    |             |
+| `grantRevision` | Yes      | `string`                                                    |             |
+| `platform`      | Yes      | [ConnectorHostPlatform](protocol.md#connectorhostplatform)  |             |
+| `tools`         | Yes      | Array of [ConnectorHostTool](protocol.md#connectorhosttool) |             |
 
 ## ConnectorHostJobPhase
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 A queued original retains its identity across reconnects and account replicas.
 
 Type: `"completed"` / `"dispatched"` / `"queued"`.
 
-## ConnectorHostJobView
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
+## ConnectorHostJobViewstring
 
 An account can poll only its original job in its own environment.
 
-| Field           | Required | Type                                                                | Description |
-| --------------- | -------- | ------------------------------------------------------------------- | ----------- |
-| `environmentId` | Yes      | `string`                                                            |             |
-| `id`            | Yes      | `string`                                                            |             |
-| `phase`         | Yes      | [ConnectorHostJobPhase](protocol.md#connectorhostjobphase)          |             |
-| `request`       | Yes      | [ConnectorHostRequest](protocol.md#connectorhostrequest)            |             |
-| `response`      | Yes      | [ConnectorHostResponse](protocol.md#connectorhostresponse) / `null` |             |
-| `sequence`      | Yes      | `string`                                                            |             |
+| Field           | Required | Type                                                                 | Description |
+| --------------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `environmentId` | Yes      | `string`                                                             |             |
+| `id`            | Yes      | `string`                                                             |             |
+| `phase`         | Yes      | [ConnectorHostJobPhase](protocol.md#connectorhostjobphase)           |             |
+| `request`       | Yes      | [ConnectorHostRequeststring](protocol.md#connectorhostrequeststring) |             |
+| `response`      | Yes      | [ConnectorHostResponse](protocol.md#connectorhostresponse) / `null`  |             |
+| `sequence`      | Yes      | `string`                                                             |             |
 
 ## ConnectorHostOutcome
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 Durable outcomes never treat uncertain effects as permission to execute a fresh original.
 
@@ -3593,15 +3667,11 @@ Type: `"failed"` / `"indeterminate"` / `"succeeded"`.
 
 ## ConnectorHostPlatform
 
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
-
 Native paths and shell syntax belong to the customer computer, not the account API host.
 
 Type: `"linux"` / `"macos"` / `"windows"`.
 
-## ConnectorHostProfile
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
+## ConnectorHostProfilestring
 
 Local consent and default task directory are signed under the enrolled device identity.
 
@@ -3614,9 +3684,7 @@ Local consent and default task directory are signed under the enrolled device id
 | `platform`      | Yes      | [ConnectorHostPlatform](protocol.md#connectorhostplatform)  |             |
 | `tools`         | Yes      | Array of [ConnectorHostTool](protocol.md#connectorhosttool) |             |
 
-## ConnectorHostRequest
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
+## ConnectorHostRequeststring
 
 Only exact bounded JSON text crosses the transport; the tool runtime validates its operation shape again.
 
@@ -3629,9 +3697,7 @@ Only exact bounded JSON text crosses the transport; the tool runtime validates i
 
 ## ConnectorHostResponse
 
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
-
-Successful JSON text contains exact decimal file/process quantities; failure text contains no private diagnostics.
+Successful JSON text contains exact decimal quantities; failed outcomes expose only a finite code.
 
 | Field        | Required | Type                                                                                                                                                                                                                                                                                                           | Description |
 | ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
@@ -3645,10 +3711,10 @@ Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 Observe one original without submitting another effect.
 
-| Field    | Required | Type                                                               | Description |
-| -------- | -------- | ------------------------------------------------------------------ | ----------- |
-| `params` | Yes      | [ConnectorHostResultParams](protocol.md#connectorhostresultparams) |             |
-| `result` | Yes      | [ConnectorHostJobView](protocol.md#connectorhostjobview)           |             |
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorHostResultParams](protocol.md#connectorhostresultparams)   |             |
+| `result` | Yes      | [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring) |             |
 
 ## ConnectorHostResultParams
 
@@ -3661,19 +3727,17 @@ A result selects only an existing immutable host job.
 | `environmentId` | Yes      | `string` |             |
 | `jobId`         | Yes      | `string` |             |
 
-## ConnectorHostStatus
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
+## ConnectorHostStatusstring
 
 Sequence counters remain permanent after bounded result compaction.
 
-| Field                  | Required | Type                                                              | Description |
-| ---------------------- | -------- | ----------------------------------------------------------------- | ----------- |
-| `acknowledgedSequence` | Yes      | `string`                                                          |             |
-| `environmentId`        | Yes      | `string`                                                          |             |
-| `online`               | Yes      | `boolean`                                                         |             |
-| `profile`              | Yes      | [ConnectorHostProfile](protocol.md#connectorhostprofile) / `null` |             |
-| `sequence`             | Yes      | `string`                                                          |             |
+| Field                  | Required | Type                                                                          | Description |
+| ---------------------- | -------- | ----------------------------------------------------------------------------- | ----------- |
+| `acknowledgedSequence` | Yes      | `string`                                                                      |             |
+| `environmentId`        | Yes      | `string`                                                                      |             |
+| `online`               | Yes      | `boolean`                                                                     |             |
+| `profile`              | Yes      | [ConnectorHostProfilestring](protocol.md#connectorhostprofilestring) / `null` |             |
+| `sequence`             | Yes      | `string`                                                                      |             |
 
 ## ConnectorHostStatusMethod
 
@@ -3684,7 +3748,7 @@ Read current full-computer consent, native working directory and permanent count
 | Field    | Required | Type                                                               | Description |
 | -------- | -------- | ------------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [ConnectorHostStatusParams](protocol.md#connectorhoststatusparams) |             |
-| `result` | Yes      | [ConnectorHostStatus](protocol.md#connectorhoststatus)             |             |
+| `result` | Yes      | [ConnectorHostStatusstring](protocol.md#connectorhoststatusstring) |             |
 
 ## ConnectorHostStatusParams
 
@@ -3702,10 +3766,10 @@ Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 Admit an explicit complete original; pairing and confined roots do not grant host authority.
 
-| Field    | Required | Type                                                               | Description |
-| -------- | -------- | ------------------------------------------------------------------ | ----------- |
-| `params` | Yes      | [ConnectorHostSubmitParams](protocol.md#connectorhostsubmitparams) |             |
-| `result` | Yes      | [ConnectorHostJobView](protocol.md#connectorhostjobview)           |             |
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorHostSubmitParams](protocol.md#connectorhostsubmitparams)   |             |
+| `result` | Yes      | [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring) |             |
 
 ## ConnectorHostSubmitParams
 
@@ -3713,30 +3777,14 @@ Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 Every submitted host operation pins the current permanent counter and complete locally approved grant.
 
-| Field              | Required | Type                                                     | Description |
-| ------------------ | -------- | -------------------------------------------------------- | ----------- |
-| `environmentId`    | Yes      | `string`                                                 |             |
-| `previousSequence` | Yes      | `string`                                                 |             |
-| `request`          | Yes      | [ConnectorHostRequest](protocol.md#connectorhostrequest) |             |
-| `requestId`        | Yes      | `string`                                                 |             |
-
-## ConnectorHostSummary
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
-
-Inventory exposes consent/tool metadata without disclosing native private working directories.
-
-| Field           | Required | Type                                                        | Description |
-| --------------- | -------- | ----------------------------------------------------------- | ----------- |
-| `enabled`       | Yes      | `boolean`                                                   |             |
-| `grantId`       | Yes      | `string`                                                    |             |
-| `grantRevision` | Yes      | `string`                                                    |             |
-| `platform`      | Yes      | [ConnectorHostPlatform](protocol.md#connectorhostplatform)  |             |
-| `tools`         | Yes      | Array of [ConnectorHostTool](protocol.md#connectorhosttool) |             |
+| Field              | Required | Type                                                                 | Description |
+| ------------------ | -------- | -------------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                             |             |
+| `previousSequence` | Yes      | `string`                                                             |             |
+| `request`          | Yes      | [ConnectorHostRequeststring](protocol.md#connectorhostrequeststring) |             |
+| `requestId`        | Yes      | `string`                                                             |             |
 
 ## ConnectorHostTool
-
-Module: `nexa-protocol/dataplane/ConnectorHostTypes.js`.
 
 A full-host grant is separate from confined file/program policies and never inferred from pairing.
 
@@ -3744,21 +3792,11 @@ Type: `"application_open"` / `"computer_info"` / `"desktop_info"` / `"desktop_ke
 
 ## ConnectorIndependentAuthorization
 
-Module: `nexa-protocol/dataplane/ConnectorOperationTypes.js`.
-
-This envelope is selected by trusted preparation, never by model parameters or a missing historical field.
+This envelope claims no physical association between separately granted file and command roots.
 
 | Field  | Required | Type            | Description |
 | ------ | -------- | --------------- | ----------- |
 | `kind` | Yes      | `"independent"` |             |
-
-## ConnectorInputKind
-
-Module: `nexa-protocol/dataplane/ConnectorInteractiveInvocationTypes.js`.
-
-Data, pipe EOF and terminal resize are distinct immutable operations.
-
-Type: `"data"` / `"end"` / `"resize"`.
 
 ## ConnectorInstructionsGetMethod
 
@@ -3766,10 +3804,10 @@ Module: `nexa-protocol/dataplane/ConnectorInstructionsTypes.js`.
 
 Read one authenticated account's preferences for its linked connector.
 
-| Field    | Required | Type                                                                         | Description |
-| -------- | -------- | ---------------------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorInstructionsGetParams](protocol.md#connectorinstructionsgetparams) |             |
-| `result` | Yes      | [ConnectorInstructionsView](protocol.md#connectorinstructionsview)           |             |
+| Field    | Required | Type                                                                           | Description |
+| -------- | -------- | ------------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [ConnectorInstructionsGetParams](protocol.md#connectorinstructionsgetparams)   |             |
+| `result` | Yes      | [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring) |             |
 
 ## ConnectorInstructionsGetParams
 
@@ -3790,7 +3828,7 @@ Replace instructions using compare-and-set so concurrent edits cannot disappear.
 | Field    | Required | Type                                                                               | Description |
 | -------- | -------- | ---------------------------------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorInstructionsUpdateParams](protocol.md#connectorinstructionsupdateparams) |             |
-| `result` | Yes      | [ConnectorInstructionsView](protocol.md#connectorinstructionsview)                 |             |
+| `result` | Yes      | [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring)     |             |
 
 ## ConnectorInstructionsUpdateParams
 
@@ -3805,11 +3843,9 @@ An exact revision and retained request identify one deliberate instruction edit.
 | `instructions`     | Yes      | `string` |             |
 | `requestId`        | Yes      | `string` |             |
 
-## ConnectorInstructionsView
+## ConnectorInstructionsViewstring
 
-Module: `nexa-protocol/dataplane/ConnectorInstructionsTypes.js`.
-
-User-authored preferences never broaden the connector's operating-system permissions.
+Account-owned connector guidance never grants filesystem, execution or device authority.
 
 | Field          | Required | Type     | Description |
 | -------------- | -------- | -------- | ----------- |
@@ -3817,78 +3853,48 @@ User-authored preferences never broaden the connector's operating-system permiss
 | `instructions` | Yes      | `string` |             |
 | `revision`     | Yes      | `string` |             |
 
-## ConnectorInteractiveInvocationRule
-
-Module: `nexa-protocol/dataplane/ConnectorInteractiveInvocationTypes.js`.
-
-The complete live-input policy supplements one independently bounded Machine invocation.
-
-| Field               | Required | Type                                                                                | Description                                                            |
-| ------------------- | -------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `controls`          | Yes      | Array of [ConnectorInputKind](protocol.md#connectorinputkind)                       |                                                                        |
-| `invocation`        | Yes      | [ConnectorMachineInvocationRule](protocol.md#connectormachineinvocationrule)        |                                                                        |
-| `kind`              | Yes      | `"interactive-invocation"`                                                          |                                                                        |
-| `maximumControls`   | Yes      | `integer`                                                                           |                                                                        |
-| `maximumInputBytes` | Yes      | `string`                                                                            | Canonical decimal bytes include the explicitly admitted initial input. |
-| `maximumResizes`    | Yes      | `integer`                                                                           |                                                                        |
-| `transports`        | Yes      | Array of [ConnectorInteractiveTransport](protocol.md#connectorinteractivetransport) |                                                                        |
-
-## ConnectorInteractiveTransport
-
-Module: `nexa-protocol/dataplane/ConnectorInteractiveInvocationTypes.js`.
-
-An explicit signed grant selects the native I/O mechanism.
-
-Type: `"pipe"` / `"pty"`.
-
 ## ConnectorInventoryMethod
 
 Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
 
 Nexa forwards an account-bound metadata page through its protected Compute provider.
 
-| Field    | Required | Type                                                             | Description |
-| -------- | -------- | ---------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorInventoryParams](protocol.md#connectorinventoryparams) |             |
-| `result` | Yes      | [ConnectorInventoryPage](protocol.md#connectorinventorypage)     |             |
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [ConnectorInventoryQuery](protocol.md#connectorinventoryquery)           |             |
+| `result` | Yes      | [ConnectorInventoryPagestring](protocol.md#connectorinventorypagestring) |             |
 
-## ConnectorInventoryPage
+## ConnectorInventoryPagestring
 
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
+A bounded page avoids one UI request per connector or unbounded metadata amplification.
 
-At most three connector snapshots are returned by one account RPC.
+| Field   | Required | Type                                                                              | Description |
+| ------- | -------- | --------------------------------------------------------------------------------- | ----------- |
+| `items` | Yes      | Array of [ConnectorInventoryViewstring](protocol.md#connectorinventoryviewstring) |             |
+| `next`  | Yes      | `null,string`                                                                     |             |
 
-| Field   | Required | Type                                                                  | Description |
-| ------- | -------- | --------------------------------------------------------------------- | ----------- |
-| `items` | Yes      | Array of [ConnectorInventoryView](protocol.md#connectorinventoryview) |             |
-| `next`  | Yes      | `null,string`                                                         |             |
+## ConnectorInventoryQuery
 
-## ConnectorInventoryParams
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-An account page accepts only an opaque ordered enrollment cursor.
+Pagination never accepts an account, provider or network address.
 
 | Field   | Required | Type          | Description |
 | ------- | -------- | ------------- | ----------- |
 | `after` | Yes      | `null,string` |             |
 
-## ConnectorInventoryView
+## ConnectorInventoryViewstring
 
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
+Safe account metadata contains no transport credentials or customer paths.
 
-Public inventory contains no customer paths, workload credentials or transport authority.
-
-| Field                  | Required | Type                                                                              | Description                                                                     |
-| ---------------------- | -------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `enrollment`           | Yes      | [ConnectorView](protocol.md#connectorview)                                        |                                                                                 |
-| `host`                 | Yes      | [ConnectorHostSummary](protocol.md#connectorhostsummary) / `null`                 | Published full-host consent metadata excludes private working directories.      |
-| `instructions`         | Yes      | `string`                                                                          | Account-owned standing instructions are separate from device-reported metadata. |
-| `instructionsRevision` | Yes      | `string`                                                                          | Independent compare-and-set revision for the user's instruction edits.          |
-| `presence`             | Yes      | [ConnectorPresence](protocol.md#connectorpresence)                                |                                                                                 |
-| `receivedAtMs`         | Yes      | `null,string`                                                                     |                                                                                 |
-| `specification`        | Yes      | [ConnectorSystemSpecification](protocol.md#connectorsystemspecification) / `null` |                                                                                 |
-| `trust`                | Yes      | `"customer-reported"`                                                             |                                                                                 |
+| Field                  | Required | Type                                                                          | Description                                                                   |
+| ---------------------- | -------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `enrollment`           | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring)    |                                                                               |
+| `host`                 | Yes      | [ConnectorHostInventoryView](protocol.md#connectorhostinventoryview) / `null` | Last signed local host consent remains visible when disabled or disconnected. |
+| `instructions`         | Yes      | `string`                                                                      | Account-owned guidance is separate from device-reported system facts.         |
+| `instructionsRevision` | Yes      | `string`                                                                      | Canonical decimal revision for the account guidance.                          |
+| `presence`             | Yes      | [ConnectorPresence](protocol.md#connectorpresence)                            |                                                                               |
+| `receivedAtMs`         | Yes      | `null,string`                                                                 |                                                                               |
+| `specification`        | Yes      | [SystemSpecification](protocol.md#systemspecification) / `null`               |                                                                               |
+| `trust`                | Yes      | `"customer-reported"`                                                         |                                                                               |
 
 ## ConnectorJob
 
@@ -3896,78 +3902,25 @@ Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Retained results belong to the original request and exact sequence.
 
-| Field           | Required | Type                                                                                                                     | Description |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `admissionHash` | Yes      | `string`                                                                                                                 |             |
-| `authorization` | Yes      | [ConnectorOperationAuthorization](protocol.md#connectoroperationauthorization)                                           |             |
-| `environmentId` | Yes      | `string`                                                                                                                 |             |
-| `id`            | Yes      | `string`                                                                                                                 |             |
-| `phase`         | Yes      | [ConnectorJobPhase](protocol.md#connectorjobphase)                                                                       |             |
-| `request`       | Yes      | [ConnectorFileRequest](protocol.md#connectorfilerequest)                                                                 |             |
-| `response`      | Yes      | [ConnectorFileSuccess](protocol.md#connectorfilesuccess) / [ConnectorFileError](protocol.md#connectorfileerror) / `null` |             |
-| `sequence`      | Yes      | `string`                                                                                                                 |             |
+| Field           | Required | Type                                                                                                                                   | Description |
+| --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `admissionHash` | Yes      | `string`                                                                                                                               |             |
+| `authorization` | Yes      | [ConnectorAuthorizationstring](protocol.md#connectorauthorizationstring)                                                               |             |
+| `environmentId` | Yes      | `string`                                                                                                                               |             |
+| `id`            | Yes      | `string`                                                                                                                               |             |
+| `phase`         | Yes      | [ConnectorFileJobPhase](protocol.md#connectorfilejobphase)                                                                             |             |
+| `request`       | Yes      | [ConnectorAccountFileRequest](protocol.md#connectoraccountfilerequest)                                                                 |             |
+| `response`      | Yes      | [ConnectorAccountFileSuccess](protocol.md#connectoraccountfilesuccess) / [ConnectorFileError](protocol.md#connectorfileerror) / `null` |             |
+| `sequence`      | Yes      | `string`                                                                                                                               |             |
 
-## ConnectorJobPhase
+## ConnectorJointAuthorizationstring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+The entire original signed descriptor remains available for independent identity/scope verification after head rotation.
 
-Shared dispatch state is independent of the Nexa process handling the request.
-
-Type: `"queued"` / `"dispatched"` / `"completed"`.
-
-## ConnectorJointAuthorization
-
-Module: `nexa-protocol/dataplane/ConnectorOperationTypes.js`.
-
-Full signed association remains data until the pinned SDK/backend/device separately authorize the operation.
-
-| Field     | Required | Type                                                                               | Description |
-| --------- | -------- | ---------------------------------------------------------------------------------- | ----------- |
-| `binding` | Yes      | [ConnectorJointWorkspaceDescriptor](protocol.md#connectorjointworkspacedescriptor) |             |
-| `kind`    | Yes      | `"joint"`                                                                          |             |
-
-## ConnectorJointExecutionJournals
-
-Module: `nexa-protocol/dataplane/ConnectorJointWorkspaceTypes.js`.
-
-Three permanent operation journals remain distinct across reconnects and controller replicas.
-
-| Field    | Required | Type     | Description |
-| -------- | -------- | -------- | ----------- |
-| `first`  | Yes      | `string` |             |
-| `second` | Yes      | `string` |             |
-
-## ConnectorJointWorkspaceBinding
-
-Module: `nexa-protocol/dataplane/ConnectorJointWorkspaceTypes.js`.
-
-Public wire metadata preserves exact revisions without exposing physical paths or derivation keys.
-
-| Field                    | Required | Type                                                                           | Description |
-| ------------------------ | -------- | ------------------------------------------------------------------------------ | ----------- |
-| `access`                 | Yes      | [ConnectorFileMode](protocol.md#connectorfilemode)                             |             |
-| `authorityId`            | Yes      | `string`                                                                       |             |
-| `enrollmentId`           | Yes      | `string`                                                                       |             |
-| `environmentId`          | Yes      | `string`                                                                       |             |
-| `executionJournals`      | Yes      | [ConnectorJointExecutionJournals](protocol.md#connectorjointexecutionjournals) |             |
-| `executionPolicySha256`  | Yes      | `string`                                                                       |             |
-| `executionRootId`        | Yes      | `string`                                                                       |             |
-| `fileJournalId`          | Yes      | `string`                                                                       |             |
-| `filePolicySha256`       | Yes      | `string`                                                                       |             |
-| `fileRootId`             | Yes      | `string`                                                                       |             |
-| `physicalRootCommitment` | Yes      | `string`                                                                       |             |
-| `revision`               | Yes      | `string`                                                                       |             |
-
-## ConnectorJointWorkspaceDescriptor
-
-Module: `nexa-protocol/dataplane/ConnectorJointWorkspaceTypes.js`.
-
-The complete signature is retained unchanged; structural decoding does not authenticate or activate this descriptor.
-
-| Field       | Required | Type                                                                         | Description |
-| ----------- | -------- | ---------------------------------------------------------------------------- | ----------- |
-| `binding`   | Yes      | [ConnectorJointWorkspaceBinding](protocol.md#connectorjointworkspacebinding) |             |
-| `signature` | Yes      | `string`                                                                     |             |
+| Field     | Required | Type                                                                         | Description |
+| --------- | -------- | ---------------------------------------------------------------------------- | ----------- |
+| `binding` | Yes      | [JointWorkspaceDescriptorstring](protocol.md#jointworkspacedescriptorstring) |             |
+| `kind`    | Yes      | `"joint"`                                                                    |             |
 
 ## ConnectorLinkApproveMethod
 
@@ -3975,10 +3928,10 @@ Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Explicit approval retains the reviewed key and cannot replace a machine after an uncertain response.
 
-| Field    | Required | Type                                                                 | Description |
-| -------- | -------- | -------------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorLinkApproveParams](protocol.md#connectorlinkapproveparams) |             |
-| `result` | Yes      | [ConnectorLinkApproved](protocol.md#connectorlinkapproved)           |             |
+| Field    | Required | Type                                                                   | Description |
+| -------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorLinkApproveParams](protocol.md#connectorlinkapproveparams)   |             |
+| `result` | Yes      | [ConnectorLinkApprovedstring](protocol.md#connectorlinkapprovedstring) |             |
 
 ## ConnectorLinkApproveParams
 
@@ -3994,17 +3947,15 @@ Approval binds the exact identity reviewed by this signed-in user, retaining its
 | `publicKey` | Yes      | `string` |             |
 | `requestId` | Yes      | `string` |             |
 
-## ConnectorLinkApproved
+## ConnectorLinkApprovedstring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
+Approval responses echo the captured reviewed identity for strict trusted-controller correlation.
 
-Registered metadata establishes neither an online connection nor file or execution permission.
-
-| Field        | Required | Type                                       | Description |
-| ------------ | -------- | ------------------------------------------ | ----------- |
-| `enrollment` | Yes      | [ConnectorView](protocol.md#connectorview) |             |
-| `linkId`     | Yes      | `string`                                   |             |
-| `publicKey`  | Yes      | `string`                                   |             |
+| Field        | Required | Type                                                                       | Description |
+| ------------ | -------- | -------------------------------------------------------------------------- | ----------- |
+| `enrollment` | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
+| `linkId`     | Yes      | `string`                                                                   |             |
+| `publicKey`  | Yes      | `string`                                                                   |             |
 
 ## ConnectorLinkDenied
 
@@ -4043,11 +3994,9 @@ Rejection is bound to the exact reviewed identity and original operation, never 
 | `publicKey` | Yes      | `string` |             |
 | `requestId` | Yes      | `string` |             |
 
-## ConnectorLinkReview
+## ConnectorLinkReviewstring
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Only public machine identity and the original finite approval window are disclosed.
+Explicit approval captures exactly the machine shown during review.
 
 | Field         | Required | Type     | Description |
 | ------------- | -------- | -------- | ----------- |
@@ -4066,7 +4015,7 @@ Code lookup uses the protected controller and never contacts the customer device
 | Field    | Required | Type                                                               | Description |
 | -------- | -------- | ------------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [ConnectorLinkReviewParams](protocol.md#connectorlinkreviewparams) |             |
-| `result` | Yes      | [ConnectorLinkReview](protocol.md#connectorlinkreview)             |             |
+| `result` | Yes      | [ConnectorLinkReviewstring](protocol.md#connectorlinkreviewstring) |             |
 
 ## ConnectorLinkReviewParams
 
@@ -4079,280 +4028,22 @@ Entering a short device code requires the current account's write authority.
 | `code`      | Yes      | `string` |             |
 | `requestId` | Yes      | `string` |             |
 
-## ConnectorList
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-The backend independently binds every list element to the current account.
-
-| Field         | Required | Type                                                | Description |
-| ------------- | -------- | --------------------------------------------------- | ----------- |
-| `enrollments` | Yes      | Array of [ConnectorView](protocol.md#connectorview) |             |
-
-## ConnectorListDirectory
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Directory cursors are opaque exact offsets, not a promise of snapshot consistency.
-
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `action`       | Yes      | `"list"` |             |
-| `cursor`       | Yes      | `string` |             |
-| `path`         | Yes      | `string` |             |
-| `policySha256` | Yes      | `string` |             |
-| `requestId`    | Yes      | `string` |             |
-| `rootId`       | Yes      | `string` |             |
-
 ## ConnectorListMethod
 
 Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Account list accepts no identity override.
 
-| Field    | Required | Type                                               | Description |
-| -------- | -------- | -------------------------------------------------- | ----------- |
-| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
-| `result` | Yes      | [ConnectorList](protocol.md#connectorlist)         |             |
-
-## ConnectorMachineCommand
-
-Module: `nexa-protocol/dataplane/ConnectorMachineInvocationTypes.js`.
-
-This index refers only to the owning program's pinned [program, ...children] table.
-
-| Field             | Required | Type      | Description |
-| ----------------- | -------- | --------- | ----------- |
-| `alias`           | Yes      | `string`  |             |
-| `executableIndex` | Yes      | `integer` |             |
-
-## ConnectorMachineEnvironmentGrant
-
-Module: `nexa-protocol/dataplane/ConnectorMachineInvocationTypes.js`.
-
-A permitted environment name has its own UTF-8 value ceiling.
-
-| Field          | Required | Type      | Description |
-| -------------- | -------- | --------- | ----------- |
-| `maximumBytes` | Yes      | `integer` |             |
-| `name`         | Yes      | `string`  |             |
-
-## ConnectorMachineInvocationRule
-
-Module: `nexa-protocol/dataplane/ConnectorMachineInvocationTypes.js`.
-
-The complete explicit local opt-in is published under the device's existing signed profile.
-
-| Field                     | Required | Type                                                                                      | Description |
-| ------------------------- | -------- | ----------------------------------------------------------------------------------------- | ----------- |
-| `commands`                | Yes      | Array of [ConnectorMachineCommand](protocol.md#connectormachinecommand)                   |             |
-| `environment`             | Yes      | Array of [ConnectorMachineEnvironmentGrant](protocol.md#connectormachineenvironmentgrant) |             |
-| `kind`                    | Yes      | `"machine-invocation"`                                                                    |             |
-| `maximumArgumentBytes`    | Yes      | `integer`                                                                                 |             |
-| `maximumArguments`        | Yes      | `integer`                                                                                 |             |
-| `maximumArgumentsBytes`   | Yes      | `integer`                                                                                 |             |
-| `maximumCwdBytes`         | Yes      | `integer`                                                                                 |             |
-| `maximumEnvironmentBytes` | Yes      | `integer`                                                                                 |             |
-| `maximumScriptBytes`      | Yes      | `integer`                                                                                 |             |
-| `maximumStdinBytes`       | Yes      | `integer`                                                                                 |             |
-| `maximumTimeoutMs`        | Yes      | `integer`                                                                                 |             |
-| `shell`                   | Yes      | [ConnectorMachineShell](protocol.md#connectormachineshell) / `null`                       |             |
-
-## ConnectorMachineShell
-
-Module: `nexa-protocol/dataplane/ConnectorMachineInvocationTypes.js`.
-
-Fixed local switches precede the signed script, without guessing shell syntax from an executable name.
-
-| Field             | Required | Type              | Description |
-| ----------------- | -------- | ----------------- | ----------- |
-| `executableIndex` | Yes      | `integer`         |             |
-| `fixedArguments`  | Yes      | Array of `string` |             |
-
-## ConnectorMetadata
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Exact sizes and nanosecond timestamps remain strings at JSON boundaries.
-
-| Field          | Required | Type                     | Description |
-| -------------- | -------- | ------------------------ | ----------- |
-| `kind`         | Yes      | `"directory"` / `"file"` |             |
-| `mode`         | Yes      | `number`                 |             |
-| `modifiedAtNs` | Yes      | `string`                 |             |
-| `sizeBytes`    | Yes      | `string`                 |             |
-
-## ConnectorMkdir
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-One private directory beneath an existing parent; no implicit recursion or replacement.
-
-| Field          | Required | Type      | Description |
-| -------------- | -------- | --------- | ----------- |
-| `action`       | Yes      | `"mkdir"` |             |
-| `path`         | Yes      | `string`  |             |
-| `policySha256` | Yes      | `string`  |             |
-| `requestId`    | Yes      | `string`  |             |
-| `rootId`       | Yes      | `string`  |             |
-
-## ConnectorMkdirResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Confirms one directory creation and parent synchronization under the original request.
-
-| Field       | Required | Type      | Description |
-| ----------- | -------- | --------- | ----------- |
-| `action`    | Yes      | `"mkdir"` |             |
-| `requestId` | Yes      | `string`  |             |
-
-## ConnectorOperationAuthorization
-
-Module: `nexa-protocol/dataplane/ConnectorOperationTypes.js`.
-
-Both current alternatives are explicit; missing or malformed metadata cannot select Independent.
-
-Variant 1: [ConnectorIndependentAuthorization](protocol.md#connectorindependentauthorization)
-
-| Field  | Required | Type            | Description |
-| ------ | -------- | --------------- | ----------- |
-| `kind` | Yes      | `"independent"` |             |
-
-Variant 2: [ConnectorJointAuthorization](protocol.md#connectorjointauthorization)
-
-| Field     | Required | Type                                                                               | Description |
-| --------- | -------- | ---------------------------------------------------------------------------------- | ----------- |
-| `binding` | Yes      | [ConnectorJointWorkspaceDescriptor](protocol.md#connectorjointworkspacedescriptor) |             |
-| `kind`    | Yes      | `"joint"`                                                                          |             |
-
-## ConnectorPhase
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Enrollment state is separate from a current authenticated transport or file grant.
-
-Type: `"enrolled-offline"` / `"pending"` / `"revoked"`.
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)                         |             |
+| `result` | Yes      | [ConnectorEnrollmentListstring](protocol.md#connectorenrollmentliststring) |             |
 
 ## ConnectorPresence
 
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
+Status derives from server ownership, current lease lifetime and revocation, never a device-supplied online flag.
 
-Presence is based on the authenticated backend's lease clock and revocation state.
-
-Type: `"offline"` / `"online"` / `"pending"` / `"revoked"`.
-
-## ConnectorProfile
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Root aliases and commitments keep absolute private paths on the customer machine.
-
-| Field               | Required | Type                                               | Description |
-| ------------------- | -------- | -------------------------------------------------- | ----------- |
-| `maximumReadBytes`  | Yes      | `number`                                           |             |
-| `maximumWriteBytes` | Yes      | `number`                                           |             |
-| `mode`              | Yes      | [ConnectorFileMode](protocol.md#connectorfilemode) |             |
-| `policySha256`      | Yes      | `string`                                           |             |
-| `revision`          | Yes      | `string`                                           |             |
-| `roots`             | Yes      | Array of `string`                                  |             |
-
-## ConnectorProgramGrant
-
-Module: `nexa-protocol/dataplane/ConnectorExecutionTypes.js`.
-
-Public program aliases cannot become host executable paths.
-
-| Field       | Required | Type                                                                | Description |
-| ----------- | -------- | ------------------------------------------------------------------- | ----------- |
-| `arguments` | Yes      | Array of [ConnectorArgumentRule](protocol.md#connectorargumentrule) |             |
-| `id`        | Yes      | `string`                                                            |             |
-| `rootIds`   | Yes      | Array of `string`                                                   |             |
-
-## ConnectorRead
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Reads are bounded chunks; offsets remain exact decimal strings.
-
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `action`       | Yes      | `"read"` |             |
-| `limit`        | Yes      | `number` |             |
-| `offset`       | Yes      | `string` |             |
-| `path`         | Yes      | `string` |             |
-| `policySha256` | Yes      | `string` |             |
-| `requestId`    | Yes      | `string` |             |
-| `rootId`       | Yes      | `string` |             |
-
-## ConnectorReadResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Successful read data is canonical base64 with its original identity and exact offset.
-
-| Field        | Required | Type                                               | Description |
-| ------------ | -------- | -------------------------------------------------- | ----------- |
-| `action`     | Yes      | `"read"`                                           |             |
-| `dataBase64` | Yes      | `string`                                           |             |
-| `metadata`   | Yes      | [ConnectorMetadata](protocol.md#connectormetadata) |             |
-| `offset`     | Yes      | `string`                                           |             |
-| `requestId`  | Yes      | `string`                                           |             |
-
-## ConnectorRemove
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Explicit recursive intent cannot select the root itself, follow links or cross mounts.
-
-| Field          | Required | Type       | Description |
-| -------------- | -------- | ---------- | ----------- |
-| `action`       | Yes      | `"remove"` |             |
-| `path`         | Yes      | `string`   |             |
-| `policySha256` | Yes      | `string`   |             |
-| `recursive`    | Yes      | `boolean`  |             |
-| `requestId`    | Yes      | `string`   |             |
-| `rootId`       | Yes      | `string`   |             |
-
-## ConnectorRemoveResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Complete bounded removal includes the selected target in its exact decimal entry count.
-
-| Field            | Required | Type       | Description |
-| ---------------- | -------- | ---------- | ----------- |
-| `action`         | Yes      | `"remove"` |             |
-| `entriesRemoved` | Yes      | `string`   |             |
-| `requestId`      | Yes      | `string`   |             |
-
-## ConnectorRename
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Both paths use one captured root alias and preserve explicit replacement intent.
-
-| Field          | Required | Type                                                 | Description |
-| -------------- | -------- | ---------------------------------------------------- | ----------- |
-| `action`       | Yes      | `"rename"`                                           |             |
-| `destination`  | Yes      | `string`                                             |             |
-| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
-| `path`         | Yes      | `string`                                             |             |
-| `policySha256` | Yes      | `string`                                             |             |
-| `requestId`    | Yes      | `string`                                             |             |
-| `rootId`       | Yes      | `string`                                             |             |
-
-## ConnectorRenameResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Successful movement reports regular-file metadata after source identity verification and parent sync.
-
-| Field       | Required | Type                                               | Description |
-| ----------- | -------- | -------------------------------------------------- | ----------- |
-| `action`    | Yes      | `"rename"`                                         |             |
-| `metadata`  | Yes      | [ConnectorMetadata](protocol.md#connectormetadata) |             |
-| `requestId` | Yes      | `string`                                           |             |
+Type: `"pending"` / `"online"` / `"offline"` / `"revoked"`.
 
 ## ConnectorResultMethod
 
@@ -4382,10 +4073,10 @@ Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Permanent revocation is an explicit write operation.
 
-| Field    | Required | Type                                                       | Description |
-| -------- | -------- | ---------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorRevokeParams](protocol.md#connectorrevokeparams) |             |
-| `result` | Yes      | [ConnectorView](protocol.md#connectorview)                 |             |
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorRevokeParams](protocol.md#connectorrevokeparams)                 |             |
+| `result` | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
 
 ## ConnectorRevokeParams
 
@@ -4398,32 +4089,6 @@ Exact revision and operation ID must be preserved after an uncertain response.
 | `enrollmentId`     | Yes      | `string` |             |
 | `observedRevision` | Yes      | `string` |             |
 | `requestId`        | Yes      | `string` |             |
-
-## ConnectorStat
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Metadata never follows links or opens devices.
-
-| Field          | Required | Type     | Description |
-| -------------- | -------- | -------- | ----------- |
-| `action`       | Yes      | `"stat"` |             |
-| `path`         | Yes      | `string` |             |
-| `policySha256` | Yes      | `string` |             |
-| `requestId`    | Yes      | `string` |             |
-| `rootId`       | Yes      | `string` |             |
-
-## ConnectorStatResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Only bounded safe metadata is returned to the account.
-
-| Field       | Required | Type                                               | Description |
-| ----------- | -------- | -------------------------------------------------- | ----------- |
-| `action`    | Yes      | `"stat"`                                           |             |
-| `metadata`  | Yes      | [ConnectorMetadata](protocol.md#connectormetadata) |             |
-| `requestId` | Yes      | `string`                                           |             |
 
 ## ConnectorSubmitMethod
 
@@ -4442,72 +4107,11 @@ Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
 
 Retrying never silently substitutes a newer sequence or policy commitment.
 
-| Field              | Required | Type                                                     | Description |
-| ------------------ | -------- | -------------------------------------------------------- | ----------- |
-| `environmentId`    | Yes      | `string`                                                 |             |
-| `previousSequence` | Yes      | `string`                                                 |             |
-| `request`          | Yes      | [ConnectorFileRequest](protocol.md#connectorfilerequest) |             |
-
-## ConnectorSystemPlatform
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-Platform labels are finite; unsupported platforms cannot masquerade as qualified Linux installations.
-
-Type: `"linux"` / `"macos"` / `"other"` / `"windows"`.
-
-## ConnectorSystemSpecification
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-Account-visible metadata contains no IP address, username, process list, mount paths or credentials.
-
-| Field                  | Required | Type                                                                        | Description                                                               |
-| ---------------------- | -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `architecture`         | Yes      | `string`                                                                    |                                                                           |
-| `availableMemoryBytes` | Yes      | `string`                                                                    |                                                                           |
-| `cpuModel`             | Yes      | `string`                                                                    |                                                                           |
-| `gpuState`             | Yes      | [ConnectorGpuInventoryState](protocol.md#connectorgpuinventorystate)        |                                                                           |
-| `gpus`                 | Yes      | Array of [ConnectorGpuSpecification](protocol.md#connectorgpuspecification) |                                                                           |
-| `logicalCpuCount`      | Yes      | `number`                                                                    |                                                                           |
-| `observedAtMs`         | Yes      | `string`                                                                    |                                                                           |
-| `osRelease`            | Yes      | `string`                                                                    |                                                                           |
-| `platform`             | Yes      | [ConnectorSystemPlatform](protocol.md#connectorsystemplatform)              |                                                                           |
-| `totalMemoryBytes`     | Yes      | `string`                                                                    |                                                                           |
-| `usage`                | No       | [ConnectorSystemUsage](protocol.md#connectorsystemusage)                    | Live load from a connector that samples it; absent from older connectors. |
-
-## ConnectorSystemUsage
-
-Module: `nexa-protocol/dataplane/ConnectorInventoryTypes.js`.
-
-How busy a connected computer was over one short sampling interval.
-
-| Field                           | Required | Type                                                        | Description                                                        |
-| ------------------------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------ |
-| `cpuBasisPoints`                | Yes      | `number`                                                    |                                                                    |
-| `gpus`                          | Yes      | Array of [ConnectorGpuUsage](protocol.md#connectorgpuusage) |                                                                    |
-| `intervalMs`                    | Yes      | `number`                                                    | Length of the interval the CPU share and rates were measured over. |
-| `networkReceiveBytesPerSecond`  | Yes      | `null,string`                                               |                                                                    |
-| `networkTransmitBytesPerSecond` | Yes      | `null,string`                                               |                                                                    |
-| `sampledAtMs`                   | Yes      | `string`                                                    |                                                                    |
-
-## ConnectorView
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Safe metadata includes no device key, workload proof, controller endpoint or host pathname.
-
-| Field           | Required | Type                                         | Description |
-| --------------- | -------- | -------------------------------------------- | ----------- |
-| `enrolledAtMs`  | Yes      | `null,string`                                |             |
-| `environmentId` | Yes      | `string`                                     |             |
-| `expiresAtMs`   | Yes      | `string`                                     |             |
-| `id`            | Yes      | `string`                                     |             |
-| `issuedAtMs`    | Yes      | `string`                                     |             |
-| `name`          | Yes      | `string`                                     |             |
-| `phase`         | Yes      | [ConnectorPhase](protocol.md#connectorphase) |             |
-| `revision`      | Yes      | `string`                                     |             |
-| `revokedAtMs`   | Yes      | `null,string`                                |             |
+| Field              | Required | Type                                                                   | Description |
+| ------------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                               |             |
+| `previousSequence` | Yes      | `string`                                                               |             |
+| `request`          | Yes      | [ConnectorAccountFileRequest](protocol.md#connectoraccountfilerequest) |             |
 
 ## ConnectorWorkspaceCatalogEntry
 
@@ -4790,42 +4394,11 @@ Public current state contains no private owner, provider identity, endpoint or d
 | `selection` | Yes      | [ConnectorWorkspaceFileSelection](protocol.md#connectorworkspacefileselection) / [ConnectorWorkspaceJointSelection](protocol.md#connectorworkspacejointselection) / [ConnectorWorkspaceHostSelection](protocol.md#connectorworkspacehostselection) / `null` |             |
 | `sessionId` | Yes      | `string`                                                                                                                                                                                                                                                    |             |
 
-## ConnectorWrite
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Complete file contents are bounded by the explicit local read-write grant.
-
-| Field          | Required | Type                                                 | Description |
-| -------------- | -------- | ---------------------------------------------------- | ----------- |
-| `action`       | Yes      | `"write"`                                            |             |
-| `dataBase64`   | Yes      | `string`                                             |             |
-| `mode`         | Yes      | [ConnectorWriteMode](protocol.md#connectorwritemode) |             |
-| `path`         | Yes      | `string`                                             |             |
-| `policySha256` | Yes      | `string`                                             |             |
-| `requestId`    | Yes      | `string`                                             |             |
-| `rootId`       | Yes      | `string`                                             |             |
-
 ## ConnectorWriteMode
 
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Atomic publication choices never grant append, removal or program execution.
+Atomic create never replaces an existing entry; replace deliberately publishes over an existing regular file.
 
 Type: `"create"` / `"replace"`.
-
-## ConnectorWriteResult
-
-Module: `nexa-protocol/dataplane/ConnectorTypes.js`.
-
-Successful atomic writes retain exact original byte counts and published metadata.
-
-| Field          | Required | Type                                               | Description |
-| -------------- | -------- | -------------------------------------------------- | ----------- |
-| `action`       | Yes      | `"write"`                                          |             |
-| `bytesWritten` | Yes      | `string`                                           |             |
-| `metadata`     | Yes      | [ConnectorMetadata](protocol.md#connectormetadata) |             |
-| `requestId`    | Yes      | `string`                                           |             |
 
 ## ContentBlock
 
@@ -9691,6 +9264,255 @@ Type: `"reasoning"` / `"text"`.
 
 Type: `"audio"` / `"boolean"` / `"datetime"` / `"file"` / `"flow"` / `"image"` / `"integer"` / `"json"` / `"message"` / `"number"` / `"table"` / `"text"` / `"timestamp"` / `"video"`.
 
+## ExecutionChoiceArgument
+
+Choices are finite exact bytes, not prefix matches or command names.
+
+| Field    | Required | Type              | Description |
+| -------- | -------- | ----------------- | ----------- |
+| `kind`   | Yes      | `"choice"`        |             |
+| `values` | Yes      | Array of `string` |             |
+
+## ExecutionInputKind
+
+Control intent is explicit and is never inferred from an empty write or a shell name.
+
+Type: `"data"` / `"end"` / `"resize"`.
+
+## ExecutionInputRulestring
+
+Fixed argument values are private local configuration and are never a public input grant.
+
+Variant 1: [ExecutionMachineInvocationRule](protocol.md#executionmachineinvocationrule)
+
+| Field                     | Required | Type                                                                                      | Description |
+| ------------------------- | -------- | ----------------------------------------------------------------------------------------- | ----------- |
+| `commands`                | Yes      | Array of [ExecutionMachineCommand](protocol.md#executionmachinecommand)                   |             |
+| `environment`             | Yes      | Array of [ExecutionMachineEnvironmentGrant](protocol.md#executionmachineenvironmentgrant) |             |
+| `kind`                    | Yes      | `"machine-invocation"`                                                                    |             |
+| `maximumArgumentBytes`    | Yes      | `integer`                                                                                 |             |
+| `maximumArguments`        | Yes      | `integer`                                                                                 |             |
+| `maximumArgumentsBytes`   | Yes      | `integer`                                                                                 |             |
+| `maximumCwdBytes`         | Yes      | `integer`                                                                                 |             |
+| `maximumEnvironmentBytes` | Yes      | `integer`                                                                                 |             |
+| `maximumScriptBytes`      | Yes      | `integer`                                                                                 |             |
+| `maximumStdinBytes`       | Yes      | `integer`                                                                                 |             |
+| `maximumTimeoutMs`        | Yes      | `integer`                                                                                 |             |
+| `shell`                   | Yes      | [ExecutionMachineShell](protocol.md#executionmachineshell) / `null`                       |             |
+
+Variant 2: [ExecutionChoiceArgument](protocol.md#executionchoiceargument)
+
+| Field    | Required | Type              | Description |
+| -------- | -------- | ----------------- | ----------- |
+| `kind`   | Yes      | `"choice"`        |             |
+| `values` | Yes      | Array of `string` |             |
+
+Variant 3: [ExecutionTextArgument](protocol.md#executiontextargument)
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `kind`         | Yes      | `"text"` |             |
+| `maximumBytes` | Yes      | `number` |             |
+
+Variant 4: [ExecutionPathArgument](protocol.md#executionpathargument)
+
+| Field          | Required | Type              | Description |
+| -------------- | -------- | ----------------- | ----------- |
+| `kind`         | Yes      | `"relative-path"` |             |
+| `maximumBytes` | Yes      | `number`          |             |
+
+Variant 5: [ExecutionInteractiveInvocationRulestring](protocol.md#executioninteractiveinvocationrulestring)
+
+| Field               | Required | Type                                                                                | Description                                                               |
+| ------------------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `controls`          | Yes      | Array of [ExecutionInputKind](protocol.md#executioninputkind)                       |                                                                           |
+| `invocation`        | Yes      | [ExecutionMachineInvocationRule](protocol.md#executionmachineinvocationrule)        |                                                                           |
+| `kind`              | Yes      | `"interactive-invocation"`                                                          |                                                                           |
+| `maximumControls`   | Yes      | `integer`                                                                           |                                                                           |
+| `maximumInputBytes` | Yes      | `string`                                                                            | Initial input record zero consumes both this byte budget and one control. |
+| `maximumResizes`    | Yes      | `integer`                                                                           |                                                                           |
+| `transports`        | Yes      | Array of [ExecutionInteractiveTransport](protocol.md#executioninteractivetransport) |                                                                           |
+
+## ExecutionInteractiveInvocationRulestring
+
+Live input requires a separate complete grant; a foreground Machine rule grants no controls.
+
+| Field               | Required | Type                                                                                | Description                                                               |
+| ------------------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `controls`          | Yes      | Array of [ExecutionInputKind](protocol.md#executioninputkind)                       |                                                                           |
+| `invocation`        | Yes      | [ExecutionMachineInvocationRule](protocol.md#executionmachineinvocationrule)        |                                                                           |
+| `kind`              | Yes      | `"interactive-invocation"`                                                          |                                                                           |
+| `maximumControls`   | Yes      | `integer`                                                                           |                                                                           |
+| `maximumInputBytes` | Yes      | `string`                                                                            | Initial input record zero consumes both this byte budget and one control. |
+| `maximumResizes`    | Yes      | `integer`                                                                           |                                                                           |
+| `transports`        | Yes      | Array of [ExecutionInteractiveTransport](protocol.md#executioninteractivetransport) |                                                                           |
+
+## ExecutionInteractiveTransport
+
+Neither application pipes nor PTYs are implied by an existing foreground grant.
+
+Type: `"pipe"` / `"pty"`.
+
+## ExecutionLane
+
+Two fixed command lanes bound parallel effects and retain independent permanent watermarks.
+
+Type: `"first"` / `"second"`.
+
+## ExecutionMachineCommand
+
+This index refers only to the owning program's pinned [program, ...children] table.
+
+| Field             | Required | Type      | Description |
+| ----------------- | -------- | --------- | ----------- |
+| `alias`           | Yes      | `string`  |             |
+| `executableIndex` | Yes      | `integer` |             |
+
+## ExecutionMachineEnvironmentGrant
+
+A permitted environment name has its own UTF-8 value ceiling.
+
+| Field          | Required | Type      | Description |
+| -------------- | -------- | --------- | ----------- |
+| `maximumBytes` | Yes      | `integer` |             |
+| `name`         | Yes      | `string`  |             |
+
+## ExecutionMachineInvocationRule
+
+The complete explicit local opt-in is published under the device's existing signed profile.
+
+| Field                     | Required | Type                                                                                      | Description |
+| ------------------------- | -------- | ----------------------------------------------------------------------------------------- | ----------- |
+| `commands`                | Yes      | Array of [ExecutionMachineCommand](protocol.md#executionmachinecommand)                   |             |
+| `environment`             | Yes      | Array of [ExecutionMachineEnvironmentGrant](protocol.md#executionmachineenvironmentgrant) |             |
+| `kind`                    | Yes      | `"machine-invocation"`                                                                    |             |
+| `maximumArgumentBytes`    | Yes      | `integer`                                                                                 |             |
+| `maximumArguments`        | Yes      | `integer`                                                                                 |             |
+| `maximumArgumentsBytes`   | Yes      | `integer`                                                                                 |             |
+| `maximumCwdBytes`         | Yes      | `integer`                                                                                 |             |
+| `maximumEnvironmentBytes` | Yes      | `integer`                                                                                 |             |
+| `maximumScriptBytes`      | Yes      | `integer`                                                                                 |             |
+| `maximumStdinBytes`       | Yes      | `integer`                                                                                 |             |
+| `maximumTimeoutMs`        | Yes      | `integer`                                                                                 |             |
+| `shell`                   | Yes      | [ExecutionMachineShell](protocol.md#executionmachineshell) / `null`                       |             |
+
+## ExecutionMachineShell
+
+Fixed local switches precede the signed script, without guessing shell syntax from an executable name.
+
+| Field             | Required | Type              | Description |
+| ----------------- | -------- | ----------------- | ----------- |
+| `executableIndex` | Yes      | `integer`         |             |
+| `fixedArguments`  | Yes      | Array of `string` |             |
+
+## ExecutionOutput
+
+Canonical binary stdout/stderr share one 65536-byte aggregate budget.
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `stderrBase64` | Yes      | `string` |             |
+| `stdoutBase64` | Yes      | `string` |             |
+
+## ExecutionPathArgument
+
+Relative arguments cannot introduce traversal, absolute references or option prefixes.
+
+| Field          | Required | Type              | Description |
+| -------------- | -------- | ----------------- | ----------- |
+| `kind`         | Yes      | `"relative-path"` |             |
+| `maximumBytes` | Yes      | `number`          |             |
+
+## ExecutionProfilestring
+
+Exact local policy and hard ceilings are independently published under device proof.
+
+| Field                 | Required | Type                                                                            | Description |
+| --------------------- | -------- | ------------------------------------------------------------------------------- | ----------- |
+| `maximumAddressBytes` | Yes      | `string`                                                                        |             |
+| `maximumFileBytes`    | Yes      | `string`                                                                        |             |
+| `policySha256`        | Yes      | `string`                                                                        |             |
+| `programs`            | Yes      | Array of [ExecutionProgramGrantstring](protocol.md#executionprogramgrantstring) |             |
+| `resources`           | Yes      | [ExecutionResourceLimitsstring](protocol.md#executionresourcelimitsstring)      |             |
+| `revision`            | Yes      | `string`                                                                        |             |
+| `roots`               | Yes      | Array of [ExecutionRootGrant](protocol.md#executionrootgrant)                   |             |
+| `timeoutMs`           | Yes      | `number`                                                                        |             |
+
+## ExecutionProgramGrantstring
+
+Public grants expose aliases and input rules, never executable paths, fixed private arguments or local state paths.
+
+| Field       | Required | Type                                                                      | Description |
+| ----------- | -------- | ------------------------------------------------------------------------- | ----------- |
+| `arguments` | Yes      | Array of [ExecutionInputRulestring](protocol.md#executioninputrulestring) |             |
+| `id`        | Yes      | `string`                                                                  |             |
+| `rootIds`   | Yes      | Array of `string`                                                         |             |
+
+## ExecutionRequest
+
+An explicit application request identity is part of the original payload commitment.
+
+| Field          | Required | Type              | Description |
+| -------------- | -------- | ----------------- | ----------- |
+| `arguments`    | Yes      | Array of `string` |             |
+| `policySha256` | Yes      | `string`          |             |
+| `programId`    | Yes      | `string`          |             |
+| `requestId`    | Yes      | `string`          |             |
+| `rootId`       | Yes      | `string`          |             |
+
+## ExecutionResourceLimitsstring
+
+Aggregate controls apply outside the namespace to every descendant, including forked background processes.
+
+| Field            | Required | Type     | Description |
+| ---------------- | -------- | -------- | ----------- |
+| `cpuQuotaMicros` | Yes      | `number` |             |
+| `maximumTasks`   | Yes      | `number` |             |
+| `memoryBytes`    | Yes      | `string` |             |
+
+## ExecutionResult
+
+Bounded local results remain unsigned until the separately authorized durable remote operation owner admits them.
+
+| Field          | Required | Type                                                                                                                                    | Description |
+| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `exitCode`     | Yes      | `null,number`                                                                                                                           |             |
+| `failure`      | Yes      | `"ambiguous-exit"` / `"cancelled"` / `"expired"` / `"interrupted"` / `"output-limit"` / `"sandbox"` / `"signal"` / `"timeout"` / `null` |             |
+| `setupFailure` | Yes      | `"apparmor"` / `"bootstrap"` / `"cgroup"` / `"configuration"` / `"confinement"` / `"execute"` / `"mounts"` / `"namespaces"` / `null`    |             |
+| `stderrBase64` | Yes      | `string`                                                                                                                                |             |
+| `stdoutBase64` | Yes      | `string`                                                                                                                                |             |
+| `termination`  | Yes      | [ExecutionTermination](protocol.md#executiontermination)                                                                                |             |
+
+## ExecutionRootGrant
+
+Workspace mutation is explicit and cannot be inferred from a file scope or an executable name.
+
+| Field    | Required | Type                                                             | Description |
+| -------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `access` | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
+| `id`     | Yes      | `string`                                                         |             |
+
+## ExecutionTermination
+
+A closed connection or interrupted process is never treated as a successful completed command.
+
+Type: `"exited"` / `"indeterminate"`.
+
+## ExecutionTextArgument
+
+Free text is a deliberate grant at a particular argument position and remains bounded UTF-8 data.
+
+| Field          | Required | Type     | Description |
+| -------------- | -------- | -------- | ----------- |
+| `kind`         | Yes      | `"text"` |             |
+| `maximumBytes` | Yes      | `number` |             |
+
+## ExecutionWorkspaceAccess
+
+Execution authority is distinct from a file-read grant; this controls persistent workspace mutation.
+
+Type: `"read-only"` / `"read-write"`.
+
 ## FinishReason
 
 Module: `nexa-protocol/providers/Types.js`.
@@ -10405,63 +10227,63 @@ Every gateway method with its params and result; the method name is the key.
 | Field    | Required | Type                                                                 | Description |
 | -------- | -------- | -------------------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorEnvironmentParams](protocol.md#connectorenvironmentparams) |             |
-| `result` | Yes      | [ConnectorFilesystem](protocol.md#connectorfilesystem)               |             |
+| `result` | Yes      | [ConnectorFileStatusstring](protocol.md#connectorfilestatusstring)   |             |
 
 **connectors.get**
 
-| Field    | Required | Type                                                 | Description |
-| -------- | -------- | ---------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorGetParams](protocol.md#connectorgetparams) |             |
-| `result` | Yes      | [ConnectorView](protocol.md#connectorview)           |             |
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorGetParams](protocol.md#connectorgetparams)                       |             |
+| `result` | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
 
 **connectors.host.result**
 
-| Field    | Required | Type                                                               | Description |
-| -------- | -------- | ------------------------------------------------------------------ | ----------- |
-| `params` | Yes      | [ConnectorHostResultParams](protocol.md#connectorhostresultparams) |             |
-| `result` | Yes      | [ConnectorHostJobView](protocol.md#connectorhostjobview)           |             |
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorHostResultParams](protocol.md#connectorhostresultparams)   |             |
+| `result` | Yes      | [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring) |             |
 
 **connectors.host.status**
 
 | Field    | Required | Type                                                               | Description |
 | -------- | -------- | ------------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [ConnectorHostStatusParams](protocol.md#connectorhoststatusparams) |             |
-| `result` | Yes      | [ConnectorHostStatus](protocol.md#connectorhoststatus)             |             |
+| `result` | Yes      | [ConnectorHostStatusstring](protocol.md#connectorhoststatusstring) |             |
 
 **connectors.host.submit**
 
-| Field    | Required | Type                                                               | Description |
-| -------- | -------- | ------------------------------------------------------------------ | ----------- |
-| `params` | Yes      | [ConnectorHostSubmitParams](protocol.md#connectorhostsubmitparams) |             |
-| `result` | Yes      | [ConnectorHostJobView](protocol.md#connectorhostjobview)           |             |
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorHostSubmitParams](protocol.md#connectorhostsubmitparams)   |             |
+| `result` | Yes      | [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring) |             |
 
 **connectors.instructions.get**
 
-| Field    | Required | Type                                                                         | Description |
-| -------- | -------- | ---------------------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorInstructionsGetParams](protocol.md#connectorinstructionsgetparams) |             |
-| `result` | Yes      | [ConnectorInstructionsView](protocol.md#connectorinstructionsview)           |             |
+| Field    | Required | Type                                                                           | Description |
+| -------- | -------- | ------------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [ConnectorInstructionsGetParams](protocol.md#connectorinstructionsgetparams)   |             |
+| `result` | Yes      | [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring) |             |
 
 **connectors.instructions.update**
 
 | Field    | Required | Type                                                                               | Description |
 | -------- | -------- | ---------------------------------------------------------------------------------- | ----------- |
 | `params` | Yes      | [ConnectorInstructionsUpdateParams](protocol.md#connectorinstructionsupdateparams) |             |
-| `result` | Yes      | [ConnectorInstructionsView](protocol.md#connectorinstructionsview)                 |             |
+| `result` | Yes      | [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring)     |             |
 
 **connectors.inventory**
 
-| Field    | Required | Type                                                             | Description |
-| -------- | -------- | ---------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorInventoryParams](protocol.md#connectorinventoryparams) |             |
-| `result` | Yes      | [ConnectorInventoryPage](protocol.md#connectorinventorypage)     |             |
+| Field    | Required | Type                                                                     | Description |
+| -------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [ConnectorInventoryQuery](protocol.md#connectorinventoryquery)           |             |
+| `result` | Yes      | [ConnectorInventoryPagestring](protocol.md#connectorinventorypagestring) |             |
 
 **connectors.link.approve**
 
-| Field    | Required | Type                                                                 | Description |
-| -------- | -------- | -------------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorLinkApproveParams](protocol.md#connectorlinkapproveparams) |             |
-| `result` | Yes      | [ConnectorLinkApproved](protocol.md#connectorlinkapproved)           |             |
+| Field    | Required | Type                                                                   | Description |
+| -------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorLinkApproveParams](protocol.md#connectorlinkapproveparams)   |             |
+| `result` | Yes      | [ConnectorLinkApprovedstring](protocol.md#connectorlinkapprovedstring) |             |
 
 **connectors.link.deny**
 
@@ -10475,21 +10297,21 @@ Every gateway method with its params and result; the method name is the key.
 | Field    | Required | Type                                                               | Description |
 | -------- | -------- | ------------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [ConnectorLinkReviewParams](protocol.md#connectorlinkreviewparams) |             |
-| `result` | Yes      | [ConnectorLinkReview](protocol.md#connectorlinkreview)             |             |
+| `result` | Yes      | [ConnectorLinkReviewstring](protocol.md#connectorlinkreviewstring) |             |
 
 **connectors.list**
 
-| Field    | Required | Type                                               | Description |
-| -------- | -------- | -------------------------------------------------- | ----------- |
-| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
-| `result` | Yes      | [ConnectorList](protocol.md#connectorlist)         |             |
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)                         |             |
+| `result` | Yes      | [ConnectorEnrollmentListstring](protocol.md#connectorenrollmentliststring) |             |
 
 **connectors.revoke**
 
-| Field    | Required | Type                                                       | Description |
-| -------- | -------- | ---------------------------------------------------------- | ----------- |
-| `params` | Yes      | [ConnectorRevokeParams](protocol.md#connectorrevokeparams) |             |
-| `result` | Yes      | [ConnectorView](protocol.md#connectorview)                 |             |
+| Field    | Required | Type                                                                       | Description |
+| -------- | -------- | -------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [ConnectorRevokeParams](protocol.md#connectorrevokeparams)                 |             |
+| `result` | Yes      | [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring) |             |
 
 **connectors.workspace.catalog**
 
@@ -12141,6 +11963,40 @@ Supported serialized 3D asset formats; radiance fields remain unspecified.
 
 Type: `"gaussian_ply"` / `"glb"`.
 
+## GpuInventoryState
+
+Missing driver access is different from a successful empty inventory.
+
+Type: `"reported"` / `"unavailable"`.
+
+## GpuSpecification
+
+Device identifiers and available VRAM support explicit selection without model-authored shell probing.
+
+| Field                | Required | Type                               | Description |
+| -------------------- | -------- | ---------------------------------- | ----------- |
+| `availableVramBytes` | Yes      | `null,string`                      |             |
+| `id`                 | Yes      | `string`                           |             |
+| `model`              | Yes      | `string`                           |             |
+| `totalVramBytes`     | Yes      | `null,string`                      |             |
+| `vendor`             | Yes      | [GpuVendor](protocol.md#gpuvendor) |             |
+
+## GpuUsage
+
+One GPU's load, taken in the same sample as its computer's usage.
+
+| Field                    | Required | Type          | Description                                                                                           |
+| ------------------------ | -------- | ------------- | ----------------------------------------------------------------------------------------------------- |
+| `id`                     | Yes      | `string`      | The reported GPU this load belongs to.                                                                |
+| `usedVramBytes`          | Yes      | `null,string` | Video memory in use at sampling time; null when the driver does not say.                              |
+| `utilizationBasisPoints` | Yes      | `null,number` | Busy share of the sampling interval, from 0 to 10000 basis points; null when the driver does not say. |
+
+## GpuVendor
+
+Vendor identities remain separate from compute support and memory availability.
+
+Type: `"nvidia"` / `"amd"` / `"intel"` / `"other"`.
+
 ## GraphIssue
 
 Module: `nexa-protocol/workflows/GraphTypes.js`.
@@ -12616,6 +12472,43 @@ Variant 3: Object (fields below)
 | ------ | -------- | -------- | ---------------------- |
 | `at`   | Yes      | `number` |                        |
 | `kind` | Yes      | `"once"` | Exactly once, at `at`. |
+
+## JointWorkspaceBindingstring
+
+Immutable public metadata binds two separately granted policies without exporting any raw physical identity.
+
+| Field                    | Required | Type                                                                           | Description |
+| ------------------------ | -------- | ------------------------------------------------------------------------------ | ----------- |
+| `access`                 | Yes      | [ConnectorFileMode](protocol.md#connectorfilemode)                             |             |
+| `authorityId`            | Yes      | `string`                                                                       |             |
+| `enrollmentId`           | Yes      | `string`                                                                       |             |
+| `environmentId`          | Yes      | `string`                                                                       |             |
+| `executionJournals`      | Yes      | [JointWorkspaceExecutionJournals](protocol.md#jointworkspaceexecutionjournals) |             |
+| `executionPolicySha256`  | Yes      | `string`                                                                       |             |
+| `executionRootId`        | Yes      | `string`                                                                       |             |
+| `fileJournalId`          | Yes      | `string`                                                                       |             |
+| `filePolicySha256`       | Yes      | `string`                                                                       |             |
+| `fileRootId`             | Yes      | `string`                                                                       |             |
+| `physicalRootCommitment` | Yes      | `string`                                                                       |             |
+| `revision`               | Yes      | `string`                                                                       |             |
+
+## JointWorkspaceDescriptorstring
+
+The signature authenticates the exact immutable body; its presence alone is not publication, activation or execution authority.
+
+| Field       | Required | Type                                                                   | Description |
+| ----------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `binding`   | Yes      | [JointWorkspaceBindingstring](protocol.md#jointworkspacebindingstring) |             |
+| `signature` | Yes      | `string`                                                               |             |
+
+## JointWorkspaceExecutionJournals
+
+Both fixed execution lanes retain their own permanent journal identity; ordering is receiver-selected.
+
+| Field    | Required | Type     | Description |
+| -------- | -------- | -------- | ----------- |
+| `first`  | Yes      | `string` |             |
+| `second` | Yes      | `string` |             |
 
 ## JsonObject
 
@@ -15946,6 +15839,43 @@ What one turn is asked for, when the client wants its events streamed.
 | `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                 |
 | `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                           |
 | `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                         |
+
+## SystemPlatform
+
+Platform labels are finite; unsupported platforms cannot masquerade as qualified Linux installations.
+
+Type: `"linux"` / `"windows"` / `"macos"` / `"other"`.
+
+## SystemSpecification
+
+Account-visible metadata contains no IP address, username, process list, mount paths or credentials.
+
+| Field                  | Required | Type                                                      | Description                                                               |
+| ---------------------- | -------- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `architecture`         | Yes      | `string`                                                  |                                                                           |
+| `availableMemoryBytes` | Yes      | `string`                                                  |                                                                           |
+| `cpuModel`             | Yes      | `string`                                                  |                                                                           |
+| `gpuState`             | Yes      | [GpuInventoryState](protocol.md#gpuinventorystate)        |                                                                           |
+| `gpus`                 | Yes      | Array of [GpuSpecification](protocol.md#gpuspecification) |                                                                           |
+| `logicalCpuCount`      | Yes      | `number`                                                  |                                                                           |
+| `observedAtMs`         | Yes      | `string`                                                  |                                                                           |
+| `osRelease`            | Yes      | `string`                                                  |                                                                           |
+| `platform`             | Yes      | [SystemPlatform](protocol.md#systemplatform)              |                                                                           |
+| `totalMemoryBytes`     | Yes      | `string`                                                  |                                                                           |
+| `usage`                | No       | [SystemUsage](protocol.md#systemusage)                    | Live load from a connector that samples it; absent from older connectors. |
+
+## SystemUsage
+
+How busy the computer was over one short sampling interval.
+
+| Field                           | Required | Type                                      | Description                                                        |
+| ------------------------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `cpuBasisPoints`                | Yes      | `number`                                  |                                                                    |
+| `gpus`                          | Yes      | Array of [GpuUsage](protocol.md#gpuusage) |                                                                    |
+| `intervalMs`                    | Yes      | `number`                                  | Length of the interval the CPU share and rates were measured over. |
+| `networkReceiveBytesPerSecond`  | Yes      | `null,string`                             |                                                                    |
+| `networkTransmitBytesPerSecond` | Yes      | `null,string`                             |                                                                    |
+| `sampledAtMs`                   | Yes      | `string`                                  |                                                                    |
 
 ## TaskRecord
 

@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Nexa contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
-import { ConnectorArgumentKind } from '../dataplane/ConnectorArgumentKind.js';
-import { ConnectorInputKind, ConnectorInteractiveTransport, } from '../dataplane/ConnectorInteractiveInvocationTypes.js';
+import { ExecutionArgumentKind } from 'nerva-connector-protocol/execution/ExecutionArgumentKind.js';
+import { ExecutionInputKind } from 'nerva-connector-protocol/execution/ExecutionInput.js';
+import { ExecutionInteractiveTransport } from 'nerva-connector-protocol/execution/ExecutionInteractive.js';
 /** Dependent checks supplement generated closed shapes; published permission never proves native availability. */
 export class ConnectorExecutionChecks {
     static #encoder = new TextEncoder();
@@ -24,7 +25,7 @@ export class ConnectorExecutionChecks {
         return true;
     }
     static #isInteractive(rule) {
-        return rule.kind === ConnectorArgumentKind.InteractiveInvocation.valueOf();
+        return rule.kind === ExecutionArgumentKind.InteractiveInvocation.valueOf();
     }
     static #interactive(rule, timeoutMs) {
         const transports = new Set(rule.transports);
@@ -32,12 +33,12 @@ export class ConnectorExecutionChecks {
         return (transports.size > 0 &&
             transports.size === rule.transports.length &&
             controls.size === rule.controls.length &&
-            controls.has(ConnectorInputKind.Data) &&
-            (!controls.has(ConnectorInputKind.End) ||
-                transports.has(ConnectorInteractiveTransport.Pipe)) &&
-            (!controls.has(ConnectorInputKind.Resize) ||
-                transports.has(ConnectorInteractiveTransport.Pty)) &&
-            controls.has(ConnectorInputKind.Resize) === rule.maximumResizes > 0 &&
+            controls.has(ExecutionInputKind.Data) &&
+            (!controls.has(ExecutionInputKind.End) ||
+                transports.has(ExecutionInteractiveTransport.Pipe)) &&
+            (!controls.has(ExecutionInputKind.Resize) ||
+                transports.has(ExecutionInteractiveTransport.Pty)) &&
+            controls.has(ExecutionInputKind.Resize) === rule.maximumResizes > 0 &&
             rule.maximumResizes < rule.maximumControls &&
             BigInt(rule.maximumInputBytes) <= 65536n &&
             this.#machine(rule.invocation, timeoutMs));

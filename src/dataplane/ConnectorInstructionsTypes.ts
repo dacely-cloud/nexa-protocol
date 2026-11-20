@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Nexa contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
 
+import type { ConnectorInstructionsView } from 'nerva-connector-protocol/protocol/ConnectorInstructions.js';
+
 /** Selects account-owned standing instructions without selecting a network address. */
 export interface ConnectorInstructionsGetParams {
     readonly enrollmentId: string;
@@ -13,20 +15,14 @@ export interface ConnectorInstructionsUpdateParams extends ConnectorInstructions
     readonly requestId: string;
 }
 
-/** User-authored preferences never broaden the connector's operating-system permissions. */
-export interface ConnectorInstructionsView extends ConnectorInstructionsGetParams {
-    readonly instructions: string;
-    readonly revision: string;
-}
-
 /** Read one authenticated account's preferences for its linked connector. */
 export interface ConnectorInstructionsGetMethod {
     readonly params: ConnectorInstructionsGetParams;
-    readonly result: ConnectorInstructionsView;
+    readonly result: ConnectorInstructionsView<string>;
 }
 
 /** Replace instructions using compare-and-set so concurrent edits cannot disappear. */
 export interface ConnectorInstructionsUpdateMethod {
     readonly params: ConnectorInstructionsUpdateParams;
-    readonly result: ConnectorInstructionsView;
+    readonly result: ConnectorInstructionsView<string>;
 }

@@ -216,7 +216,7 @@
                 "additionalProperties": false
             }
         },
-        "ConnectorInteractiveInvocationRule": {
+        "ExecutionInteractiveInvocationRule<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -241,7 +241,7 @@
                 "maxItems": 2
             }
         },
-        "ConnectorInventoryView": {
+        "ConnectorInventoryView<string>": {
             "properties/instructions": {
                 "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f\\u007f]*$",
                 "maxLength": 16384
@@ -260,27 +260,27 @@
                 "maxLength": 64
             }
         },
-        "ConnectorJointAuthorization": {
+        "ConnectorJointAuthorization<string>": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorJointExecutionJournals": {
+        "JointWorkspaceExecutionJournals": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorJointWorkspaceBinding": {
+        "JointWorkspaceBinding<string>": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorJointWorkspaceDescriptor": {
+        "JointWorkspaceDescriptor<string>": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorMachineCommand": {
+        "ExecutionMachineCommand": {
             "": {
                 "additionalProperties": false
             },
@@ -294,7 +294,7 @@
                 "type": "integer"
             }
         },
-        "ConnectorMachineEnvironmentGrant": {
+        "ExecutionMachineEnvironmentGrant": {
             "": {
                 "additionalProperties": false
             },
@@ -308,7 +308,7 @@
                 "maxLength": 64
             }
         },
-        "ConnectorMachineInvocationRule": {
+        "ExecutionMachineInvocationRule": {
             "": {
                 "additionalProperties": false
             },
@@ -359,7 +359,7 @@
                 "type": "integer"
             }
         },
-        "ConnectorMachineShell": {
+        "ExecutionMachineShell": {
             "": {
                 "additionalProperties": false
             },
@@ -375,22 +375,22 @@
                 "maxLength": 1024
             }
         },
-        "ConnectorMkdir": {
+        "ConnectorFileMkdir": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorMkdirResult": {
+        "ConnectorFileMkdirResult": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorRemove": {
+        "ConnectorFileRemove": {
             "": {
                 "additionalProperties": false
             }
         },
-        "ConnectorRemoveResult": {
+        "ConnectorFileRemoveResult<string>": {
             "": {
                 "additionalProperties": false
             }
@@ -800,7 +800,7 @@
                 "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
             }
         },
-        "ConnectorInstructionsView": {
+        "ConnectorInstructionsView<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -828,7 +828,7 @@
                 "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
             }
         },
-        "ConnectorHostStatus": {
+        "ConnectorHostStatus<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -842,7 +842,7 @@
                 "pattern": "^(0|[1-9][0-9]{0,18})$"
             }
         },
-        "ConnectorHostProfile": {
+        "ConnectorHostProfile<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -880,7 +880,7 @@
                 "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
             }
         },
-        "ConnectorHostRequest": {
+        "ConnectorHostRequest<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -894,7 +894,7 @@
                 "pattern": "^[1-9][0-9]{0,18}$"
             }
         },
-        "ConnectorHostJobView": {
+        "ConnectorHostJobView<string>": {
             "": {
                 "additionalProperties": false
             },
@@ -932,7 +932,7 @@
                 "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
             }
         },
-        "ConnectorHostSummary": {
+        "ConnectorHostInventoryView": {
             "": {
                 "additionalProperties": false
             },

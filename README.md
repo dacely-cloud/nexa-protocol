@@ -39,8 +39,13 @@ build step:
 "nexa-protocol": "https://codeload.github.com/dacely-cloud/nexa-protocol/tar.gz/<commit>"
 ```
 
-The package has no runtime dependencies. Its modules use only ECMAScript and web-platform globals, so they run
-unchanged in browsers and Node.js 22 or newer.
+Its one dependency is [nerva-connector-protocol](https://github.com/dacely-cloud/nerva-connector-protocol), pinned
+by commit. That package owns every connector type (enrollment, files, execution grants, host tools, inventory,
+workspaces); the gateway uses them directly and never declares them again. A connector type with exact integers
+takes a parameter, `bigint` on the device side and `string` here, so `ConnectorHostStatus<string>` is the JSON the
+gateway carries. Apps that install nexa-protocol must also declare nerva-connector-protocol at the same commit
+(npm refuses a URL dependency reached only transitively). Both packages use only ECMAScript and web-platform
+globals in the modules the gateway imports, so they run unchanged in browsers and Node.js 22 or newer.
 
 ## Develop
 
@@ -50,7 +55,7 @@ npm run generate   # regenerate the schema, validators, method catalog and docs 
 npm run check      # typecheck, fail if a generated file is stale, rebuild dist/ and fail if it is out of date
 ```
 
-`script/generate.mjs` reads only this package. It runs typescript-json-schema over the contract root
+`script/generate.mjs` reads this package and the declarations of its pinned nerva-connector-protocol. It runs typescript-json-schema over the contract root
 `script/Contract.ts`, shapes the result for the runtime validator, and applies `script/hardening.json`: the
 patterns, length and item limits, integer types and closed shapes a TypeScript declaration cannot express. A
 hardening entry may only add a constraint, and the build fails when an entry names a definition or field that no

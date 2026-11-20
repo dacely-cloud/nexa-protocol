@@ -1016,10 +1016,10 @@ Parameters: [ConnectorExecutionStopParams](protocol.md#connectorexecutionstoppar
 | `admissionHash`   | Yes      | `string`                                                         |             |
 | `environmentId`   | Yes      | `string`                                                         |             |
 | `jobId`           | Yes      | `string`                                                         |             |
-| `lane`            | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)     |             |
+| `lane`            | Yes      | [ExecutionLane](protocol.md#executionlane)                       |             |
 | `requestId`       | Yes      | `string`                                                         |             |
 | `sequence`        | Yes      | `string`                                                         |             |
-| `workspaceAccess` | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess) |             |
+| `workspaceAccess` | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
 
 Result: [ConnectorExecutionStopReceipt](protocol.md#connectorexecutionstopreceipt).
 
@@ -1127,13 +1127,13 @@ const result: ResultOf<typeof Method.ConnectorsExecutionSubmit> = await client.c
 
 Parameters: [ConnectorExecutionSubmitParams](protocol.md#connectorexecutionsubmitparams).
 
-| Field              | Required | Type                                                               | Description |
-| ------------------ | -------- | ------------------------------------------------------------------ | ----------- |
-| `environmentId`    | Yes      | `string`                                                           |             |
-| `lane`             | Yes      | [ConnectorExecutionLane](protocol.md#connectorexecutionlane)       |             |
-| `previousSequence` | Yes      | `string`                                                           |             |
-| `request`          | Yes      | [ConnectorExecutionRequest](protocol.md#connectorexecutionrequest) |             |
-| `workspaceAccess`  | Yes      | [ConnectorExecutionAccess](protocol.md#connectorexecutionaccess)   |             |
+| Field              | Required | Type                                                             | Description |
+| ------------------ | -------- | ---------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                         |             |
+| `lane`             | Yes      | [ExecutionLane](protocol.md#executionlane)                       |             |
+| `previousSequence` | Yes      | `string`                                                         |             |
+| `request`          | Yes      | [ExecutionRequest](protocol.md#executionrequest)                 |             |
+| `workspaceAccess`  | Yes      | [ExecutionWorkspaceAccess](protocol.md#executionworkspaceaccess) |             |
 
 Result: [ConnectorExecutionJob](protocol.md#connectorexecutionjob).
 
@@ -1172,9 +1172,7 @@ const params: ParamsOf<typeof Method.ConnectorsFilesSubmit> = {
     environmentId: 'YOUR_ENVIRONMENTID',
     previousSequence: 'YOUR_PREVIOUSSEQUENCE',
     request: {
-        action: 'read',
-        limit: 1,
-        offset: 'YOUR_OFFSET',
+        action: 'stat',
         path: 'YOUR_PATH',
         policySha256: 'YOUR_POLICYSHA256',
         requestId: 'YOUR_REQUESTID',
@@ -1189,11 +1187,11 @@ const result: ResultOf<typeof Method.ConnectorsFilesSubmit> = await client.call(
 
 Parameters: [ConnectorSubmitParams](protocol.md#connectorsubmitparams).
 
-| Field              | Required | Type                                                     | Description |
-| ------------------ | -------- | -------------------------------------------------------- | ----------- |
-| `environmentId`    | Yes      | `string`                                                 |             |
-| `previousSequence` | Yes      | `string`                                                 |             |
-| `request`          | Yes      | [ConnectorFileRequest](protocol.md#connectorfilerequest) |             |
+| Field              | Required | Type                                                                   | Description |
+| ------------------ | -------- | ---------------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                               |             |
+| `previousSequence` | Yes      | `string`                                                               |             |
+| `request`          | Yes      | [ConnectorAccountFileRequest](protocol.md#connectoraccountfilerequest) |             |
 
 Result: [ConnectorJob](protocol.md#connectorjob).
 
@@ -1218,7 +1216,7 @@ Parameters: [ConnectorEnvironmentParams](protocol.md#connectorenvironmentparams)
 | --------------- | -------- | -------- | ----------- |
 | `environmentId` | Yes      | `string` |             |
 
-Result: [ConnectorFilesystem](protocol.md#connectorfilesystem).
+Result: [ConnectorFileStatusstring](protocol.md#connectorfilestatusstring).
 
 ## connectors.get
 
@@ -1241,7 +1239,7 @@ Parameters: [ConnectorGetParams](protocol.md#connectorgetparams).
 | -------------- | -------- | -------- | ----------- |
 | `enrollmentId` | Yes      | `string` |             |
 
-Result: [ConnectorView](protocol.md#connectorview).
+Result: [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring).
 
 ## connectors.host.result
 
@@ -1266,7 +1264,7 @@ Parameters: [ConnectorHostResultParams](protocol.md#connectorhostresultparams).
 | `environmentId` | Yes      | `string` |             |
 | `jobId`         | Yes      | `string` |             |
 
-Result: [ConnectorHostJobView](protocol.md#connectorhostjobview).
+Result: [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring).
 
 ## connectors.host.status
 
@@ -1289,7 +1287,7 @@ Parameters: [ConnectorHostStatusParams](protocol.md#connectorhoststatusparams).
 | --------------- | -------- | -------- | ----------- |
 | `environmentId` | Yes      | `string` |             |
 
-Result: [ConnectorHostStatus](protocol.md#connectorhoststatus).
+Result: [ConnectorHostStatusstring](protocol.md#connectorhoststatusstring).
 
 ## connectors.host.submit
 
@@ -1316,14 +1314,14 @@ const result: ResultOf<typeof Method.ConnectorsHostSubmit> = await client.call(
 
 Parameters: [ConnectorHostSubmitParams](protocol.md#connectorhostsubmitparams).
 
-| Field              | Required | Type                                                     | Description |
-| ------------------ | -------- | -------------------------------------------------------- | ----------- |
-| `environmentId`    | Yes      | `string`                                                 |             |
-| `previousSequence` | Yes      | `string`                                                 |             |
-| `request`          | Yes      | [ConnectorHostRequest](protocol.md#connectorhostrequest) |             |
-| `requestId`        | Yes      | `string`                                                 |             |
+| Field              | Required | Type                                                                 | Description |
+| ------------------ | -------- | -------------------------------------------------------------------- | ----------- |
+| `environmentId`    | Yes      | `string`                                                             |             |
+| `previousSequence` | Yes      | `string`                                                             |             |
+| `request`          | Yes      | [ConnectorHostRequeststring](protocol.md#connectorhostrequeststring) |             |
+| `requestId`        | Yes      | `string`                                                             |             |
 
-Result: [ConnectorHostJobView](protocol.md#connectorhostjobview).
+Result: [ConnectorHostJobViewstring](protocol.md#connectorhostjobviewstring).
 
 ## connectors.instructions.get
 
@@ -1346,7 +1344,7 @@ Parameters: [ConnectorInstructionsGetParams](protocol.md#connectorinstructionsge
 | -------------- | -------- | -------- | ----------- |
 | `enrollmentId` | Yes      | `string` |             |
 
-Result: [ConnectorInstructionsView](protocol.md#connectorinstructionsview).
+Result: [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring).
 
 ## connectors.instructions.update
 
@@ -1375,7 +1373,7 @@ Parameters: [ConnectorInstructionsUpdateParams](protocol.md#connectorinstruction
 | `instructions`     | Yes      | `string` |             |
 | `requestId`        | Yes      | `string` |             |
 
-Result: [ConnectorInstructionsView](protocol.md#connectorinstructionsview).
+Result: [ConnectorInstructionsViewstring](protocol.md#connectorinstructionsviewstring).
 
 ## connectors.inventory
 
@@ -1392,13 +1390,13 @@ const result: ResultOf<typeof Method.ConnectorsInventory> = await client.call(
 );
 ```
 
-Parameters: [ConnectorInventoryParams](protocol.md#connectorinventoryparams).
+Parameters: [ConnectorInventoryQuery](protocol.md#connectorinventoryquery).
 
 | Field   | Required | Type          | Description |
 | ------- | -------- | ------------- | ----------- |
 | `after` | Yes      | `null,string` |             |
 
-Result: [ConnectorInventoryPage](protocol.md#connectorinventorypage).
+Result: [ConnectorInventoryPagestring](protocol.md#connectorinventorypagestring).
 
 ## connectors.link.approve
 
@@ -1429,7 +1427,7 @@ Parameters: [ConnectorLinkApproveParams](protocol.md#connectorlinkapproveparams)
 | `publicKey` | Yes      | `string` |             |
 | `requestId` | Yes      | `string` |             |
 
-Result: [ConnectorLinkApproved](protocol.md#connectorlinkapproved).
+Result: [ConnectorLinkApprovedstring](protocol.md#connectorlinkapprovedstring).
 
 ## connectors.link.deny
 
@@ -1483,7 +1481,7 @@ Parameters: [ConnectorLinkReviewParams](protocol.md#connectorlinkreviewparams).
 | `code`      | Yes      | `string` |             |
 | `requestId` | Yes      | `string` |             |
 
-Result: [ConnectorLinkReview](protocol.md#connectorlinkreview).
+Result: [ConnectorLinkReviewstring](protocol.md#connectorlinkreviewstring).
 
 ## connectors.list
 
@@ -1502,7 +1500,7 @@ Parameters: [Recordstringnever](protocol.md#recordstringnever).
 
 Type: Dictionary.
 
-Result: [ConnectorList](protocol.md#connectorlist).
+Result: [ConnectorEnrollmentListstring](protocol.md#connectorenrollmentliststring).
 
 ## connectors.revoke
 
@@ -1529,7 +1527,7 @@ Parameters: [ConnectorRevokeParams](protocol.md#connectorrevokeparams).
 | `observedRevision` | Yes      | `string` |             |
 | `requestId`        | Yes      | `string` |             |
 
-Result: [ConnectorView](protocol.md#connectorview).
+Result: [ConnectorEnrollmentViewstring](protocol.md#connectorenrollmentviewstring).
 
 ## connectors.workspace.catalog
 

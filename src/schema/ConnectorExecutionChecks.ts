@@ -1,14 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Nexa contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
 
-import { ConnectorArgumentKind } from '../dataplane/ConnectorArgumentKind.js';
-import type { ConnectorArgumentRule, ConnectorExecutionStatus } from '../dataplane/ConnectorExecutionTypes.js';
-import {
-    ConnectorInputKind,
-    ConnectorInteractiveTransport,
-    type ConnectorInteractiveInvocationRule,
-} from '../dataplane/ConnectorInteractiveInvocationTypes.js';
-import type { ConnectorMachineInvocationRule } from '../dataplane/ConnectorMachineInvocationTypes.js';
+import type { ConnectorExecutionStatus } from '../dataplane/ConnectorExecutionTypes.js';
+import { ExecutionArgumentKind } from 'nerva-connector-protocol/execution/ExecutionArgumentKind.js';
+import { ExecutionInputKind } from 'nerva-connector-protocol/execution/ExecutionInput.js';
+import { ExecutionInteractiveTransport } from 'nerva-connector-protocol/execution/ExecutionInteractive.js';
+import type { ExecutionMachineInvocationRule } from 'nerva-connector-protocol/execution/ExecutionMachineInvocation.js';
+import type { ExecutionInteractiveInvocationRule } from 'nerva-connector-protocol/execution/ExecutionInteractiveInvocation.js';
+import type { ExecutionInputRule } from 'nerva-connector-protocol/execution/ExecutionJobs.js';
 
 /** Dependent checks supplement generated closed shapes; published permission never proves native availability. */
 export class ConnectorExecutionChecks {
@@ -35,43 +34,48 @@ export class ConnectorExecutionChecks {
         return true;
     }
 
-    static #isInteractive(rule: ConnectorArgumentRule): rule is ConnectorInteractiveInvocationRule {
-        return rule.kind === ConnectorArgumentKind.InteractiveInvocation.valueOf();
+    static #isInteractive(
+        rule: ExecutionInputRule<string>,
+    ): rule is ExecutionInteractiveInvocationRule<string> {
+        return rule.kind === ExecutionArgumentKind.InteractiveInvocation.valueOf();
     }
 
-    static #interactive(rule: ConnectorInteractiveInvocationRule, timeoutMs: number): boolean {
-        const transports: ReadonlySet<ConnectorInteractiveTransport> = new Set(rule.transports);
-        const controls: ReadonlySet<ConnectorInputKind> = new Set(rule.controls);
+    static #interactive(
+        rule: ExecutionInteractiveInvocationRule<string>,
+        timeoutMs: number,
+    ): boolean {
+        const transports: ReadonlySet<ExecutionInteractiveTransport> = new Set(rule.transports);
+        const controls: ReadonlySet<ExecutionInputKind> = new Set(rule.controls);
         return (
             transports.size > 0 &&
             transports.size === rule.transports.length &&
             controls.size === rule.controls.length &&
-            controls.has(ConnectorInputKind.Data) &&
-            (!controls.has(ConnectorInputKind.End) ||
-                transports.has(ConnectorInteractiveTransport.Pipe)) &&
-            (!controls.has(ConnectorInputKind.Resize) ||
-                transports.has(ConnectorInteractiveTransport.Pty)) &&
-            controls.has(ConnectorInputKind.Resize) === rule.maximumResizes > 0 &&
+            controls.has(ExecutionInputKind.Data) &&
+            (!controls.has(ExecutionInputKind.End) ||
+                transports.has(ExecutionInteractiveTransport.Pipe)) &&
+            (!controls.has(ExecutionInputKind.Resize) ||
+                transports.has(ExecutionInteractiveTransport.Pty)) &&
+            controls.has(ExecutionInputKind.Resize) === rule.maximumResizes > 0 &&
             rule.maximumResizes < rule.maximumControls &&
             BigInt(rule.maximumInputBytes) <= 65536n &&
             this.#machine(rule.invocation, timeoutMs)
         );
     }
 
-    static #machine(rule: ConnectorMachineInvocationRule, timeoutMs: number): boolean {
+    static #machine(rule: ExecutionMachineInvocationRule, timeoutMs: number): boolean {
         return (
             rule.maximumTimeoutMs <= timeoutMs &&
             (rule.shell !== null || rule.commands.length > 0) &&
             (rule.shell === null || rule.maximumScriptBytes >= 1) &&
             new Set(
                 rule.commands.map(
-                    (command: ConnectorMachineInvocationRule['commands'][number]): string =>
+                    (command: ExecutionMachineInvocationRule['commands'][number]): string =>
                         command.alias,
                 ),
             ).size === rule.commands.length &&
             new Set(
                 rule.environment.map(
-                    (grant: ConnectorMachineInvocationRule['environment'][number]): string =>
+                    (grant: ExecutionMachineInvocationRule['environment'][number]): string =>
                         grant.name,
                 ),
             ).size === rule.environment.length &&
