@@ -30746,6 +30746,44 @@ export const schema: Schema = {
             required: ['params', 'result'],
             type: 'object',
         },
+        VmUsageNetworkHostResource: {
+            description: 'Byte totals and reporting coverage for one host measurement.',
+            properties: {
+                availableBytes: {
+                    type: 'string',
+                },
+                observedHosts: {
+                    type: 'string',
+                },
+                totalBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['availableBytes', 'observedHosts', 'totalBytes'],
+            type: 'object',
+        },
+        VmUsageNetworkHostResources: {
+            description:
+                'Distinct enrolled hosts with active VMs and observations of their physical resources.',
+            properties: {
+                complete: {
+                    description:
+                        'All provider scopes returned host coverage, including scopes with no active VMs.',
+                    type: 'boolean',
+                },
+                hosts: {
+                    type: 'string',
+                },
+                localStorage: {
+                    $ref: '#/definitions/VmUsageNetworkHostResource',
+                },
+                memory: {
+                    $ref: '#/definitions/VmUsageNetworkHostResource',
+                },
+            },
+            required: ['complete', 'hosts', 'localStorage', 'memory'],
+            type: 'object',
+        },
         VmUsageNetworkMethod: {
             description:
                 'Only freshly verified platform administrators may request network observations.',
@@ -30826,6 +30864,9 @@ export const schema: Schema = {
             description:
                 "A bounded page and full-network totals retain the source's observation time.",
             properties: {
+                hostResources: {
+                    $ref: '#/definitions/VmUsageNetworkHostResources',
+                },
                 nextCursor: {
                     type: ['null', 'string'],
                 },

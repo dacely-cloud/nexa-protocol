@@ -1,7 +1,12 @@
 // SPDX-FileCopyrightText: 2026 Nerva contributors
 // SPDX-License-Identifier: LicenseRef-Proprietary
 
-import type { VmUsageNetworkResource, VmUsageNetworkResources } from './VmUsageNetworkTypes.js';
+import type {
+    VmUsageNetworkHostResource,
+    VmUsageNetworkHostResources,
+    VmUsageNetworkResource,
+    VmUsageNetworkResources,
+} from './VmUsageNetworkTypes.js';
 
 /** Validates fleet aggregates at the gateway and before rendering them. */
 export class VmUsageNetworkResourcesCodec {
@@ -18,6 +23,37 @@ export class VmUsageNetworkResourcesCodec {
         };
     }
 
+    public static hosts(raw: unknown, runningVms: bigint): VmUsageNetworkHostResources {
+        const value: Readonly<Record<string, unknown>> = this.#record(raw, [
+            'hosts',
+            'complete',
+            'memory',
+            'localStorage',
+        ]);
+        const hosts: string = this.#decimal(value['hosts']);
+        const complete: unknown = value['complete'];
+        if (typeof complete !== 'boolean' || BigInt(hosts) > runningVms) this.#invalid();
+        return {
+            hosts,
+            complete,
+            memory: this.#hostResource(value['memory'], BigInt(hosts)),
+            localStorage: this.#hostResource(value['localStorage'], BigInt(hosts)),
+        };
+    }
+
+    static #hostResource(raw: unknown, hosts: bigint): VmUsageNetworkHostResource {
+        const value: Readonly<Record<string, unknown>> = this.#record(raw, [
+            'observedHosts',
+            'totalBytes',
+            'availableBytes',
+        ]);
+        const observedHosts: string = this.#decimal(value['observedHosts']);
+        const totalBytes: string = this.#decimal(value['totalBytes']);
+        const availableBytes: string = this.#decimal(value['availableBytes']);
+        this.#validateResource(BigInt(observedHosts), totalBytes, availableBytes, hosts);
+        return { observedHosts, totalBytes, availableBytes };
+    }
+
     static #resource(raw: unknown, runningVms: bigint): VmUsageNetworkResource {
         const value: Readonly<Record<string, unknown>> = this.#record(raw, [
             'observedVms',
@@ -27,17 +63,25 @@ export class VmUsageNetworkResourcesCodec {
         const observedVms: string = this.#decimal(value['observedVms']);
         const totalBytes: string = this.#decimal(value['totalBytes']);
         const availableBytes: string = this.#decimal(value['availableBytes']);
-        const count: bigint = BigInt(observedVms);
+        this.#validateResource(BigInt(observedVms), totalBytes, availableBytes, runningVms);
+        return { observedVms, totalBytes, availableBytes };
+    }
+
+    static #validateResource(
+        count: bigint,
+        totalBytes: string,
+        availableBytes: string,
+        possible: bigint,
+    ): void {
         const total: bigint = BigInt(totalBytes);
         if (
-            count > runningVms ||
+            count > possible ||
             total < count ||
             total > count * 18_446_744_073_709_551_615n ||
             BigInt(availableBytes) > total
         ) {
             this.#invalid();
         }
-        return { observedVms, totalBytes, availableBytes };
     }
 
     static #record(raw: unknown, fields: readonly string[]): Readonly<Record<string, unknown>> {

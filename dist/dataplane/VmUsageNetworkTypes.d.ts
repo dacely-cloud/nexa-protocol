@@ -27,12 +27,27 @@ export interface VmUsageNetworkResources {
     readonly root: VmUsageNetworkResource;
     readonly workspace: VmUsageNetworkResource;
 }
+/** Byte totals and reporting coverage for one host measurement. */
+export interface VmUsageNetworkHostResource {
+    readonly observedHosts: string;
+    readonly totalBytes: string;
+    readonly availableBytes: string;
+}
+/** Distinct enrolled hosts with active VMs and observations of their physical resources. */
+export interface VmUsageNetworkHostResources {
+    readonly hosts: string;
+    /** All provider scopes returned host coverage, including scopes with no active VMs. */
+    readonly complete: boolean;
+    readonly memory: VmUsageNetworkHostResource;
+    readonly localStorage: VmUsageNetworkHostResource;
+}
 /** A bounded page and full-network totals retain the source's observation time. */
 export interface VmUsageNetworkSnapshot {
     readonly observedAtMs: string;
     readonly totals: VmUsageNetworkTotals;
     /** Absent while older Compute controllers or gateways are in service. */
     readonly resources?: VmUsageNetworkResources;
+    readonly hostResources?: VmUsageNetworkHostResources;
     readonly rows: readonly VmUsageNetworkRow[];
     readonly nextCursor: string | null;
 }

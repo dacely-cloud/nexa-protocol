@@ -16874,6 +16874,31 @@ A visible owner panel requests only its current authenticated account.
 | `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
 | `result` | Yes      | [VmUsageSnapshot](protocol.md#vmusagesnapshot)     |             |
 
+## VmUsageNetworkHostResource
+
+Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
+
+Byte totals and reporting coverage for one host measurement.
+
+| Field            | Required | Type     | Description |
+| ---------------- | -------- | -------- | ----------- |
+| `availableBytes` | Yes      | `string` |             |
+| `observedHosts`  | Yes      | `string` |             |
+| `totalBytes`     | Yes      | `string` |             |
+
+## VmUsageNetworkHostResources
+
+Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
+
+Distinct enrolled hosts with active VMs and observations of their physical resources.
+
+| Field          | Required | Type                                                                 | Description                                                                      |
+| -------------- | -------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `complete`     | Yes      | `boolean`                                                            | All provider scopes returned host coverage, including scopes with no active VMs. |
+| `hosts`        | Yes      | `string`                                                             |                                                                                  |
+| `localStorage` | Yes      | [VmUsageNetworkHostResource](protocol.md#vmusagenetworkhostresource) |                                                                                  |
+| `memory`       | Yes      | [VmUsageNetworkHostResource](protocol.md#vmusagenetworkhostresource) |                                                                                  |
+
 ## VmUsageNetworkMethod
 
 Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
@@ -16937,13 +16962,14 @@ Module: `nexa-protocol/dataplane/VmUsageNetworkTypes.js`.
 
 A bounded page and full-network totals retain the source's observation time.
 
-| Field          | Required | Type                                                           | Description                                                        |
-| -------------- | -------- | -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `nextCursor`   | Yes      | `null,string`                                                  |                                                                    |
-| `observedAtMs` | Yes      | `string`                                                       |                                                                    |
-| `resources`    | No       | [VmUsageNetworkResources](protocol.md#vmusagenetworkresources) | Absent while older Compute controllers or gateways are in service. |
-| `rows`         | Yes      | Array of [VmUsageNetworkRow](protocol.md#vmusagenetworkrow)    |                                                                    |
-| `totals`       | Yes      | [VmUsageNetworkTotals](protocol.md#vmusagenetworktotals)       |                                                                    |
+| Field           | Required | Type                                                                   | Description                                                        |
+| --------------- | -------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `hostResources` | No       | [VmUsageNetworkHostResources](protocol.md#vmusagenetworkhostresources) |                                                                    |
+| `nextCursor`    | Yes      | `null,string`                                                          |                                                                    |
+| `observedAtMs`  | Yes      | `string`                                                               |                                                                    |
+| `resources`     | No       | [VmUsageNetworkResources](protocol.md#vmusagenetworkresources)         | Absent while older Compute controllers or gateways are in service. |
+| `rows`          | Yes      | Array of [VmUsageNetworkRow](protocol.md#vmusagenetworkrow)            |                                                                    |
+| `totals`        | Yes      | [VmUsageNetworkTotals](protocol.md#vmusagenetworktotals)               |                                                                    |
 
 ## VmUsageNetworkTotals
 

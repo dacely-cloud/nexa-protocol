@@ -14,6 +14,36 @@ export class VmUsageNetworkResourcesCodec {
             workspace: this.#resource(value['workspace'], runningVms),
         };
     }
+    static hosts(raw, runningVms) {
+        const value = this.#record(raw, [
+            'hosts',
+            'complete',
+            'memory',
+            'localStorage',
+        ]);
+        const hosts = this.#decimal(value['hosts']);
+        const complete = value['complete'];
+        if (typeof complete !== 'boolean' || BigInt(hosts) > runningVms)
+            this.#invalid();
+        return {
+            hosts,
+            complete,
+            memory: this.#hostResource(value['memory'], BigInt(hosts)),
+            localStorage: this.#hostResource(value['localStorage'], BigInt(hosts)),
+        };
+    }
+    static #hostResource(raw, hosts) {
+        const value = this.#record(raw, [
+            'observedHosts',
+            'totalBytes',
+            'availableBytes',
+        ]);
+        const observedHosts = this.#decimal(value['observedHosts']);
+        const totalBytes = this.#decimal(value['totalBytes']);
+        const availableBytes = this.#decimal(value['availableBytes']);
+        this.#validateResource(BigInt(observedHosts), totalBytes, availableBytes, hosts);
+        return { observedHosts, totalBytes, availableBytes };
+    }
     static #resource(raw, runningVms) {
         const value = this.#record(raw, [
             'observedVms',
@@ -23,15 +53,17 @@ export class VmUsageNetworkResourcesCodec {
         const observedVms = this.#decimal(value['observedVms']);
         const totalBytes = this.#decimal(value['totalBytes']);
         const availableBytes = this.#decimal(value['availableBytes']);
-        const count = BigInt(observedVms);
+        this.#validateResource(BigInt(observedVms), totalBytes, availableBytes, runningVms);
+        return { observedVms, totalBytes, availableBytes };
+    }
+    static #validateResource(count, totalBytes, availableBytes, possible) {
         const total = BigInt(totalBytes);
-        if (count > runningVms ||
+        if (count > possible ||
             total < count ||
             total > count * 18446744073709551615n ||
             BigInt(availableBytes) > total) {
             this.#invalid();
         }
-        return { observedVms, totalBytes, availableBytes };
     }
     static #record(raw, fields) {
         if (typeof raw !== 'object' ||
