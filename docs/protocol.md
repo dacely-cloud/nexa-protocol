@@ -16513,11 +16513,12 @@ Variant 1: [VmAdministrationMutation](protocol.md#vmadministrationmutation)
 
 | Field            | Required | Type                                                                             | Description                                                                            |
 | ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `action`         | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                        |
+| `action`         | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                        |
 | `environmentId`  | Yes      | `string`                                                                         |                                                                                        |
 | `generation`     | Yes      | `string`                                                                         |                                                                                        |
+| `includeResize`  | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
 | `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
-| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries.     |
+| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.        |
 | `requestId`      | Yes      | `string`                                                                         |                                                                                        |
 | `userId`         | Yes      | `string`                                                                         |                                                                                        |
 
@@ -16527,6 +16528,7 @@ Variant 2: [VmAdministrationProvision](protocol.md#vmadministrationprovision)
 | ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `action`         | Yes      | `"provision"`                                                                    |                                                                                        |
 | `disks`          | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
+| `includeResize`  | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
 | `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
 | `profile`        | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
 | `requestId`      | Yes      | `string`                                                                         |                                                                                        |
@@ -16583,6 +16585,7 @@ The operator selects one platform account, never an API, tenant, host or machine
 
 | Field            | Required | Type      | Description                                                                            |
 | ---------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
+| `includeResize`  | No       | `boolean` | Requests resize choices while older clients retain their original status shape.        |
 | `includeStorage` | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
 | `userId`         | Yes      | `string`  |                                                                                        |
 
@@ -16616,11 +16619,12 @@ An observed exact environment/generation and stable original request ID constrai
 
 | Field            | Required | Type                                                                             | Description                                                                            |
 | ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `action`         | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                        |
+| `action`         | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                        |
 | `environmentId`  | Yes      | `string`                                                                         |                                                                                        |
 | `generation`     | Yes      | `string`                                                                         |                                                                                        |
+| `includeResize`  | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
 | `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
-| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries.     |
+| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.        |
 | `requestId`      | Yes      | `string`                                                                         |                                                                                        |
 | `userId`         | Yes      | `string`                                                                         |                                                                                        |
 
@@ -16692,6 +16696,7 @@ Create the selected account's default VM in a specific approved site.
 | ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `action`         | Yes      | `"provision"`                                                                    |                                                                                        |
 | `disks`          | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
+| `includeResize`  | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
 | `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
 | `profile`        | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
 | `requestId`      | Yes      | `string`                                                                         |                                                                                        |
@@ -16740,6 +16745,7 @@ A null environment explicitly reports that no managed default has been provision
 | `observedAtMs`        | Yes      | `string`                                                                        |             |
 | `providerId`          | Yes      | `string`                                                                        |             |
 | `provisioning`        | No       | [VmAdministrationProvisioning](protocol.md#vmadministrationprovisioning)        |             |
+| `resizeProfiles`      | No       | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile)         |             |
 | `userId`              | Yes      | `string`                                                                        |             |
 
 ## VmCpuUsage

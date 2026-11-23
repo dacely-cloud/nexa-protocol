@@ -50,6 +50,7 @@ export const VmAdministrationAction = {
     Inspect: 'inspect',
     Provision: 'provision',
     Start: 'start',
+    Resize: 'resize',
     Stop: 'stop',
     Delete: 'delete',
 };

@@ -71,6 +71,7 @@ export const VmAdministrationAction = {
     Inspect: 'inspect',
     Provision: 'provision',
     Start: 'start',
+    Resize: 'resize',
     Stop: 'stop',
     Delete: 'delete',
 } as const;
@@ -97,18 +98,21 @@ export interface VmAdministrationInspect {
     readonly userId: string;
     /** Opt into storage metadata while older administration clients keep their original view. */
     readonly includeStorage?: boolean;
+    /** Requests resize choices while older clients retain their original status shape. */
+    readonly includeResize?: boolean;
 }
 
 /** An observed exact environment/generation and stable original request ID constrain every mutation. */
 export interface VmAdministrationMutation extends VmAdministrationInspect {
     readonly action:
         | typeof VmAdministrationAction.Start
+        | typeof VmAdministrationAction.Resize
         | typeof VmAdministrationAction.Stop
         | typeof VmAdministrationAction.Delete;
     readonly environmentId: string;
     readonly generation: string;
     readonly requestId: string;
-    /** Required only for Start; preserves the observed VM profile across request retries. */
+    /** Required for Start and Resize. This profile stays fixed across request retries. */
     readonly profile?: VmAdministrationProfileReference;
 }
 
@@ -191,6 +195,7 @@ export interface VmAdministrationView {
     readonly environment: VmAdministrationEnvironment | null;
     readonly defaultProfile: VmAdministrationProfile;
     readonly provisioning?: VmAdministrationProvisioning;
+    readonly resizeProfiles?: readonly VmAdministrationProfile[];
     readonly acceptedOperationId: string | null;
 }
 

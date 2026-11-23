@@ -58,6 +58,7 @@ export declare const VmAdministrationAction: {
     readonly Inspect: 'inspect';
     readonly Provision: 'provision';
     readonly Start: 'start';
+    readonly Resize: 'resize';
     readonly Stop: 'stop';
     readonly Delete: 'delete';
 };
@@ -80,14 +81,16 @@ export interface VmAdministrationInspect {
     readonly userId: string;
     /** Opt into storage metadata while older administration clients keep their original view. */
     readonly includeStorage?: boolean;
+    /** Requests resize choices while older clients retain their original status shape. */
+    readonly includeResize?: boolean;
 }
 /** An observed exact environment/generation and stable original request ID constrain every mutation. */
 export interface VmAdministrationMutation extends VmAdministrationInspect {
-    readonly action: typeof VmAdministrationAction.Start | typeof VmAdministrationAction.Stop | typeof VmAdministrationAction.Delete;
+    readonly action: typeof VmAdministrationAction.Start | typeof VmAdministrationAction.Resize | typeof VmAdministrationAction.Stop | typeof VmAdministrationAction.Delete;
     readonly environmentId: string;
     readonly generation: string;
     readonly requestId: string;
-    /** Required only for Start; preserves the observed VM profile across request retries. */
+    /** Required for Start and Resize. This profile stays fixed across request retries. */
     readonly profile?: VmAdministrationProfileReference;
 }
 /** Create the selected account's default VM in a specific approved site. */
@@ -160,6 +163,7 @@ export interface VmAdministrationView {
     readonly environment: VmAdministrationEnvironment | null;
     readonly defaultProfile: VmAdministrationProfile;
     readonly provisioning?: VmAdministrationProvisioning;
+    readonly resizeProfiles?: readonly VmAdministrationProfile[];
     readonly acceptedOperationId: string | null;
 }
 /** Read one managed environment for an explicitly authorized platform operator. */

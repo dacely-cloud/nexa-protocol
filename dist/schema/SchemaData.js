@@ -29232,6 +29232,10 @@ export const schema = {
         VmAdministrationInspect: {
             description: 'The operator selects one platform account, never an API, tenant, host or machine credential.',
             properties: {
+                includeResize: {
+                    description: 'Requests resize choices while older clients retain their original status shape.',
+                    type: 'boolean',
+                },
                 includeStorage: {
                     description: 'Opt into storage metadata while older administration clients keep their original view.',
                     type: 'boolean',
@@ -29273,7 +29277,7 @@ export const schema = {
             description: 'An observed exact environment/generation and stable original request ID constrain every mutation.',
             properties: {
                 action: {
-                    enum: ['delete', 'start', 'stop'],
+                    enum: ['delete', 'resize', 'start', 'stop'],
                     type: 'string',
                 },
                 environmentId: {
@@ -29282,13 +29286,17 @@ export const schema = {
                 generation: {
                     type: 'string',
                 },
+                includeResize: {
+                    description: 'Requests resize choices while older clients retain their original status shape.',
+                    type: 'boolean',
+                },
                 includeStorage: {
                     description: 'Opt into storage metadata while older administration clients keep their original view.',
                     type: 'boolean',
                 },
                 profile: {
                     $ref: '#/definitions/VmAdministrationProfileReference',
-                    description: 'Required only for Start; preserves the observed VM profile across request retries.',
+                    description: 'Required for Start and Resize. This profile stays fixed across request retries.',
                 },
                 requestId: {
                     type: 'string',
@@ -29418,6 +29426,10 @@ export const schema = {
                 disks: {
                     $ref: '#/definitions/VmAdministrationDiskGeometry',
                 },
+                includeResize: {
+                    description: 'Requests resize choices while older clients retain their original status shape.',
+                    type: 'boolean',
+                },
                 includeStorage: {
                     description: 'Opt into storage metadata while older administration clients keep their original view.',
                     type: 'boolean',
@@ -29514,6 +29526,12 @@ export const schema = {
                 },
                 provisioning: {
                     $ref: '#/definitions/VmAdministrationProvisioning',
+                },
+                resizeProfiles: {
+                    items: {
+                        $ref: '#/definitions/VmAdministrationProfile',
+                    },
+                    type: 'array',
                 },
                 userId: {
                     type: 'string',
