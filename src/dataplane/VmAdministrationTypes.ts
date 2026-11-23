@@ -100,6 +100,8 @@ export interface VmAdministrationInspect {
     readonly includeStorage?: boolean;
     /** Requests resize choices while older clients retain their original status shape. */
     readonly includeResize?: boolean;
+    /** Requests current regional capacity for both explicit and automatic storage. */
+    readonly includeAvailability?: boolean;
 }
 
 /** An observed exact environment/generation and stable original request ID constrain every mutation. */
@@ -140,12 +142,15 @@ export interface VmAdministrationDiskGeometry {
     readonly workspaceBytes: string;
 }
 
-/** The region and compute profile that can use this installed storage geometry. */
-export interface VmAdministrationDiskOffer extends VmAdministrationDiskGeometry {
+/** The region and exact compute profile with qualified current capacity. */
+export interface VmAdministrationRegionalProfile {
     readonly siteId: string;
     readonly profileId: string;
     readonly profileRevision: string;
 }
+
+/** The region and compute profile that can use this installed storage geometry. */
+export interface VmAdministrationDiskOffer extends VmAdministrationRegionalProfile, VmAdministrationDiskGeometry {}
 
 /** Resource policy quantities remain exact decimal strings across browser and controller boundaries. */
 export interface VmAdministrationProfile {
@@ -185,6 +190,8 @@ export interface VmAdministrationProvisioning {
     readonly sites: readonly string[];
     readonly profiles: readonly VmAdministrationProfile[];
     readonly diskOffers?: readonly VmAdministrationDiskOffer[];
+    /** Present when the controller reports current regional capacity for automatic storage. */
+    readonly automaticStorageOffers?: readonly VmAdministrationRegionalProfile[];
 }
 
 /** A null environment explicitly reports that no managed default has been provisioned. */

@@ -3445,11 +3445,12 @@ const result: ResultOf<typeof Method.EnvironmentAdminInspect> = await client.cal
 
 Parameters: [VmAdministrationInspect](protocol.md#vmadministrationinspect).
 
-| Field            | Required | Type      | Description                                                                            |
-| ---------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
-| `includeResize`  | No       | `boolean` | Requests resize choices while older clients retain their original status shape.        |
-| `includeStorage` | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
-| `userId`         | Yes      | `string`  |                                                                                        |
+| Field                 | Required | Type      | Description                                                                            |
+| --------------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
+| `includeAvailability` | No       | `boolean` | Requests current regional capacity for both explicit and automatic storage.            |
+| `includeResize`       | No       | `boolean` | Requests resize choices while older clients retain their original status shape.        |
+| `includeStorage`      | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
+| `userId`              | Yes      | `string`  |                                                                                        |
 
 Result: [VmAdministrationView](protocol.md#vmadministrationview).
 

@@ -30260,6 +30260,11 @@ export const schema: Schema = {
             description:
                 'The operator selects one platform account, never an API, tenant, host or machine credential.',
             properties: {
+                includeAvailability: {
+                    description:
+                        'Requests current regional capacity for both explicit and automatic storage.',
+                    type: 'boolean',
+                },
                 includeResize: {
                     description:
                         'Requests resize choices while older clients retain their original status shape.',
@@ -30319,6 +30324,11 @@ export const schema: Schema = {
                 },
                 generation: {
                     type: 'string',
+                },
+                includeAvailability: {
+                    description:
+                        'Requests current regional capacity for both explicit and automatic storage.',
+                    type: 'boolean',
                 },
                 includeResize: {
                     description:
@@ -30469,6 +30479,11 @@ export const schema: Schema = {
                 disks: {
                     $ref: '#/definitions/VmAdministrationDiskGeometry',
                 },
+                includeAvailability: {
+                    description:
+                        'Requests current regional capacity for both explicit and automatic storage.',
+                    type: 'boolean',
+                },
                 includeResize: {
                     description:
                         'Requests resize choices while older clients retain their original status shape.',
@@ -30502,6 +30517,14 @@ export const schema: Schema = {
             description:
                 "Configuration options come from the approved fleet and the selected account's profile grants.",
             properties: {
+                automaticStorageOffers: {
+                    description:
+                        'Present when the controller reports current regional capacity for automatic storage.',
+                    items: {
+                        $ref: '#/definitions/VmAdministrationRegionalProfile',
+                    },
+                    type: 'array',
+                },
                 diskOffers: {
                     items: {
                         $ref: '#/definitions/VmAdministrationDiskOffer',
@@ -30526,6 +30549,22 @@ export const schema: Schema = {
             required: ['profiles', 'sites'],
             type: 'object',
             additionalProperties: false,
+        },
+        VmAdministrationRegionalProfile: {
+            description: 'The region and exact compute profile with qualified current capacity.',
+            properties: {
+                profileId: {
+                    type: 'string',
+                },
+                profileRevision: {
+                    type: 'string',
+                },
+                siteId: {
+                    type: 'string',
+                },
+            },
+            required: ['profileId', 'profileRevision', 'siteId'],
+            type: 'object',
         },
         VmAdministrationRuntime: {
             description:
