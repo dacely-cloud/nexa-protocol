@@ -29363,6 +29363,8 @@ export const schema = {
                 },
                 siteId: {
                     type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
                 },
                 userId: {
                     type: 'string',
@@ -29370,6 +29372,7 @@ export const schema = {
             },
             required: ['action', 'profile', 'requestId', 'siteId', 'userId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationProvisioning: {
             description: "Configuration options come from the approved fleet and the selected account's profile grants.",
@@ -29379,16 +29382,19 @@ export const schema = {
                         $ref: '#/definitions/VmAdministrationProfile',
                     },
                     type: 'array',
+                    maxItems: 256,
                 },
                 sites: {
                     items: {
                         type: 'string',
                     },
                     type: 'array',
+                    maxItems: 64,
                 },
             },
             required: ['profiles', 'sites'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationRuntime: {
             description: 'Runtime policy is reported independently of sampled host hardware.\nOne VmAdministrationRuntime value.',

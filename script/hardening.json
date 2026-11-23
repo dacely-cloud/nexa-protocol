@@ -1,5 +1,25 @@
 {
     "constraints": {
+        "VmAdministrationProvision": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/siteId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "VmAdministrationProvisioning": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/profiles": {
+                "maxItems": 256
+            },
+            "properties/sites": {
+                "maxItems": 64
+            }
+        },
         "AskParams": {
             "properties/uploadedSources": {
                 "maxItems": 32
