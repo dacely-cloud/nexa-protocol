@@ -562,6 +562,10 @@ export declare function devicesRejectResult(value: unknown): boolean;
 export declare function devicesRevokeParams(value: unknown): boolean;
 /** Validates the result of `devices.revoke`. */
 export declare function devicesRevokeResult(value: unknown): boolean;
+/** Validates the params of `environment.admin.fleet`. */
+export declare function environmentAdminFleetParams(value: unknown): boolean;
+/** Validates the result of `environment.admin.fleet`. */
+export declare function environmentAdminFleetResult(value: unknown): boolean;
 /** Validates the params of `environment.admin.inspect`. */
 export declare function environmentAdminInspectParams(value: unknown): boolean;
 /** Validates the result of `environment.admin.inspect`. */

@@ -241,6 +241,8 @@ export var Method;
     Method["DevicesReject"] = "devices.reject";
     /** Calls `devices.revoke`. */
     Method["DevicesRevoke"] = "devices.revoke";
+    /** Calls `environment.admin.fleet`. */
+    Method["EnvironmentAdminFleet"] = "environment.admin.fleet";
     /** Calls `environment.admin.inspect`. */
     Method["EnvironmentAdminInspect"] = "environment.admin.inspect";
     /** Calls `environment.admin.mutate`. */

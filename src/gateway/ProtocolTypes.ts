@@ -103,6 +103,7 @@ import type {
     VmAdministrationInspectMethod,
     VmAdministrationMutateMethod,
 } from '../dataplane/VmAdministrationTypes.js';
+import type { VmFleetMethod } from '../dataplane/VmFleetTypes.js';
 import type { VmUsageNetworkMethod } from '../dataplane/VmUsageNetworkTypes.js';
 import type { VmUsageAdministrativeMethod, VmUsageMethod } from '../dataplane/VmUsageTypes.js';
 import type { DecisionRunParams, DecisionRunResult } from '../decision/DecisionTypes.js';
@@ -979,6 +980,8 @@ export interface GatewayMethods {
     readonly 'environment.admin.usage': VmUsageAdministrativeMethod;
     /** Full-network totals and bounded cached VM metrics require the current platform administrator role. */
     readonly 'environment.admin.network': VmUsageNetworkMethod;
+    /** Paged enrolled host observations require the current platform administrator role. */
+    readonly 'environment.admin.fleet': VmFleetMethod;
     /** Platform operators inspect one account's managed VM through Nexa's protected Compute adapter. */
     readonly 'environment.admin.inspect': VmAdministrationInspectMethod;
     /** Exact observed generations and stable request IDs protect administrative lifecycle operations. */

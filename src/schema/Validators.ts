@@ -2139,6 +2139,22 @@ export function devicesRevokeResult(value: unknown): boolean {
     );
 }
 
+/** Validates the params of `environment.admin.fleet`. */
+export function environmentAdminFleetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environment.admin.fleet/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environment.admin.fleet`. */
+export function environmentAdminFleetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environment.admin.fleet/properties/result',
+        value,
+    );
+}
+
 /** Validates the params of `environment.admin.inspect`. */
 export function environmentAdminInspectParams(value: unknown): boolean {
     return validator.validate(

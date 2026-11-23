@@ -241,6 +241,8 @@ export enum Method {
     DevicesReject = 'devices.reject',
     /** Calls `devices.revoke`. */
     DevicesRevoke = 'devices.revoke',
+    /** Calls `environment.admin.fleet`. */
+    EnvironmentAdminFleet = 'environment.admin.fleet',
     /** Calls `environment.admin.inspect`. */
     EnvironmentAdminInspect = 'environment.admin.inspect',
     /** Calls `environment.admin.mutate`. */

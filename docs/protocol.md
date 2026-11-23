@@ -9787,6 +9787,7 @@ Every gateway method with its params and result; the method name is the key.
 | `devices.list`                        | Yes      | Object (fields below) |                                                                                                        |
 | `devices.reject`                      | Yes      | Object (fields below) |                                                                                                        |
 | `devices.revoke`                      | Yes      | Object (fields below) |                                                                                                        |
+| `environment.admin.fleet`             | Yes      | Object (fields below) | Platform administrator read of an enrolled fleet, including unallocated nodes.                         |
 | `environment.admin.inspect`           | Yes      | Object (fields below) | Read one managed environment for an explicitly authorized platform operator.                           |
 | `environment.admin.mutate`            | Yes      | Object (fields below) | Admit one lifecycle operation without waiting for or claiming native completion.                       |
 | `environment.admin.network`           | Yes      | Object (fields below) | Only freshly verified platform administrators may request network observations.                        |
@@ -10819,6 +10820,13 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ---------------------------------------------- | ----------- |
 | `params` | Yes      | [DeviceRefParams](protocol.md#devicerefparams) |             |
 | `result` | Yes      | [OkResult](protocol.md#okresult)               |             |
+
+**environment.admin.fleet**
+
+| Field    | Required | Type                                         | Description |
+| -------- | -------- | -------------------------------------------- | ----------- |
+| `params` | Yes      | [VmFleetRequest](protocol.md#vmfleetrequest) |             |
+| `result` | Yes      | [VmFleetPage](protocol.md#vmfleetpage)       |             |
 
 **environment.admin.inspect**
 
@@ -16728,6 +16736,120 @@ Filesystem consumption differs from provisioned disk size and host physical allo
 | `source`         | Yes      | `"guest"`                                        |             |
 | `totalBytes`     | Yes      | `string`                                         |             |
 | `usedBytes`      | Yes      | `string`                                         |             |
+
+## VmFleetAllocation
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Allocations may include native runtime overhead and held resources.
+
+| Field                  | Required | Type     | Description |
+| ---------------------- | -------- | -------- | ----------- |
+| `eligibleGpus`         | Yes      | `number` |             |
+| `inventoryExpiresAtMs` | Yes      | `string` |             |
+| `memoryBytes`          | Yes      | `string` |             |
+| `reservedGpus`         | Yes      | `number` |             |
+| `reservedMemoryBytes`  | Yes      | `string` |             |
+| `reservedVcpus`        | Yes      | `number` |             |
+| `reservedVms`          | Yes      | `number` |             |
+| `vcpus`                | Yes      | `number` |             |
+
+## VmFleetGpu
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Host reports contain GPU observations without hardware paths or passthrough authority.
+
+| Field                | Required | Type          | Description |
+| -------------------- | -------- | ------------- | ----------- |
+| `memoryBytes`        | Yes      | `null,string` |             |
+| `model`              | Yes      | `null,string` |             |
+| `utilizationPercent` | Yes      | `null,number` |             |
+| `vendorId`           | Yes      | `string`      |             |
+
+## VmFleetHardware
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Physical telemetry is distinct from the scheduler's allocation ledger.
+
+| Field                  | Required | Type                                                  | Description |
+| ---------------------- | -------- | ----------------------------------------------------- | ----------- |
+| `architecture`         | Yes      | `"aarch64"` / `"unknown"` / `"x86_64"`                |             |
+| `cpuModel`             | Yes      | `string`                                              |             |
+| `gpus`                 | Yes      | Array of [VmFleetGpu](protocol.md#vmfleetgpu)         |             |
+| `localStorage`         | Yes      | [VmFleetStorage](protocol.md#vmfleetstorage) / `null` |             |
+| `logicalCpus`          | Yes      | `number`                                              |             |
+| `memoryAvailableBytes` | Yes      | `null,string`                                         |             |
+| `memoryBytes`          | Yes      | `string`                                              |             |
+| `observedAtMs`         | Yes      | `string`                                              |             |
+
+## VmFleetHost
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+An enrollment can remain visible without a running guest, fresh telemetry, or placement authority.
+
+| Field         | Required | Type                                                                                                                   | Description |
+| ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `allocation`  | Yes      | [VmFleetAllocation](protocol.md#vmfleetallocation) / `null`                                                            |             |
+| `enrollment`  | Yes      | `"activating"` / `"activation-revoked"` / `"enrolled"` / `"issued"` / `"maintenance"` / `"revalidating"` / `"revoked"` |             |
+| `hardware`    | Yes      | [VmFleetHardware](protocol.md#vmfleethardware) / `null`                                                                |             |
+| `hostUse`     | Yes      | `"cpu-coexist"` / `"dedicated"`                                                                                        |             |
+| `maintenance` | Yes      | `"active"` / `"draining"` / `"qualification-retired"` / `"released"` / `null`                                          |             |
+| `nodeId`      | Yes      | `string`                                                                                                               |             |
+| `placement`   | Yes      | `"maintenance"` / `"registered"` / `"stale"` / `"unavailable"`                                                         |             |
+| `poolId`      | Yes      | `string`                                                                                                               |             |
+| `siteId`      | Yes      | `string`                                                                                                               |             |
+
+## VmFleetMethod
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Platform administrator read of an enrolled fleet, including unallocated nodes.
+
+| Field    | Required | Type                                         | Description |
+| -------- | -------- | -------------------------------------------- | ----------- |
+| `params` | Yes      | [VmFleetRequest](protocol.md#vmfleetrequest) |             |
+| `result` | Yes      | [VmFleetPage](protocol.md#vmfleetpage)       |             |
+
+## VmFleetPage
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+The controller enumerates configured provider and region labels without revealing endpoints.
+
+| Field          | Required | Type                                            | Description |
+| -------------- | -------- | ----------------------------------------------- | ----------- |
+| `nextNodeId`   | Yes      | `null,string`                                   |             |
+| `observedAtMs` | Yes      | `string`                                        |             |
+| `providerId`   | Yes      | `string`                                        |             |
+| `providers`    | Yes      | Array of `string`                               |             |
+| `rows`         | Yes      | Array of [VmFleetHost](protocol.md#vmfleethost) |             |
+| `sites`        | Yes      | Array of `string`                               |             |
+
+## VmFleetRequest
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Protected provider and region identifiers select a separately bounded host page.
+
+| Field        | Required | Type          | Description |
+| ------------ | -------- | ------------- | ----------- |
+| `after`      | Yes      | `null,string` |             |
+| `providerId` | Yes      | `null,string` |             |
+| `siteId`     | Yes      | `null,string` |             |
+
+## VmFleetStorage
+
+Module: `nexa-protocol/dataplane/VmFleetTypes.js`.
+
+Byte quantities stay exact across the Compute and browser boundaries.
+
+| Field            | Required | Type     | Description |
+| ---------------- | -------- | -------- | ----------- |
+| `availableBytes` | Yes      | `string` |             |
+| `totalBytes`     | Yes      | `string` |             |
 
 ## VmGuestMemoryUsage
 

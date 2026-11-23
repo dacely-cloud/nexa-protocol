@@ -1,6 +1,6 @@
 # RPC reference
 
-All 274 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 273 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 275 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 274 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -120,6 +120,7 @@ All 274 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [devices.list](#deviceslist)
 - [devices.reject](#devicesreject)
 - [devices.revoke](#devicesrevoke)
+- [environment.admin.fleet](#environmentadminfleet)
 - [environment.admin.inspect](#environmentadmininspect)
 - [environment.admin.mutate](#environmentadminmutate)
 - [environment.admin.network](#environmentadminnetwork)
@@ -3399,6 +3400,33 @@ Parameters: [DeviceRefParams](protocol.md#devicerefparams).
 | `deviceId` | Yes      | `string` |             |
 
 Result: [OkResult](protocol.md#okresult).
+
+## environment.admin.fleet
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentAdminFleet> = {
+    after: null,
+    providerId: null,
+    siteId: null,
+};
+const result: ResultOf<typeof Method.EnvironmentAdminFleet> = await client.call(
+    Method.EnvironmentAdminFleet,
+    params,
+);
+```
+
+Parameters: [VmFleetRequest](protocol.md#vmfleetrequest).
+
+| Field        | Required | Type          | Description |
+| ------------ | -------- | ------------- | ----------- |
+| `after`      | Yes      | `null,string` |             |
+| `providerId` | Yes      | `null,string` |             |
+| `siteId`     | Yes      | `null,string` |             |
+
+Result: [VmFleetPage](protocol.md#vmfleetpage).
 
 ## environment.admin.inspect
 

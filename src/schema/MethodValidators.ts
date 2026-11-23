@@ -240,6 +240,8 @@ import {
     devicesRejectResult,
     devicesRevokeParams,
     devicesRevokeResult,
+    environmentAdminFleetParams,
+    environmentAdminFleetResult,
     environmentAdminInspectParams,
     environmentAdminInspectResult,
     environmentAdminMutateParams,
@@ -812,6 +814,10 @@ export const methodValidators: Readonly<Record<MethodName, MethodValidation>> = 
     'devices.list': { params: devicesListParams, result: devicesListResult },
     'devices.reject': { params: devicesRejectParams, result: devicesRejectResult },
     'devices.revoke': { params: devicesRevokeParams, result: devicesRevokeResult },
+    'environment.admin.fleet': {
+        params: environmentAdminFleetParams,
+        result: environmentAdminFleetResult,
+    },
     'environment.admin.inspect': {
         params: environmentAdminInspectParams,
         result: environmentAdminInspectResult,

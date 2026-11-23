@@ -1,5 +1,152 @@
 {
     "constraints": {
+        "VmFleetRequest": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/providerId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/siteId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/after": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "VmFleetPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/rows": {
+                "maxItems": 24
+            },
+            "properties/sites": {
+                "maxItems": 64
+            },
+            "properties/providers": {
+                "maxItems": 32
+            },
+            "properties/providerId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/nextNodeId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/observedAtMs": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "VmFleetHost": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/nodeId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/siteId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/poolId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "VmFleetHardware": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/gpus": {
+                "maxItems": 64
+            },
+            "properties/observedAtMs": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/memoryBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/memoryAvailableBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/logicalCpus": {
+                "minimum": 0,
+                "maximum": 65536
+            }
+        },
+        "VmFleetGpu": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/memoryBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/utilizationPercent": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        "VmFleetAllocation": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/memoryBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/reservedMemoryBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/inventoryExpiresAtMs": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/vcpus": {
+                "minimum": 0,
+                "maximum": 65536
+            },
+            "properties/reservedVcpus": {
+                "minimum": 0,
+                "maximum": 268435456
+            },
+            "properties/reservedVms": {
+                "minimum": 0,
+                "maximum": 4096
+            },
+            "properties/eligibleGpus": {
+                "minimum": 0,
+                "maximum": 256
+            },
+            "properties/reservedGpus": {
+                "minimum": 0,
+                "maximum": 256
+            }
+        },
+        "VmFleetStorage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/totalBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/availableBytes": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
         "VmAdministrationProvision": {
             "": {
                 "additionalProperties": false

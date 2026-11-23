@@ -19167,6 +19167,20 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'environment.admin.fleet': {
+                    description:
+                        'Platform administrator read of an enrolled fleet, including unallocated nodes.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/VmFleetRequest',
+                        },
+                        result: {
+                            $ref: '#/definitions/VmFleetPage',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'environment.admin.inspect': {
                     description:
                         'Read one managed environment for an explicitly authorized platform operator.',
@@ -21266,6 +21280,7 @@ export const schema: Schema = {
                 'devices.list',
                 'devices.reject',
                 'devices.revoke',
+                'environment.admin.fleet',
                 'environment.admin.inspect',
                 'environment.admin.mutate',
                 'environment.admin.network',
@@ -30560,6 +30575,335 @@ export const schema: Schema = {
                 'usedBytes',
             ],
             type: 'object',
+        },
+        VmFleetAllocation: {
+            description: 'Allocations may include native runtime overhead and held resources.',
+            properties: {
+                eligibleGpus: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 256,
+                },
+                inventoryExpiresAtMs: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                memoryBytes: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                reservedGpus: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 256,
+                },
+                reservedMemoryBytes: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                reservedVcpus: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 268435456,
+                },
+                reservedVms: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 4096,
+                },
+                vcpus: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 65536,
+                },
+            },
+            required: [
+                'eligibleGpus',
+                'inventoryExpiresAtMs',
+                'memoryBytes',
+                'reservedGpus',
+                'reservedMemoryBytes',
+                'reservedVcpus',
+                'reservedVms',
+                'vcpus',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetGpu: {
+            description:
+                'Host reports contain GPU observations without hardware paths or passthrough authority.',
+            properties: {
+                memoryBytes: {
+                    type: ['null', 'string'],
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                model: {
+                    type: ['null', 'string'],
+                },
+                utilizationPercent: {
+                    type: ['null', 'number'],
+                    minimum: 0,
+                    maximum: 100,
+                },
+                vendorId: {
+                    type: 'string',
+                },
+            },
+            required: ['memoryBytes', 'model', 'utilizationPercent', 'vendorId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetHardware: {
+            description: "Physical telemetry is distinct from the scheduler's allocation ledger.",
+            properties: {
+                architecture: {
+                    enum: ['aarch64', 'unknown', 'x86_64'],
+                    type: 'string',
+                },
+                cpuModel: {
+                    type: 'string',
+                },
+                gpus: {
+                    items: {
+                        $ref: '#/definitions/VmFleetGpu',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                localStorage: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/VmFleetStorage',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                logicalCpus: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 65536,
+                },
+                memoryAvailableBytes: {
+                    type: ['null', 'string'],
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                memoryBytes: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                observedAtMs: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+            },
+            required: [
+                'architecture',
+                'cpuModel',
+                'gpus',
+                'localStorage',
+                'logicalCpus',
+                'memoryAvailableBytes',
+                'memoryBytes',
+                'observedAtMs',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetHost: {
+            description:
+                'An enrollment can remain visible without a running guest, fresh telemetry, or placement authority.',
+            properties: {
+                allocation: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/VmFleetAllocation',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                enrollment: {
+                    enum: [
+                        'activating',
+                        'activation-revoked',
+                        'enrolled',
+                        'issued',
+                        'maintenance',
+                        'revalidating',
+                        'revoked',
+                    ],
+                    type: 'string',
+                },
+                hardware: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/VmFleetHardware',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                hostUse: {
+                    enum: ['cpu-coexist', 'dedicated'],
+                    type: 'string',
+                },
+                maintenance: {
+                    anyOf: [
+                        {
+                            enum: ['active', 'draining', 'qualification-retired', 'released'],
+                            type: 'string',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                },
+                nodeId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                placement: {
+                    enum: ['maintenance', 'registered', 'stale', 'unavailable'],
+                    type: 'string',
+                },
+                poolId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                siteId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: [
+                'allocation',
+                'enrollment',
+                'hardware',
+                'hostUse',
+                'maintenance',
+                'nodeId',
+                'placement',
+                'poolId',
+                'siteId',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetMethod: {
+            description:
+                'Platform administrator read of an enrolled fleet, including unallocated nodes.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/VmFleetRequest',
+                },
+                result: {
+                    $ref: '#/definitions/VmFleetPage',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        VmFleetPage: {
+            description:
+                'The controller enumerates configured provider and region labels without revealing endpoints.',
+            properties: {
+                nextNodeId: {
+                    type: ['null', 'string'],
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                observedAtMs: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                providerId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                providers: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                    maxItems: 32,
+                },
+                rows: {
+                    items: {
+                        $ref: '#/definitions/VmFleetHost',
+                    },
+                    type: 'array',
+                    maxItems: 24,
+                },
+                sites: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+            },
+            required: ['nextNodeId', 'observedAtMs', 'providerId', 'providers', 'rows', 'sites'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetRequest: {
+            description:
+                'Protected provider and region identifiers select a separately bounded host page.',
+            properties: {
+                after: {
+                    type: ['null', 'string'],
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                providerId: {
+                    type: ['null', 'string'],
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                siteId: {
+                    type: ['null', 'string'],
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['after', 'providerId', 'siteId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmFleetStorage: {
+            description: 'Byte quantities stay exact across the Compute and browser boundaries.',
+            properties: {
+                availableBytes: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                totalBytes: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+            },
+            required: ['availableBytes', 'totalBytes'],
+            type: 'object',
+            additionalProperties: false,
         },
         VmGuestMemoryUsage: {
             description:

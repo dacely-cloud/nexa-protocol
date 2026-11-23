@@ -1093,6 +1093,14 @@ export function devicesRevokeParams(value) {
 export function devicesRevokeResult(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/devices.revoke/properties/result', value);
 }
+/** Validates the params of `environment.admin.fleet`. */
+export function environmentAdminFleetParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.fleet/properties/params', value);
+}
+/** Validates the result of `environment.admin.fleet`. */
+export function environmentAdminFleetResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.fleet/properties/result', value);
+}
 /** Validates the params of `environment.admin.inspect`. */
 export function environmentAdminInspectParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.inspect/properties/params', value);
