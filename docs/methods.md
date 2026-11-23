@@ -1,6 +1,6 @@
 # RPC reference
 
-All 275 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 274 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 276 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 275 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -124,6 +124,7 @@ All 275 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [environment.admin.inspect](#environmentadmininspect)
 - [environment.admin.mutate](#environmentadminmutate)
 - [environment.admin.network](#environmentadminnetwork)
+- [environment.admin.operation](#environmentadminoperation)
 - [environment.admin.usage](#environmentadminusage)
 - [environment.prepare](#environmentprepare)
 - [environment.status](#environmentstatus)
@@ -3501,6 +3502,31 @@ Parameters: [VmUsageNetworkRequest](protocol.md#vmusagenetworkrequest).
 | `cursor` | Yes      | `null,string` |             |
 
 Result: [VmUsageNetworkSnapshot](protocol.md#vmusagenetworksnapshot).
+
+## environment.admin.operation
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentAdminOperation> = {
+    operationId: 'YOUR_OPERATIONID',
+    userId: 'YOUR_USERID',
+};
+const result: ResultOf<typeof Method.EnvironmentAdminOperation> = await client.call(
+    Method.EnvironmentAdminOperation,
+    params,
+);
+```
+
+Parameters: [VmAdministrationOperationLookup](protocol.md#vmadministrationoperationlookup).
+
+| Field         | Required | Type     | Description |
+| ------------- | -------- | -------- | ----------- |
+| `operationId` | Yes      | `string` |             |
+| `userId`      | Yes      | `string` |             |
+
+Result: [VmAdministrationOperationReceipt](protocol.md#vmadministrationoperationreceipt).
 
 ## environment.admin.usage
 

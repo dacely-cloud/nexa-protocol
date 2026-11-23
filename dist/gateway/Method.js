@@ -249,6 +249,8 @@ export var Method;
     Method["EnvironmentAdminMutate"] = "environment.admin.mutate";
     /** Calls `environment.admin.network`. */
     Method["EnvironmentAdminNetwork"] = "environment.admin.network";
+    /** Calls `environment.admin.operation`. */
+    Method["EnvironmentAdminOperation"] = "environment.admin.operation";
     /** Calls `environment.admin.usage`. */
     Method["EnvironmentAdminUsage"] = "environment.admin.usage";
     /** Calls `environment.prepare`. */

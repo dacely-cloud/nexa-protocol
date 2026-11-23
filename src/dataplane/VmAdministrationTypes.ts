@@ -173,6 +173,31 @@ export interface VmAdministrationOperation {
     readonly stage: VmAdministrationProgressStage | null;
 }
 
+/** Public storage and placement failure categories authored by Compute. */
+export const VmAdministrationCapacityFailure = {
+    Unavailable: 'no-capacity-available',
+    NoHost: 'no-host-available',
+    Storage: 'storage-capacity-unavailable',
+    ConcurrentUsers: 'too-many-concurrent-users',
+} as const;
+/** One VmAdministrationCapacityFailure value. */
+export type VmAdministrationCapacityFailure =
+    (typeof VmAdministrationCapacityFailure)[keyof typeof VmAdministrationCapacityFailure];
+
+/** Select one original operation for the target account, including after VM deletion. */
+export interface VmAdministrationOperationLookup {
+    readonly userId: string;
+    readonly operationId: string;
+}
+
+/** Durable operation status contains public lifecycle metadata and no guest or infrastructure data. */
+export interface VmAdministrationOperationReceipt {
+    readonly userId: string;
+    readonly environmentId: string;
+    readonly operation: VmAdministrationOperation;
+    readonly capacityFailure?: VmAdministrationCapacityFailure;
+}
+
 /** No public administrative record contains SSH material, placement addresses or native capabilities. */
 export interface VmAdministrationEnvironment {
     readonly id: string;
@@ -216,4 +241,10 @@ export interface VmAdministrationInspectMethod {
 export interface VmAdministrationMutateMethod {
     readonly params: VmAdministrationChange;
     readonly result: VmAdministrationView;
+}
+
+/** Read a durable lifecycle receipt using the current operator's account authority. */
+export interface VmAdministrationOperationMethod {
+    readonly params: VmAdministrationOperationLookup;
+    readonly result: VmAdministrationOperationReceipt;
 }

@@ -64,3 +64,10 @@ export const VmAdministrationState = {
     Stopped: 'stopped',
     Recovery: 'recovery-required',
 };
+/** Public storage and placement failure categories authored by Compute. */
+export const VmAdministrationCapacityFailure = {
+    Unavailable: 'no-capacity-available',
+    NoHost: 'no-host-available',
+    Storage: 'storage-capacity-unavailable',
+    ConcurrentUsers: 'too-many-concurrent-users',
+};

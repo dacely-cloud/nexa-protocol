@@ -578,6 +578,10 @@ export declare function environmentAdminMutateResult(value: unknown): boolean;
 export declare function environmentAdminNetworkParams(value: unknown): boolean;
 /** Validates the result of `environment.admin.network`. */
 export declare function environmentAdminNetworkResult(value: unknown): boolean;
+/** Validates the params of `environment.admin.operation`. */
+export declare function environmentAdminOperationParams(value: unknown): boolean;
+/** Validates the result of `environment.admin.operation`. */
+export declare function environmentAdminOperationResult(value: unknown): boolean;
 /** Validates the params of `environment.admin.usage`. */
 export declare function environmentAdminUsageParams(value: unknown): boolean;
 /** Validates the result of `environment.admin.usage`. */

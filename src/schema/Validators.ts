@@ -2203,6 +2203,22 @@ export function environmentAdminNetworkResult(value: unknown): boolean {
     );
 }
 
+/** Validates the params of `environment.admin.operation`. */
+export function environmentAdminOperationParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environment.admin.operation/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environment.admin.operation`. */
+export function environmentAdminOperationResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environment.admin.operation/properties/result',
+        value,
+    );
+}
+
 /** Validates the params of `environment.admin.usage`. */
 export function environmentAdminUsageParams(value: unknown): boolean {
     return validator.validate(

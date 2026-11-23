@@ -19223,6 +19223,20 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'environment.admin.operation': {
+                    description:
+                        "Read a durable lifecycle receipt using the current operator's account authority.",
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/VmAdministrationOperationLookup',
+                        },
+                        result: {
+                            $ref: '#/definitions/VmAdministrationOperationReceipt',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'environment.admin.usage': {
                     description:
                         'Cross-account monitoring is registered only under the explicit administration gate.',
@@ -21284,6 +21298,7 @@ export const schema: Schema = {
                 'environment.admin.inspect',
                 'environment.admin.mutate',
                 'environment.admin.network',
+                'environment.admin.operation',
                 'environment.admin.usage',
                 'environment.prepare',
                 'environment.status',
@@ -30162,6 +30177,17 @@ export const schema: Schema = {
             enum: ['aarch64', 'x86_64'],
             type: 'string',
         },
+        VmAdministrationCapacityFailure: {
+            description:
+                'Public storage and placement failure categories authored by Compute.\nOne VmAdministrationCapacityFailure value.',
+            enum: [
+                'no-capacity-available',
+                'no-host-available',
+                'storage-capacity-unavailable',
+                'too-many-concurrent-users',
+            ],
+            type: 'string',
+        },
         VmAdministrationChange: {
             anyOf: [
                 {
@@ -30408,11 +30434,67 @@ export const schema: Schema = {
             enum: ['backup', 'delete', 'provision', 'resize', 'restore', 'start', 'stop'],
             type: 'string',
         },
+        VmAdministrationOperationLookup: {
+            description:
+                'Select one original operation for the target account, including after VM deletion.',
+            properties: {
+                operationId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                userId: {
+                    type: 'string',
+                    pattern: '^[a-f0-9]{64}$',
+                },
+            },
+            required: ['operationId', 'userId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        VmAdministrationOperationMethod: {
+            description:
+                "Read a durable lifecycle receipt using the current operator's account authority.",
+            properties: {
+                params: {
+                    $ref: '#/definitions/VmAdministrationOperationLookup',
+                },
+                result: {
+                    $ref: '#/definitions/VmAdministrationOperationReceipt',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
         VmAdministrationOperationPhase: {
             description:
                 'Queue completion does not assert a direct live guest health measurement.\nOne VmAdministrationOperationPhase value.',
             enum: ['failed', 'queued', 'reconciling', 'running', 'succeeded'],
             type: 'string',
+        },
+        VmAdministrationOperationReceipt: {
+            description:
+                'Durable operation status contains public lifecycle metadata and no guest or infrastructure data.',
+            properties: {
+                capacityFailure: {
+                    $ref: '#/definitions/VmAdministrationCapacityFailure',
+                },
+                environmentId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
+                },
+                operation: {
+                    $ref: '#/definitions/VmAdministrationOperation',
+                },
+                userId: {
+                    type: 'string',
+                    pattern: '^[a-f0-9]{64}$',
+                },
+            },
+            required: ['environmentId', 'operation', 'userId'],
+            type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationProfile: {
             description:

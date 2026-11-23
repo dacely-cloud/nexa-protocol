@@ -9791,6 +9791,7 @@ Every gateway method with its params and result; the method name is the key.
 | `environment.admin.inspect`           | Yes      | Object (fields below) | Read one managed environment for an explicitly authorized platform operator.                           |
 | `environment.admin.mutate`            | Yes      | Object (fields below) | Admit one lifecycle operation without waiting for or claiming native completion.                       |
 | `environment.admin.network`           | Yes      | Object (fields below) | Only freshly verified platform administrators may request network observations.                        |
+| `environment.admin.operation`         | Yes      | Object (fields below) | Read a durable lifecycle receipt using the current operator's account authority.                       |
 | `environment.admin.usage`             | Yes      | Object (fields below) | Cross-account monitoring is registered only under the explicit administration gate.                    |
 | `environment.prepare`                 | Yes      | Object (fields below) | Starts or joins preparation; it never accepts an account, host, command or machine selector.           |
 | `environment.status`                  | Yes      | Object (fields below) | Reads bounded progress after the last acknowledged cursor.                                             |
@@ -10848,6 +10849,13 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ------------------------------------------------------------ | ----------- |
 | `params` | Yes      | [VmUsageNetworkRequest](protocol.md#vmusagenetworkrequest)   |             |
 | `result` | Yes      | [VmUsageNetworkSnapshot](protocol.md#vmusagenetworksnapshot) |             |
+
+**environment.admin.operation**
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [VmAdministrationOperationLookup](protocol.md#vmadministrationoperationlookup)   |             |
+| `result` | Yes      | [VmAdministrationOperationReceipt](protocol.md#vmadministrationoperationreceipt) |             |
 
 **environment.admin.usage**
 
@@ -16503,6 +16511,14 @@ A persistent guest cannot silently change CPU architecture.
 
 Type: `"aarch64"` / `"x86_64"`.
 
+## VmAdministrationCapacityFailure
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Public storage and placement failure categories authored by Compute.
+
+Type: `"no-capacity-available"` / `"no-host-available"` / `"storage-capacity-unavailable"` / `"too-many-concurrent-users"`.
+
 ## VmAdministrationChange
 
 Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
@@ -16654,6 +16670,28 @@ Named lifecycle operations reported by the authoritative Compute queue.
 
 Type: `"backup"` / `"delete"` / `"provision"` / `"resize"` / `"restore"` / `"start"` / `"stop"`.
 
+## VmAdministrationOperationLookup
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Select one original operation for the target account, including after VM deletion.
+
+| Field         | Required | Type     | Description |
+| ------------- | -------- | -------- | ----------- |
+| `operationId` | Yes      | `string` |             |
+| `userId`      | Yes      | `string` |             |
+
+## VmAdministrationOperationMethod
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Read a durable lifecycle receipt using the current operator's account authority.
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [VmAdministrationOperationLookup](protocol.md#vmadministrationoperationlookup)   |             |
+| `result` | Yes      | [VmAdministrationOperationReceipt](protocol.md#vmadministrationoperationreceipt) |             |
+
 ## VmAdministrationOperationPhase
 
 Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
@@ -16661,6 +16699,19 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 Queue completion does not assert a direct live guest health measurement.
 
 Type: `"failed"` / `"queued"` / `"reconciling"` / `"running"` / `"succeeded"`.
+
+## VmAdministrationOperationReceipt
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Durable operation status contains public lifecycle metadata and no guest or infrastructure data.
+
+| Field             | Required | Type                                                                           | Description |
+| ----------------- | -------- | ------------------------------------------------------------------------------ | ----------- |
+| `capacityFailure` | No       | [VmAdministrationCapacityFailure](protocol.md#vmadministrationcapacityfailure) |             |
+| `environmentId`   | Yes      | `string`                                                                       |             |
+| `operation`       | Yes      | [VmAdministrationOperation](protocol.md#vmadministrationoperation)             |             |
+| `userId`          | Yes      | `string`                                                                       |             |
 
 ## VmAdministrationProfile
 

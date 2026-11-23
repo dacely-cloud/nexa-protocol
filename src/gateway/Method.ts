@@ -249,6 +249,8 @@ export enum Method {
     EnvironmentAdminMutate = 'environment.admin.mutate',
     /** Calls `environment.admin.network`. */
     EnvironmentAdminNetwork = 'environment.admin.network',
+    /** Calls `environment.admin.operation`. */
+    EnvironmentAdminOperation = 'environment.admin.operation',
     /** Calls `environment.admin.usage`. */
     EnvironmentAdminUsage = 'environment.admin.usage',
     /** Calls `environment.prepare`. */

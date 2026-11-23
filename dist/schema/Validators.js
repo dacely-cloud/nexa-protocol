@@ -1125,6 +1125,14 @@ export function environmentAdminNetworkParams(value) {
 export function environmentAdminNetworkResult(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.network/properties/result', value);
 }
+/** Validates the params of `environment.admin.operation`. */
+export function environmentAdminOperationParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.operation/properties/params', value);
+}
+/** Validates the result of `environment.admin.operation`. */
+export function environmentAdminOperationResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.operation/properties/result', value);
+}
 /** Validates the params of `environment.admin.usage`. */
 export function environmentAdminUsageParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/environment.admin.usage/properties/params', value);

@@ -248,6 +248,8 @@ import {
     environmentAdminMutateResult,
     environmentAdminNetworkParams,
     environmentAdminNetworkResult,
+    environmentAdminOperationParams,
+    environmentAdminOperationResult,
     environmentAdminUsageParams,
     environmentAdminUsageResult,
     environmentPrepareParams,
@@ -829,6 +831,10 @@ export const methodValidators: Readonly<Record<MethodName, MethodValidation>> = 
     'environment.admin.network': {
         params: environmentAdminNetworkParams,
         result: environmentAdminNetworkResult,
+    },
+    'environment.admin.operation': {
+        params: environmentAdminOperationParams,
+        result: environmentAdminOperationResult,
     },
     'environment.admin.usage': {
         params: environmentAdminUsageParams,

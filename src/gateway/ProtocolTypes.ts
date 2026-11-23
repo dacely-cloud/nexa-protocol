@@ -101,6 +101,7 @@ import type {
 import type { EnvironmentVisitMethod } from '../dataplane/EnvironmentVisitTypes.js';
 import type {
     VmAdministrationInspectMethod,
+    VmAdministrationOperationMethod,
     VmAdministrationMutateMethod,
 } from '../dataplane/VmAdministrationTypes.js';
 import type { VmFleetMethod } from '../dataplane/VmFleetTypes.js';
@@ -984,6 +985,7 @@ export interface GatewayMethods {
     readonly 'environment.admin.fleet': VmFleetMethod;
     /** Platform operators inspect one account's managed VM through Nexa's protected Compute adapter. */
     readonly 'environment.admin.inspect': VmAdministrationInspectMethod;
+    readonly 'environment.admin.operation': VmAdministrationOperationMethod;
     /** Exact observed generations and stable request IDs protect administrative lifecycle operations. */
     readonly 'environment.admin.mutate': VmAdministrationMutateMethod;
     /** Private emotional state toward the authenticated caller; no user selector is accepted. */

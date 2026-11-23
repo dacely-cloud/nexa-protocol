@@ -157,6 +157,30 @@
                 "additionalProperties": false
             }
         },
+        "VmAdministrationOperationLookup": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/userId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/operationId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "VmAdministrationOperationReceipt": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/userId": {
+                "pattern": "^[a-f0-9]{64}$"
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            }
+        },
         "VmAdministrationView": {
             "properties/resizeProfiles": {
                 "maxItems": 256
