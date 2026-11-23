@@ -30524,6 +30524,7 @@ export const schema: Schema = {
                         $ref: '#/definitions/VmAdministrationRegionalProfile',
                     },
                     type: 'array',
+                    maxItems: 1024,
                 },
                 diskOffers: {
                     items: {
@@ -30555,16 +30556,23 @@ export const schema: Schema = {
             properties: {
                 profileId: {
                     type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
                 },
                 profileRevision: {
                     type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
                 },
                 siteId: {
                     type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$',
+                    maxLength: 128,
                 },
             },
             required: ['profileId', 'profileRevision', 'siteId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationRuntime: {
             description:

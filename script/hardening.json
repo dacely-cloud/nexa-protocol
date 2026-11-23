@@ -175,11 +175,31 @@
             "": {
                 "additionalProperties": false
             },
+            "properties/automaticStorageOffers": {
+                "maxItems": 1024
+            },
             "properties/profiles": {
                 "maxItems": 256
             },
             "properties/sites": {
                 "maxItems": 64
+            }
+        },
+        "VmAdministrationRegionalProfile": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/siteId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/profileId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/profileRevision": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
             }
         },
         "AskParams": {
