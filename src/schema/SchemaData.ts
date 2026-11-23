@@ -30276,6 +30276,7 @@ export const schema: Schema = {
             },
             required: ['userId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationInspectMethod: {
             description:
@@ -30343,6 +30344,7 @@ export const schema: Schema = {
             },
             required: ['action', 'environmentId', 'generation', 'requestId', 'userId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationOperation: {
             description:
@@ -30579,6 +30581,7 @@ export const schema: Schema = {
                         $ref: '#/definitions/VmAdministrationProfile',
                     },
                     type: 'array',
+                    maxItems: 256,
                 },
                 userId: {
                     type: 'string',

@@ -29246,6 +29246,7 @@ export const schema = {
             },
             required: ['userId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationInspectMethod: {
             description: 'Read one managed environment for an explicitly authorized platform operator.',
@@ -29307,6 +29308,7 @@ export const schema = {
             },
             required: ['action', 'environmentId', 'generation', 'requestId', 'userId'],
             type: 'object',
+            additionalProperties: false,
         },
         VmAdministrationOperation: {
             description: 'Platform-authored lifecycle progress excludes raw guest output and internal worker leases.',
@@ -29532,6 +29534,7 @@ export const schema = {
                         $ref: '#/definitions/VmAdministrationProfile',
                     },
                     type: 'array',
+                    maxItems: 256,
                 },
                 userId: {
                     type: 'string',

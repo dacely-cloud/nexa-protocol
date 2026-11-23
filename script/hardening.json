@@ -147,6 +147,21 @@
                 "maxLength": 19
             }
         },
+        "VmAdministrationInspect": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "VmAdministrationMutation": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "VmAdministrationView": {
+            "properties/resizeProfiles": {
+                "maxItems": 256
+            }
+        },
         "VmAdministrationProvision": {
             "": {
                 "additionalProperties": false
