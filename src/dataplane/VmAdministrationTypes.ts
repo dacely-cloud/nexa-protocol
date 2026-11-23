@@ -95,6 +95,8 @@ export type VmAdministrationState =
 /** The operator selects one platform account, never an API, tenant, host or machine credential. */
 export interface VmAdministrationInspect {
     readonly userId: string;
+    /** Opt into storage metadata while older administration clients keep their original view. */
+    readonly includeStorage?: boolean;
 }
 
 /** An observed exact environment/generation and stable original request ID constrain every mutation. */
@@ -116,6 +118,7 @@ export interface VmAdministrationProvision extends VmAdministrationInspect {
     readonly requestId: string;
     readonly siteId: string;
     readonly profile: VmAdministrationProfileReference;
+    readonly disks?: VmAdministrationDiskGeometry;
 }
 
 /** Provisioning and changes to an existing environment have different identity requirements. */
@@ -125,6 +128,19 @@ export type VmAdministrationChange = VmAdministrationMutation | VmAdministration
 export interface VmAdministrationProfileReference {
     readonly id: string;
     readonly revision: string;
+}
+
+/** Exact logical sizes of the system and workspace disks, in bytes. */
+export interface VmAdministrationDiskGeometry {
+    readonly rootBytes: string;
+    readonly workspaceBytes: string;
+}
+
+/** The region and compute profile that can use this installed storage geometry. */
+export interface VmAdministrationDiskOffer extends VmAdministrationDiskGeometry {
+    readonly siteId: string;
+    readonly profileId: string;
+    readonly profileRevision: string;
 }
 
 /** Resource policy quantities remain exact decimal strings across browser and controller boundaries. */
@@ -155,6 +171,7 @@ export interface VmAdministrationEnvironment {
     readonly state: VmAdministrationState;
     readonly resourcesReserved: boolean;
     readonly siteId?: string;
+    readonly selectedDisks?: VmAdministrationDiskGeometry;
     readonly operation: VmAdministrationOperation | null;
     readonly profile: VmAdministrationProfile | null;
 }
@@ -163,6 +180,7 @@ export interface VmAdministrationEnvironment {
 export interface VmAdministrationProvisioning {
     readonly sites: readonly string[];
     readonly profiles: readonly VmAdministrationProfile[];
+    readonly diskOffers?: readonly VmAdministrationDiskOffer[];
 }
 
 /** A null environment explicitly reports that no managed default has been provisioned. */

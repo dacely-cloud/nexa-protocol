@@ -16511,24 +16511,52 @@ Provisioning and changes to an existing environment have different identity requ
 
 Variant 1: [VmAdministrationMutation](protocol.md#vmadministrationmutation)
 
-| Field           | Required | Type                                                                             | Description                                                                        |
-| --------------- | -------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `action`        | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                    |
-| `environmentId` | Yes      | `string`                                                                         |                                                                                    |
-| `generation`    | Yes      | `string`                                                                         |                                                                                    |
-| `profile`       | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries. |
-| `requestId`     | Yes      | `string`                                                                         |                                                                                    |
-| `userId`        | Yes      | `string`                                                                         |                                                                                    |
+| Field            | Required | Type                                                                             | Description                                                                            |
+| ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `action`         | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                        |
+| `environmentId`  | Yes      | `string`                                                                         |                                                                                        |
+| `generation`     | Yes      | `string`                                                                         |                                                                                        |
+| `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
+| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries.     |
+| `requestId`      | Yes      | `string`                                                                         |                                                                                        |
+| `userId`         | Yes      | `string`                                                                         |                                                                                        |
 
 Variant 2: [VmAdministrationProvision](protocol.md#vmadministrationprovision)
 
-| Field       | Required | Type                                                                             | Description |
-| ----------- | -------- | -------------------------------------------------------------------------------- | ----------- |
-| `action`    | Yes      | `"provision"`                                                                    |             |
-| `profile`   | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |             |
-| `requestId` | Yes      | `string`                                                                         |             |
-| `siteId`    | Yes      | `string`                                                                         |             |
-| `userId`    | Yes      | `string`                                                                         |             |
+| Field            | Required | Type                                                                             | Description                                                                            |
+| ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `action`         | Yes      | `"provision"`                                                                    |                                                                                        |
+| `disks`          | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
+| `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
+| `profile`        | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
+| `requestId`      | Yes      | `string`                                                                         |                                                                                        |
+| `siteId`         | Yes      | `string`                                                                         |                                                                                        |
+| `userId`         | Yes      | `string`                                                                         |                                                                                        |
+
+## VmAdministrationDiskGeometry
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Exact logical sizes of the system and workspace disks, in bytes.
+
+| Field            | Required | Type     | Description |
+| ---------------- | -------- | -------- | ----------- |
+| `rootBytes`      | Yes      | `string` |             |
+| `workspaceBytes` | Yes      | `string` |             |
+
+## VmAdministrationDiskOffer
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+The region and compute profile that can use this installed storage geometry.
+
+| Field             | Required | Type     | Description |
+| ----------------- | -------- | -------- | ----------- |
+| `profileId`       | Yes      | `string` |             |
+| `profileRevision` | Yes      | `string` |             |
+| `rootBytes`       | Yes      | `string` |             |
+| `siteId`          | Yes      | `string` |             |
+| `workspaceBytes`  | Yes      | `string` |             |
 
 ## VmAdministrationEnvironment
 
@@ -16543,6 +16571,7 @@ No public administrative record contains SSH material, placement addresses or na
 | `operation`         | Yes      | [VmAdministrationOperation](protocol.md#vmadministrationoperation) / `null` |             |
 | `profile`           | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile) / `null`     |             |
 | `resourcesReserved` | Yes      | `boolean`                                                                   |             |
+| `selectedDisks`     | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)    |             |
 | `siteId`            | No       | `string`                                                                    |             |
 | `state`             | Yes      | [VmAdministrationState](protocol.md#vmadministrationstate)                  |             |
 
@@ -16552,9 +16581,10 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 The operator selects one platform account, never an API, tenant, host or machine credential.
 
-| Field    | Required | Type     | Description |
-| -------- | -------- | -------- | ----------- |
-| `userId` | Yes      | `string` |             |
+| Field            | Required | Type      | Description                                                                            |
+| ---------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
+| `includeStorage` | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
+| `userId`         | Yes      | `string`  |                                                                                        |
 
 ## VmAdministrationInspectMethod
 
@@ -16584,14 +16614,15 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 An observed exact environment/generation and stable original request ID constrain every mutation.
 
-| Field           | Required | Type                                                                             | Description                                                                        |
-| --------------- | -------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `action`        | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                    |
-| `environmentId` | Yes      | `string`                                                                         |                                                                                    |
-| `generation`    | Yes      | `string`                                                                         |                                                                                    |
-| `profile`       | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries. |
-| `requestId`     | Yes      | `string`                                                                         |                                                                                    |
-| `userId`        | Yes      | `string`                                                                         |                                                                                    |
+| Field            | Required | Type                                                                             | Description                                                                            |
+| ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `action`         | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                        |
+| `environmentId`  | Yes      | `string`                                                                         |                                                                                        |
+| `generation`     | Yes      | `string`                                                                         |                                                                                        |
+| `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
+| `profile`        | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries.     |
+| `requestId`      | Yes      | `string`                                                                         |                                                                                        |
+| `userId`         | Yes      | `string`                                                                         |                                                                                        |
 
 ## VmAdministrationOperation
 
@@ -16657,13 +16688,15 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 Create the selected account's default VM in a specific approved site.
 
-| Field       | Required | Type                                                                             | Description |
-| ----------- | -------- | -------------------------------------------------------------------------------- | ----------- |
-| `action`    | Yes      | `"provision"`                                                                    |             |
-| `profile`   | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |             |
-| `requestId` | Yes      | `string`                                                                         |             |
-| `siteId`    | Yes      | `string`                                                                         |             |
-| `userId`    | Yes      | `string`                                                                         |             |
+| Field            | Required | Type                                                                             | Description                                                                            |
+| ---------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `action`         | Yes      | `"provision"`                                                                    |                                                                                        |
+| `disks`          | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
+| `includeStorage` | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
+| `profile`        | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
+| `requestId`      | Yes      | `string`                                                                         |                                                                                        |
+| `siteId`         | Yes      | `string`                                                                         |                                                                                        |
+| `userId`         | Yes      | `string`                                                                         |                                                                                        |
 
 ## VmAdministrationProvisioning
 
@@ -16671,10 +16704,11 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 Configuration options come from the approved fleet and the selected account's profile grants.
 
-| Field      | Required | Type                                                                    | Description |
-| ---------- | -------- | ----------------------------------------------------------------------- | ----------- |
-| `profiles` | Yes      | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile) |             |
-| `sites`    | Yes      | Array of `string`                                                       |             |
+| Field        | Required | Type                                                                        | Description |
+| ------------ | -------- | --------------------------------------------------------------------------- | ----------- |
+| `diskOffers` | No       | Array of [VmAdministrationDiskOffer](protocol.md#vmadministrationdiskoffer) |             |
+| `profiles`   | Yes      | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile)     |             |
+| `sites`      | Yes      | Array of `string`                                                           |             |
 
 ## VmAdministrationRuntime
 

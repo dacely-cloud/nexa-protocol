@@ -29149,6 +29149,41 @@ export const schema = {
             ],
             description: 'Provisioning and changes to an existing environment have different identity requirements.',
         },
+        VmAdministrationDiskGeometry: {
+            description: 'Exact logical sizes of the system and workspace disks, in bytes.',
+            properties: {
+                rootBytes: {
+                    type: 'string',
+                },
+                workspaceBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['rootBytes', 'workspaceBytes'],
+            type: 'object',
+        },
+        VmAdministrationDiskOffer: {
+            description: 'The region and compute profile that can use this installed storage geometry.',
+            properties: {
+                profileId: {
+                    type: 'string',
+                },
+                profileRevision: {
+                    type: 'string',
+                },
+                rootBytes: {
+                    type: 'string',
+                },
+                siteId: {
+                    type: 'string',
+                },
+                workspaceBytes: {
+                    type: 'string',
+                },
+            },
+            required: ['profileId', 'profileRevision', 'rootBytes', 'siteId', 'workspaceBytes'],
+            type: 'object',
+        },
         VmAdministrationEnvironment: {
             description: 'No public administrative record contains SSH material, placement addresses or native capabilities.',
             properties: {
@@ -29181,6 +29216,9 @@ export const schema = {
                 resourcesReserved: {
                     type: 'boolean',
                 },
+                selectedDisks: {
+                    $ref: '#/definitions/VmAdministrationDiskGeometry',
+                },
                 siteId: {
                     type: 'string',
                 },
@@ -29194,6 +29232,10 @@ export const schema = {
         VmAdministrationInspect: {
             description: 'The operator selects one platform account, never an API, tenant, host or machine credential.',
             properties: {
+                includeStorage: {
+                    description: 'Opt into storage metadata while older administration clients keep their original view.',
+                    type: 'boolean',
+                },
                 userId: {
                     type: 'string',
                 },
@@ -29239,6 +29281,10 @@ export const schema = {
                 },
                 generation: {
                     type: 'string',
+                },
+                includeStorage: {
+                    description: 'Opt into storage metadata while older administration clients keep their original view.',
+                    type: 'boolean',
                 },
                 profile: {
                     $ref: '#/definitions/VmAdministrationProfileReference',
@@ -29369,6 +29415,13 @@ export const schema = {
                     const: 'provision',
                     type: 'string',
                 },
+                disks: {
+                    $ref: '#/definitions/VmAdministrationDiskGeometry',
+                },
+                includeStorage: {
+                    description: 'Opt into storage metadata while older administration clients keep their original view.',
+                    type: 'boolean',
+                },
                 profile: {
                     $ref: '#/definitions/VmAdministrationProfileReference',
                 },
@@ -29391,6 +29444,12 @@ export const schema = {
         VmAdministrationProvisioning: {
             description: "Configuration options come from the approved fleet and the selected account's profile grants.",
             properties: {
+                diskOffers: {
+                    items: {
+                        $ref: '#/definitions/VmAdministrationDiskOffer',
+                    },
+                    type: 'array',
+                },
                 profiles: {
                     items: {
                         $ref: '#/definitions/VmAdministrationProfile',
