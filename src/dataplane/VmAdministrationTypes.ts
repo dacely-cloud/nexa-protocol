@@ -69,6 +69,7 @@ export type VmAdministrationProgressStage =
 /** Management is restricted to implemented qualified-account lifecycle operations. */
 export const VmAdministrationAction = {
     Inspect: 'inspect',
+    Provision: 'provision',
     Start: 'start',
     Stop: 'stop',
     Delete: 'delete',
@@ -109,6 +110,17 @@ export interface VmAdministrationMutation extends VmAdministrationInspect {
     readonly profile?: VmAdministrationProfileReference;
 }
 
+/** Create the selected account's default VM in a specific approved site. */
+export interface VmAdministrationProvision extends VmAdministrationInspect {
+    readonly action: typeof VmAdministrationAction.Provision;
+    readonly requestId: string;
+    readonly siteId: string;
+    readonly profile: VmAdministrationProfileReference;
+}
+
+/** Provisioning and changes to an existing environment have different identity requirements. */
+export type VmAdministrationChange = VmAdministrationMutation | VmAdministrationProvision;
+
 /** A new deployment default cannot silently replace a persistent VM's retained profile. */
 export interface VmAdministrationProfileReference {
     readonly id: string;
@@ -142,8 +154,15 @@ export interface VmAdministrationEnvironment {
     readonly generation: string;
     readonly state: VmAdministrationState;
     readonly resourcesReserved: boolean;
+    readonly siteId?: string;
     readonly operation: VmAdministrationOperation | null;
     readonly profile: VmAdministrationProfile | null;
+}
+
+/** Configuration options come from the approved fleet and the selected account's profile grants. */
+export interface VmAdministrationProvisioning {
+    readonly sites: readonly string[];
+    readonly profiles: readonly VmAdministrationProfile[];
 }
 
 /** A null environment explicitly reports that no managed default has been provisioned. */
@@ -153,6 +172,7 @@ export interface VmAdministrationView {
     readonly observedAtMs: string;
     readonly environment: VmAdministrationEnvironment | null;
     readonly defaultProfile: VmAdministrationProfile;
+    readonly provisioning?: VmAdministrationProvisioning;
     readonly acceptedOperationId: string | null;
 }
 
@@ -164,6 +184,6 @@ export interface VmAdministrationInspectMethod {
 
 /** Admit one lifecycle operation without waiting for or claiming native completion. */
 export interface VmAdministrationMutateMethod {
-    readonly params: VmAdministrationMutation;
+    readonly params: VmAdministrationChange;
     readonly result: VmAdministrationView;
 }

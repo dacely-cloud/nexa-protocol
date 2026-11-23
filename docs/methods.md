@@ -3442,16 +3442,9 @@ const result: ResultOf<typeof Method.EnvironmentAdminMutate> = await client.call
 );
 ```
 
-Parameters: [VmAdministrationMutation](protocol.md#vmadministrationmutation).
+Parameters: [VmAdministrationChange](protocol.md#vmadministrationchange).
 
-| Field           | Required | Type                                                                             | Description                                                                        |
-| --------------- | -------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `action`        | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                    |
-| `environmentId` | Yes      | `string`                                                                         |                                                                                    |
-| `generation`    | Yes      | `string`                                                                         |                                                                                    |
-| `profile`       | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries. |
-| `requestId`     | Yes      | `string`                                                                         |                                                                                    |
-| `userId`        | Yes      | `string`                                                                         |                                                                                    |
+Type: [VmAdministrationMutation](protocol.md#vmadministrationmutation) / [VmAdministrationProvision](protocol.md#vmadministrationprovision).
 
 Result: [VmAdministrationView](protocol.md#vmadministrationview).
 

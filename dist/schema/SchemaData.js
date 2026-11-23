@@ -18527,7 +18527,7 @@ export const schema = {
                     description: 'Admit one lifecycle operation without waiting for or claiming native completion.',
                     properties: {
                         params: {
-                            $ref: '#/definitions/VmAdministrationMutation',
+                            $ref: '#/definitions/VmAdministrationChange',
                         },
                         result: {
                             $ref: '#/definitions/VmAdministrationView',
@@ -29124,6 +29124,17 @@ export const schema = {
             enum: ['aarch64', 'x86_64'],
             type: 'string',
         },
+        VmAdministrationChange: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/VmAdministrationMutation',
+                },
+                {
+                    $ref: '#/definitions/VmAdministrationProvision',
+                },
+            ],
+            description: 'Provisioning and changes to an existing environment have different identity requirements.',
+        },
         VmAdministrationEnvironment: {
             description: 'No public administrative record contains SSH material, placement addresses or native capabilities.',
             properties: {
@@ -29155,6 +29166,9 @@ export const schema = {
                 },
                 resourcesReserved: {
                     type: 'boolean',
+                },
+                siteId: {
+                    type: 'string',
                 },
                 state: {
                     $ref: '#/definitions/VmAdministrationState',
@@ -29190,7 +29204,7 @@ export const schema = {
             description: 'Admit one lifecycle operation without waiting for or claiming native completion.',
             properties: {
                 params: {
-                    $ref: '#/definitions/VmAdministrationMutation',
+                    $ref: '#/definitions/VmAdministrationChange',
                 },
                 result: {
                     $ref: '#/definitions/VmAdministrationView',
@@ -29334,6 +29348,48 @@ export const schema = {
             required: ['id', 'revision'],
             type: 'object',
         },
+        VmAdministrationProvision: {
+            description: "Create the selected account's default VM in a specific approved site.",
+            properties: {
+                action: {
+                    const: 'provision',
+                    type: 'string',
+                },
+                profile: {
+                    $ref: '#/definitions/VmAdministrationProfileReference',
+                },
+                requestId: {
+                    type: 'string',
+                },
+                siteId: {
+                    type: 'string',
+                },
+                userId: {
+                    type: 'string',
+                },
+            },
+            required: ['action', 'profile', 'requestId', 'siteId', 'userId'],
+            type: 'object',
+        },
+        VmAdministrationProvisioning: {
+            description: "Configuration options come from the approved fleet and the selected account's profile grants.",
+            properties: {
+                profiles: {
+                    items: {
+                        $ref: '#/definitions/VmAdministrationProfile',
+                    },
+                    type: 'array',
+                },
+                sites: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
+            },
+            required: ['profiles', 'sites'],
+            type: 'object',
+        },
         VmAdministrationRuntime: {
             description: 'Runtime policy is reported independently of sampled host hardware.\nOne VmAdministrationRuntime value.',
             enum: ['qemu-cpu', 'qemu-gpu'],
@@ -29376,6 +29432,9 @@ export const schema = {
                 },
                 providerId: {
                     type: 'string',
+                },
+                provisioning: {
+                    $ref: '#/definitions/VmAdministrationProvisioning',
                 },
                 userId: {
                     type: 'string',

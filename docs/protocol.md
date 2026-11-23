@@ -10829,10 +10829,10 @@ Every gateway method with its params and result; the method name is the key.
 
 **environment.admin.mutate**
 
-| Field    | Required | Type                                                             | Description |
-| -------- | -------- | ---------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [VmAdministrationMutation](protocol.md#vmadministrationmutation) |             |
-| `result` | Yes      | [VmAdministrationView](protocol.md#vmadministrationview)         |             |
+| Field    | Required | Type                                                         | Description |
+| -------- | -------- | ------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [VmAdministrationChange](protocol.md#vmadministrationchange) |             |
+| `result` | Yes      | [VmAdministrationView](protocol.md#vmadministrationview)     |             |
 
 **environment.admin.network**
 
@@ -16495,6 +16495,33 @@ A persistent guest cannot silently change CPU architecture.
 
 Type: `"aarch64"` / `"x86_64"`.
 
+## VmAdministrationChange
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Provisioning and changes to an existing environment have different identity requirements.
+
+Variant 1: [VmAdministrationMutation](protocol.md#vmadministrationmutation)
+
+| Field           | Required | Type                                                                             | Description                                                                        |
+| --------------- | -------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `action`        | Yes      | `"delete"` / `"start"` / `"stop"`                                                |                                                                                    |
+| `environmentId` | Yes      | `string`                                                                         |                                                                                    |
+| `generation`    | Yes      | `string`                                                                         |                                                                                    |
+| `profile`       | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required only for Start; preserves the observed VM profile across request retries. |
+| `requestId`     | Yes      | `string`                                                                         |                                                                                    |
+| `userId`        | Yes      | `string`                                                                         |                                                                                    |
+
+Variant 2: [VmAdministrationProvision](protocol.md#vmadministrationprovision)
+
+| Field       | Required | Type                                                                             | Description |
+| ----------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"provision"`                                                                    |             |
+| `profile`   | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |             |
+| `requestId` | Yes      | `string`                                                                         |             |
+| `siteId`    | Yes      | `string`                                                                         |             |
+| `userId`    | Yes      | `string`                                                                         |             |
+
 ## VmAdministrationEnvironment
 
 Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
@@ -16508,6 +16535,7 @@ No public administrative record contains SSH material, placement addresses or na
 | `operation`         | Yes      | [VmAdministrationOperation](protocol.md#vmadministrationoperation) / `null` |             |
 | `profile`           | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile) / `null`     |             |
 | `resourcesReserved` | Yes      | `boolean`                                                                   |             |
+| `siteId`            | No       | `string`                                                                    |             |
 | `state`             | Yes      | [VmAdministrationState](protocol.md#vmadministrationstate)                  |             |
 
 ## VmAdministrationInspect
@@ -16537,10 +16565,10 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 Admit one lifecycle operation without waiting for or claiming native completion.
 
-| Field    | Required | Type                                                             | Description |
-| -------- | -------- | ---------------------------------------------------------------- | ----------- |
-| `params` | Yes      | [VmAdministrationMutation](protocol.md#vmadministrationmutation) |             |
-| `result` | Yes      | [VmAdministrationView](protocol.md#vmadministrationview)         |             |
+| Field    | Required | Type                                                         | Description |
+| -------- | -------- | ------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [VmAdministrationChange](protocol.md#vmadministrationchange) |             |
+| `result` | Yes      | [VmAdministrationView](protocol.md#vmadministrationview)     |             |
 
 ## VmAdministrationMutation
 
@@ -16615,6 +16643,31 @@ A new deployment default cannot silently replace a persistent VM's retained prof
 | `id`       | Yes      | `string` |             |
 | `revision` | Yes      | `string` |             |
 
+## VmAdministrationProvision
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Create the selected account's default VM in a specific approved site.
+
+| Field       | Required | Type                                                                             | Description |
+| ----------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `action`    | Yes      | `"provision"`                                                                    |             |
+| `profile`   | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |             |
+| `requestId` | Yes      | `string`                                                                         |             |
+| `siteId`    | Yes      | `string`                                                                         |             |
+| `userId`    | Yes      | `string`                                                                         |             |
+
+## VmAdministrationProvisioning
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Configuration options come from the approved fleet and the selected account's profile grants.
+
+| Field      | Required | Type                                                                    | Description |
+| ---------- | -------- | ----------------------------------------------------------------------- | ----------- |
+| `profiles` | Yes      | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile) |             |
+| `sites`    | Yes      | Array of `string`                                                       |             |
+
 ## VmAdministrationRuntime
 
 Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
@@ -16644,6 +16697,7 @@ A null environment explicitly reports that no managed default has been provision
 | `environment`         | Yes      | [VmAdministrationEnvironment](protocol.md#vmadministrationenvironment) / `null` |             |
 | `observedAtMs`        | Yes      | `string`                                                                        |             |
 | `providerId`          | Yes      | `string`                                                                        |             |
+| `provisioning`        | No       | [VmAdministrationProvisioning](protocol.md#vmadministrationprovisioning)        |             |
 | `userId`              | Yes      | `string`                                                                        |             |
 
 ## VmCpuUsage

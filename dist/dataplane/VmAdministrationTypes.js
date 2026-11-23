@@ -48,6 +48,7 @@ export const VmAdministrationProgressStage = {
 /** Management is restricted to implemented qualified-account lifecycle operations. */
 export const VmAdministrationAction = {
     Inspect: 'inspect',
+    Provision: 'provision',
     Start: 'start',
     Stop: 'stop',
     Delete: 'delete',
