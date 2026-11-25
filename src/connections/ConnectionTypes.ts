@@ -89,6 +89,25 @@ export interface ChatModelSelection {
     readonly model: string;
 }
 
+/**
+ * The model that answers when a selected subscription model declines a request on a safety refusal.
+ *
+ * @remarks
+ * The selected model stays the user's choice: the fallback answers the declined message and the
+ * following ones up to {@link SafeguardFallback.messages}, then the selected model resumes.
+ */
+export interface SafeguardFallback {
+    /** A connected model to answer with; absent selects the Nexa model. */
+    readonly model?: ChatModelSelection;
+    /**
+     * How many messages the fallback answers, counting the declined one, before the selected model resumes.
+     * @minimum 1
+     * @maximum 50
+     * @TJS-type integer
+     */
+    readonly messages: number;
+}
+
 /** One selectable chat model backed by the user's own key or subscription. */
 export interface ChatModelChoice extends ChatModelSelection {
     readonly name: string;

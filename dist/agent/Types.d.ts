@@ -1,3 +1,4 @@
+import type { ChatModelSelection } from '../connections/ConnectionTypes.js';
 import type { Graphic } from '../graphics/Graphic.js';
 import type { DeliveredAttachment } from '../media/DeliveredAttachment.js';
 import type { FinishReason, TokenUsage } from '../providers/Types.js';
@@ -9,6 +10,31 @@ export interface GraphicEvent {
     readonly type: 'graphic';
     readonly call: ToolCall;
     readonly graphic: Graphic;
+}
+/** Why a turn is answered by the safeguard fallback model instead of the selected one. */
+export declare const SafeguardFallbackCause: {
+    /** The selected model declined this message on a safety refusal. */
+    readonly Declined: 'declined';
+    /** A recent refusal still pauses the selected model for this message. */
+    readonly Continuing: 'continuing';
+};
+/** Union of {@link SafeguardFallbackCause} values. */
+export type SafeguardFallbackCause = (typeof SafeguardFallbackCause)[keyof typeof SafeguardFallbackCause];
+/** The selected subscription model is paused after a safety refusal, so the fallback answers. */
+export interface SafeguardFallbackEvent {
+    readonly type: 'safeguard-fallback';
+    readonly cause: SafeguardFallbackCause;
+    /** The model the user selected, which declined or is paused. */
+    readonly selected: ChatModelSelection;
+    /** The model answering this message; absent is the Nexa model. */
+    readonly answering?: ChatModelSelection;
+    /**
+     * Further messages the fallback answers before the selected model resumes.
+     * @minimum 0
+     * @maximum 49
+     * @TJS-type integer
+     */
+    readonly remainingMessages: number;
 }
 /**
  * An event emitted while a turn runs.
@@ -64,7 +90,7 @@ export interface GraphicEvent {
  * take it. A consumer that needs an end-of-turn signal on an abandoned stream has to take it from
  * its own `finally`, not from this union.
  */
-export type TurnEvent = GraphicEvent | TurnActivityEvent | {
+export type TurnEvent = GraphicEvent | SafeguardFallbackEvent | TurnActivityEvent | {
     readonly type: 'agents-status';
     readonly workers: readonly WorkerStatus[];
 } | {

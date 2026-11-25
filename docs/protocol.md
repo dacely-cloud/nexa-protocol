@@ -589,21 +589,22 @@ Module: `nexa-protocol/gateway/ProtocolEventTypes.js`.
 
 What one turn is asked for.
 
-| Field               | Required | Type                                                        | Description                                                                                   |
-| ------------------- | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                               |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                      |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                           |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                          |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                        |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model. |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.     |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                   |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                        |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                              |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                 |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                           |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                         |
+| Field               | Required | Type                                                        | Description                                                                                              |
+| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`           | No       | `string`                                                    |                                                                                                          |
+| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 ## AskResult
 
@@ -15443,6 +15444,39 @@ Native wheel rotation and host-adapted pixel travel are independent values.
 | `x`        | Yes      | `number` |             |
 | `y`        | Yes      | `number` |             |
 
+## SafeguardFallback
+
+Module: `nexa-protocol/connections/ConnectionTypes.js`.
+
+The model that answers when a selected subscription model declines a request on a safety refusal.
+
+| Field      | Required | Type                                                 | Description                                                                                           |
+| ---------- | -------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `messages` | Yes      | `integer`                                            | How many messages the fallback answers, counting the declined one, before the selected model resumes. |
+| `model`    | No       | [ChatModelSelection](protocol.md#chatmodelselection) | A connected model to answer with; absent selects the Nexa model.                                      |
+
+## SafeguardFallbackCause
+
+Module: `nexa-protocol/agent/Types.js`.
+
+Why a turn is answered by the safeguard fallback model instead of the selected one.
+
+Type: `"continuing"` / `"declined"`.
+
+## SafeguardFallbackEvent
+
+Module: `nexa-protocol/agent/Types.js`.
+
+The selected subscription model is paused after a safety refusal, so the fallback answers.
+
+| Field               | Required | Type                                                         | Description                                                              |
+| ------------------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `answering`         | No       | [ChatModelSelection](protocol.md#chatmodelselection)         | The model answering this message; absent is the Nexa model.              |
+| `cause`             | Yes      | [SafeguardFallbackCause](protocol.md#safeguardfallbackcause) |                                                                          |
+| `remainingMessages` | Yes      | `integer`                                                    | Further messages the fallback answers before the selected model resumes. |
+| `selected`          | Yes      | [ChatModelSelection](protocol.md#chatmodelselection)         | The model the user selected, which declined or is paused.                |
+| `type`              | Yes      | `"safeguard-fallback"`                                       |                                                                          |
+
 ## ScalarSchema
 
 Module: `nexa-protocol/workflows/SchemaTypes.js`.
@@ -15839,22 +15873,23 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 What one turn is asked for, when the client wants its events streamed.
 
-| Field               | Required | Type                                                        | Description                                                                                   |
-| ------------------- | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                               |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                      |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                           |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                          |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                        |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model. |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.     |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                   |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                        |
-| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                        |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                              |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                 |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                           |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                         |
+| Field               | Required | Type                                                        | Description                                                                                              |
+| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`           | No       | `string`                                                    |                                                                                                          |
+| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
+| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 ## SystemPlatform
 
@@ -17400,56 +17435,66 @@ Variant 2: [GraphicEvent](protocol.md#graphicevent)
 | `graphic` | Yes      | [Graphic](protocol.md#graphic)   |             |
 | `type`    | Yes      | `"graphic"`                      |             |
 
-Variant 3: Object (fields below)
+Variant 3: [SafeguardFallbackEvent](protocol.md#safeguardfallbackevent)
+
+| Field               | Required | Type                                                         | Description                                                              |
+| ------------------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `answering`         | No       | [ChatModelSelection](protocol.md#chatmodelselection)         | The model answering this message; absent is the Nexa model.              |
+| `cause`             | Yes      | [SafeguardFallbackCause](protocol.md#safeguardfallbackcause) |                                                                          |
+| `remainingMessages` | Yes      | `integer`                                                    | Further messages the fallback answers before the selected model resumes. |
+| `selected`          | Yes      | [ChatModelSelection](protocol.md#chatmodelselection)         | The model the user selected, which declined or is paused.                |
+| `type`              | Yes      | `"safeguard-fallback"`                                       |                                                                          |
+
+Variant 4: Object (fields below)
 
 | Field     | Required | Type                                              | Description |
 | --------- | -------- | ------------------------------------------------- | ----------- |
 | `type`    | Yes      | `"agents-status"`                                 |             |
 | `workers` | Yes      | Array of [WorkerStatus](protocol.md#workerstatus) |             |
 
-Variant 4: Object (fields below)
+Variant 5: Object (fields below)
 
 | Field        | Required | Type                                                   | Description |
 | ------------ | -------- | ------------------------------------------------------ | ----------- |
 | `attachment` | Yes      | [DeliveredAttachment](protocol.md#deliveredattachment) |             |
 | `type`       | Yes      | `"attachment"`                                         |             |
 
-Variant 5: Object (fields below)
+Variant 6: Object (fields below)
 
 | Field    | Required | Type           | Description |
 | -------- | -------- | -------------- | ----------- |
 | `turnId` | Yes      | `string`       |             |
 | `type`   | Yes      | `"turn-start"` |             |
 
-Variant 6: Object (fields below)
+Variant 7: Object (fields below)
 
 | Field       | Required | Type                | Description |
 | ----------- | -------- | ------------------- | ----------- |
 | `iteration` | Yes      | `number`            |             |
 | `type`      | Yes      | `"iteration-start"` |             |
 
-Variant 7: Object (fields below)
+Variant 8: Object (fields below)
 
 | Field  | Required | Type     | Description |
 | ------ | -------- | -------- | ----------- |
 | `text` | Yes      | `string` |             |
 | `type` | Yes      | `"text"` |             |
 
-Variant 8: Object (fields below)
+Variant 9: Object (fields below)
 
 | Field  | Required | Type          | Description |
 | ------ | -------- | ------------- | ----------- |
 | `text` | Yes      | `string`      |             |
 | `type` | Yes      | `"reasoning"` |             |
 
-Variant 9: Object (fields below)
+Variant 10: Object (fields below)
 
 | Field  | Required | Type                             | Description |
 | ------ | -------- | -------------------------------- | ----------- |
 | `call` | Yes      | [ToolCall](protocol.md#toolcall) |             |
 | `type` | Yes      | `"tool-start"`                   |             |
 
-Variant 10: Object (fields below)
+Variant 11: Object (fields below)
 
 | Field    | Required | Type                                     | Description |
 | -------- | -------- | ---------------------------------------- | ----------- |
@@ -17457,14 +17502,14 @@ Variant 10: Object (fields below)
 | `type`   | Yes      | `"tool-progress"`                        |             |
 | `update` | Yes      | [ToolProgress](protocol.md#toolprogress) |             |
 
-Variant 11: Object (fields below)
+Variant 12: Object (fields below)
 
 | Field     | Required | Type                                   | Description |
 | --------- | -------- | -------------------------------------- | ----------- |
 | `outcome` | Yes      | [ToolOutcome](protocol.md#tooloutcome) |             |
 | `type`    | Yes      | `"tool-finish"`                        |             |
 
-Variant 12: Object (fields below)
+Variant 13: Object (fields below)
 
 | Field     | Required | Type                  | Description |
 | --------- | -------- | --------------------- | ----------- |
@@ -17472,7 +17517,7 @@ Variant 12: Object (fields below)
 | `tool`    | Yes      | `string`              |             |
 | `type`    | Yes      | `"approval-required"` |             |
 
-Variant 13: Object (fields below)
+Variant 14: Object (fields below)
 
 | Field             | Required | Type          | Description |
 | ----------------- | -------- | ------------- | ----------- |
@@ -17480,14 +17525,14 @@ Variant 13: Object (fields below)
 | `summary`         | Yes      | `string`      |             |
 | `type`            | Yes      | `"compacted"` |             |
 
-Variant 14: Object (fields below)
+Variant 15: Object (fields below)
 
 | Field   | Required | Type                                 | Description |
 | ------- | -------- | ------------------------------------ | ----------- |
 | `type`  | Yes      | `"usage"`                            |             |
 | `usage` | Yes      | [TokenUsage](protocol.md#tokenusage) |             |
 
-Variant 15: Object (fields below)
+Variant 16: Object (fields below)
 
 | Field    | Required | Type                               | Description |
 | -------- | -------- | ---------------------------------- | ----------- |
@@ -17495,7 +17540,7 @@ Variant 15: Object (fields below)
 | `source` | Yes      | `string`                           |             |
 | `type`   | Yes      | `"native"`                         |             |
 
-Variant 16: Object (fields below)
+Variant 17: Object (fields below)
 
 | Field        | Required | Type                                     | Description |
 | ------------ | -------- | ---------------------------------------- | ----------- |
@@ -17505,7 +17550,7 @@ Variant 16: Object (fields below)
 | `type`       | Yes      | `"turn-finish"`                          |             |
 | `usage`      | Yes      | [TokenUsage](protocol.md#tokenusage)     |             |
 
-Variant 17: Object (fields below)
+Variant 18: Object (fields below)
 
 | Field       | Required | Type                               | Description |
 | ----------- | -------- | ---------------------------------- | ----------- |

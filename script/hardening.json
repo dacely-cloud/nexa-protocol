@@ -1493,6 +1493,16 @@
                 "additionalProperties": false
             }
         },
+        "SafeguardFallback": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "SafeguardFallbackEvent": {
+            "": {
+                "additionalProperties": false
+            }
+        },
         "ChatModelsPage": {
             "": {
                 "additionalProperties": false

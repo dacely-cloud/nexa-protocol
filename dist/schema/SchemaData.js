@@ -1222,6 +1222,10 @@ export const schema = {
                     enum: ['json', 'text'],
                     type: 'string',
                 },
+                safeguardFallback: {
+                    $ref: '#/definitions/SafeguardFallback',
+                    description: 'Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal.',
+                },
                 targetTimeSeconds: {
                     description: 'Soft task time target in seconds; never a cancellation deadline.',
                     maximum: 172800,
@@ -27271,6 +27275,58 @@ export const schema = {
             required: ['deltaX', 'deltaY', 'rotation', 'x', 'y'],
             type: 'object',
         },
+        SafeguardFallback: {
+            description: 'The model that answers when a selected subscription model declines a request on a safety refusal.',
+            properties: {
+                messages: {
+                    description: 'How many messages the fallback answers, counting the declined one, before the selected model resumes.',
+                    maximum: 50,
+                    minimum: 1,
+                    type: 'integer',
+                },
+                model: {
+                    $ref: '#/definitions/ChatModelSelection',
+                    description: 'A connected model to answer with; absent selects the Nexa model.',
+                },
+            },
+            required: ['messages'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        SafeguardFallbackCause: {
+            description: 'Why a turn is answered by the safeguard fallback model instead of the selected one.\nUnion of {@link SafeguardFallbackCause} values.',
+            enum: ['continuing', 'declined'],
+            type: 'string',
+        },
+        SafeguardFallbackEvent: {
+            description: 'The selected subscription model is paused after a safety refusal, so the fallback answers.',
+            properties: {
+                answering: {
+                    $ref: '#/definitions/ChatModelSelection',
+                    description: 'The model answering this message; absent is the Nexa model.',
+                },
+                cause: {
+                    $ref: '#/definitions/SafeguardFallbackCause',
+                },
+                remainingMessages: {
+                    description: 'Further messages the fallback answers before the selected model resumes.',
+                    maximum: 49,
+                    minimum: 0,
+                    type: 'integer',
+                },
+                selected: {
+                    $ref: '#/definitions/ChatModelSelection',
+                    description: 'The model the user selected, which declined or is paused.',
+                },
+                type: {
+                    const: 'safeguard-fallback',
+                    type: 'string',
+                },
+            },
+            required: ['cause', 'remainingMessages', 'selected', 'type'],
+            type: 'object',
+            additionalProperties: false,
+        },
         ScalarSchema: {
             description: 'Primitive or named envelope type. Number values must be finite and safely represented.',
             properties: {
@@ -27916,6 +27972,10 @@ export const schema = {
                     description: 'Final answer format; JSON mode does not disable tools or verification.',
                     enum: ['json', 'text'],
                     type: 'string',
+                },
+                safeguardFallback: {
+                    $ref: '#/definitions/SafeguardFallback',
+                    description: 'Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal.',
                 },
                 streamId: {
                     description: "The stream's id, chosen by the CLIENT.\n\nDeliberate: the accept response and the first events can arrive in the same TCP segment, so a\nclient that waited for a server-assigned id would already have dropped events by the time it\nhad somewhere to put them. Letting the client name the stream removes the race entirely.",
@@ -30773,6 +30833,9 @@ export const schema = {
                 },
                 {
                     $ref: '#/definitions/GraphicEvent',
+                },
+                {
+                    $ref: '#/definitions/SafeguardFallbackEvent',
                 },
                 {
                     properties: {

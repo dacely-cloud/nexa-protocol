@@ -384,21 +384,22 @@ With a personal API key, omit `userId`; the gateway uses the authenticated ident
 
 Parameters: [AskParams](protocol.md#askparams).
 
-| Field               | Required | Type                                                        | Description                                                                                   |
-| ------------------- | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                               |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                      |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                           |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                          |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                        |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model. |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.     |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                   |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                        |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                              |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                 |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                           |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                         |
+| Field               | Required | Type                                                        | Description                                                                                              |
+| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`           | No       | `string`                                                    |                                                                                                          |
+| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 Result: [AskResult](protocol.md#askresult).
 
@@ -576,22 +577,23 @@ With a personal API key, omit `userId`; the gateway uses the authenticated ident
 
 Parameters: [StreamParams](protocol.md#streamparams).
 
-| Field               | Required | Type                                                        | Description                                                                                   |
-| ------------------- | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                               |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                      |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                           |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                          |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                        |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model. |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.     |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                   |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                        |
-| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                        |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                              |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                 |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                           |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                         |
+| Field               | Required | Type                                                        | Description                                                                                              |
+| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`           | No       | `string`                                                    |                                                                                                          |
+| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
+| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 Result: [StreamAccepted](protocol.md#streamaccepted).
 

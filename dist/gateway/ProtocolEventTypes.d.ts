@@ -1,7 +1,7 @@
 import type { UserRegion } from '../agent/RegionalContextTypes.js';
 import type { TurnEvent } from '../agent/Types.js';
 import type { SitePreview } from '../browser/FaviconTypes.js';
-import type { ChatModelSelection } from '../connections/ConnectionTypes.js';
+import type { ChatModelSelection, SafeguardFallback } from '../connections/ConnectionTypes.js';
 import type { ErrorCode } from '../core/ErrorTypes.js';
 import type { DeliveredAttachment } from '../media/DeliveredAttachment.js';
 import type { FinishReason, ReasoningEffort, TokenUsage } from '../providers/Types.js';
@@ -124,6 +124,8 @@ export interface AskParams {
     readonly agentId?: string;
     /** A model the user connected with their own key or subscription; absent selects the Nexa model. */
     readonly model?: ChatModelSelection;
+    /** Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. */
+    readonly safeguardFallback?: SafeguardFallback;
     /** Continues an existing conversation. */
     readonly conversationId?: string;
     /** The principal the turn is billed and authorized as. */
