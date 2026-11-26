@@ -30,10 +30,10 @@
         "url": "git+https://github.com/dacely-cloud/nexa-protocol.git"
     },
     "dependencies": {
-        "nerva-connector-protocol": "https://codeload.github.com/dacely-cloud/nerva-connector-protocol/tar.gz/c4a7fa7a47f0800975195cbdfa38f014c524f5c5"
+        "nerva-connector-protocol": "https://codeload.github.com/dacely-cloud/nerva-connector-protocol/tar.gz/7d092724f1a7a46e1fe8438c9070b81ff61b39ba"
     },
     "devDependencies": {
-        "prettier": "3.9.8",
+        "prettier": "3.10.1",
         "typescript": "7.0.2",
         "typescript-json-schema": "0.68.0"
     }
