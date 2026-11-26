@@ -9601,45 +9601,46 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 Methods, events, and additive capabilities supported by this gateway.
 
-| Field                      | Required | Type                                               | Description                                                                                    |
-| -------------------------- | -------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `attachments`              | No       | `true`                                             | User media attachments are validated and forwarded to the agent.                               |
-| `binaryDataUploads`        | No       | `true`                                             | Disk upload chunks retain raw bytes from the wire through durable storage.                     |
-| `binaryHistory`            | No       | `true`                                             | History batches use acknowledged raw binary frames.                                            |
-| `binaryMedia`              | No       | `true`                                             | NXMD frames carry outbound file bytes; JSON results contain matching metadata.                 |
-| `designComponentRepeat`    | No       | `true`                                             | Component commands can place editable linked grids without copying source artwork.             |
-| `designExtendedGradients`  | No       | `true`                                             | Angular and diamond gradient paints, geometry and compact edits.                               |
-| `designImageAdjustments`   | No       | `true`                                             | Non-destructive color controls are shared by image layers, fills, strokes and exports.         |
-| `designImageTiles`         | No       | `true`                                             | Repeat cells retain independent image content transforms and original source crops.            |
-| `designImageTransforms`    | No       | `true`                                             | Native image framing supports rotation, reflection, affine placement and repeated image tiles. |
-| `designLayerCompositing`   | No       | `true`                                             | Native layer blending and explicit group isolation preserve editable appearance.               |
-| `designResizeAnchors`      | No       | `true`                                             | Native Resize commands preserve normalized anchors through one-axis sizing and content reflow. |
-| `designSignedGaps`         | No       | `true`                                             | Layout gaps accept signed values and use occupied bounds for overlapping flow and grid tracks. |
-| `designStrokeDashOffset`   | No       | `true`                                             | Stroke phase is editable and preserved by SVG, glyph windows and Boolean silhouettes.          |
-| `designTextDirection`      | No       | `true`                                             | Native typography supports paragraph direction and shared Unicode ordering.                    |
-| `designTextInheritedPaint` | No       | `true`                                             | Rich typography can inherit the layer's gradient, image or solid fill stack.                   |
-| `designTextPaintClipping`  | No       | `true`                                             | Native glyph windows can preserve shared shaping with bounded paint clips.                     |
-| `designTextRangeFills`     | No       | `true`                                             | UTF-16 rich ranges can replace layer fills with their own editable paint stacks.               |
-| `designTidy`               | No       | `true`                                             | Compact tidy commands arrange free selections without replacing their source bodies.           |
-| `designTidyPreview`        | No       | `true`                                             | Read-only Tidy previews retain deferred text and exact owner-scoped font geometry.             |
-| `designVectorPatterns`     | No       | `true`                                             | Linked component paints support revision-pinned bounded source-cell sampling.                  |
-| `events`                   | Yes      | Array of `string`                                  |                                                                                                |
-| `jsonReplies`              | No       | `true`                                             | Host validation of JSON final answers while native tools remain available.                     |
-| `methodScopes`             | Yes      | [RecordstringScope](protocol.md#recordstringscope) | The scope each method requires.                                                                |
-| `methods`                  | Yes      | Array of `string`                                  |                                                                                                |
-| `modelReview`              | No       | `true`                                             | Per-turn optional AI completion audits retain mandatory local checks.                          |
-| `robloxCoordinateInput`    | No       | `true`                                             | Physical mouse/touch gestures can choose buttons using native GUI coordinates.                 |
-| `robloxTextEditing`        | No       | `true`                                             | Focused TextBoxes accept bounded Unicode edits and logical editing-key gestures.               |
-| `sessionHistory`           | No       | `true`                                             | Durable complete presentation history and binary restoration.                                  |
-| `sessionHistoryUpdates`    | No       | `true`                                             | Session subscriptions notify exact journal ranges for live catch-up.                           |
-| `steeringImages`           | No       | `true`                                             | Active turns accept inline images alongside steering text.                                     |
-| `transcriptBlocks`         | No       | `true`                                             | Compact persisted NDJSON blocks, read in bounded byte pages.                                   |
-| `userRegion`               | No       | `true`                                             | Supports coarse per-turn regional context for news and local information.                      |
-| `workflowDraftsVersion`    | No       | `1`                                                |                                                                                                |
-| `workflowGraphVersion`     | No       | `1`                                                | Exact component catalog and structural validation of pinned drafts.                            |
-| `workflowGroupsVersion`    | No       | `1`                                                | Saved parent-local groups, published aliases and paginated immutable group records.            |
-| `workflowPlanningVersion`  | No       | `1`                                                | Owner-scoped draft storage with bounded reads and revision-safe direct patches.                |
-| `workflowRunsVersion`      | No       | `1`                                                | Durable core workflow test runs and bounded output inspection.                                 |
+| Field                          | Required | Type                                               | Description                                                                                    |
+| ------------------------------ | -------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `attachments`                  | No       | `true`                                             | User media attachments are validated and forwarded to the agent.                               |
+| `binaryDataUploads`            | No       | `true`                                             | Disk upload chunks retain raw bytes from the wire through durable storage.                     |
+| `binaryHistory`                | No       | `true`                                             | History batches use acknowledged raw binary frames.                                            |
+| `binaryMedia`                  | No       | `true`                                             | NXMD frames carry outbound file bytes; JSON results contain matching metadata.                 |
+| `designComponentRepeat`        | No       | `true`                                             | Component commands can place editable linked grids without copying source artwork.             |
+| `designExtendedGradients`      | No       | `true`                                             | Angular and diamond gradient paints, geometry and compact edits.                               |
+| `designImageAdjustments`       | No       | `true`                                             | Non-destructive color controls are shared by image layers, fills, strokes and exports.         |
+| `designImageTiles`             | No       | `true`                                             | Repeat cells retain independent image content transforms and original source crops.            |
+| `designImageTransforms`        | No       | `true`                                             | Native image framing supports rotation, reflection, affine placement and repeated image tiles. |
+| `designLayerCompositing`       | No       | `true`                                             | Native layer blending and explicit group isolation preserve editable appearance.               |
+| `designResizeAnchors`          | No       | `true`                                             | Native Resize commands preserve normalized anchors through one-axis sizing and content reflow. |
+| `designSignedGaps`             | No       | `true`                                             | Layout gaps accept signed values and use occupied bounds for overlapping flow and grid tracks. |
+| `designStrokeDashOffset`       | No       | `true`                                             | Stroke phase is editable and preserved by SVG, glyph windows and Boolean silhouettes.          |
+| `designTextDirection`          | No       | `true`                                             | Native typography supports paragraph direction and shared Unicode ordering.                    |
+| `designTextInheritedPaint`     | No       | `true`                                             | Rich typography can inherit the layer's gradient, image or solid fill stack.                   |
+| `designTextPaintClipping`      | No       | `true`                                             | Native glyph windows can preserve shared shaping with bounded paint clips.                     |
+| `designTextRangeFills`         | No       | `true`                                             | UTF-16 rich ranges can replace layer fills with their own editable paint stacks.               |
+| `designTidy`                   | No       | `true`                                             | Compact tidy commands arrange free selections without replacing their source bodies.           |
+| `designTidyPreview`            | No       | `true`                                             | Read-only Tidy previews retain deferred text and exact owner-scoped font geometry.             |
+| `designVectorPatterns`         | No       | `true`                                             | Linked component paints support revision-pinned bounded source-cell sampling.                  |
+| `events`                       | Yes      | Array of `string`                                  |                                                                                                |
+| `jsonReplies`                  | No       | `true`                                             | Host validation of JSON final answers while native tools remain available.                     |
+| `methodScopes`                 | Yes      | [RecordstringScope](protocol.md#recordstringscope) | The scope each method requires.                                                                |
+| `methods`                      | Yes      | Array of `string`                                  |                                                                                                |
+| `modelReview`                  | No       | `true`                                             | Per-turn optional AI completion audits retain mandatory local checks.                          |
+| `robloxCoordinateInput`        | No       | `true`                                             | Physical mouse/touch gestures can choose buttons using native GUI coordinates.                 |
+| `robloxTextEditing`            | No       | `true`                                             | Focused TextBoxes accept bounded Unicode edits and logical editing-key gestures.               |
+| `sessionHistory`               | No       | `true`                                             | Durable complete presentation history and binary restoration.                                  |
+| `sessionHistoryUpdates`        | No       | `true`                                             | Session subscriptions notify exact journal ranges for live catch-up.                           |
+| `steeringImages`               | No       | `true`                                             | Active turns accept inline images alongside steering text.                                     |
+| `transcriptBlocks`             | No       | `true`                                             | Compact persisted NDJSON blocks, read in bounded byte pages.                                   |
+| `userRegion`                   | No       | `true`                                             | Supports coarse per-turn regional context for news and local information.                      |
+| `workflowDraftsVersion`        | No       | `1`                                                |                                                                                                |
+| `workflowGraphVersion`         | No       | `1`                                                | Exact component catalog and structural validation of pinned drafts.                            |
+| `workflowGroupsVersion`        | No       | `1`                                                | Saved parent-local groups, published aliases and paginated immutable group records.            |
+| `workflowPlanningVersion`      | No       | `1`                                                | Owner-scoped draft storage with bounded reads and revision-safe direct patches.                |
+| `workflowRunsVersion`          | No       | `1`                                                | Durable core workflow test runs and bounded output inspection.                                 |
+| `workspaceFilesChunksInFlight` | No       | `number`                                           | Concurrent workspace upload chunks per upload, each acknowledged with its own end offset.      |
 
 ## GatewayLimits
 

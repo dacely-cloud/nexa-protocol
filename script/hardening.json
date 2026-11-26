@@ -908,6 +908,12 @@
                 "additionalProperties": false
             }
         },
+        "GatewayFeatures": {
+            "properties/workspaceFilesChunksInFlight": {
+                "minimum": 1,
+                "maximum": 8
+            }
+        },
         "GatewayMethods": {
             "properties/connectors.workspace.catalog": {
                 "additionalProperties": false

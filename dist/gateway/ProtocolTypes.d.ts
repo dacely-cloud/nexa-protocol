@@ -205,6 +205,8 @@ export interface GatewayFeatures {
     readonly binaryMedia?: true;
     /** Disk upload chunks retain raw bytes from the wire through durable storage. */
     readonly binaryDataUploads?: true;
+    /** Concurrent workspace upload chunks per upload, each acknowledged with its own end offset. */
+    readonly workspaceFilesChunksInFlight?: number;
     readonly methods: readonly string[];
     readonly events: readonly string[];
     /**

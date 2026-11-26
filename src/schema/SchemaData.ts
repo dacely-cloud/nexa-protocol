@@ -17469,6 +17469,13 @@ export const schema: Schema = {
                     description: 'Durable core workflow test runs and bounded output inspection.',
                     type: 'number',
                 },
+                workspaceFilesChunksInFlight: {
+                    description:
+                        'Concurrent workspace upload chunks per upload, each acknowledged with its own end offset.',
+                    type: 'number',
+                    minimum: 1,
+                    maximum: 8,
+                },
             },
             required: ['events', 'methodScopes', 'methods'],
             type: 'object',
