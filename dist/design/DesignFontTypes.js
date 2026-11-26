@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Font containers are identified from validated bytes rather than a filename extension. */
 export const DesignFontFormat = { Ttf: 'ttf', Otf: 'otf', Woff: 'woff', Woff2: 'woff2' };

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Fixed schedules and completion-relative delays have distinct activation semantics. */
 export const WorkflowScheduleKind = {

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Dependent UTF-8 and int64 limits complement the public JSON schema at the client boundary. */
 export class ConnectorInstructionsChecks {

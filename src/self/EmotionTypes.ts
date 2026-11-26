@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 
 /** Immediate functional emotions, with intensities in [0, 1].

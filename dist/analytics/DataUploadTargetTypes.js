@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Null public workspace selection is deliberately distinct from an explicit managed choice. */
 export const DataUploadTargetKind = {

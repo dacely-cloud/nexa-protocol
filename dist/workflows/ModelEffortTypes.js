@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Saved reasoning levels shared by workflows and provider requests; null uses the service default. */
 export const WorkflowModelEffort = {

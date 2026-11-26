@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Independent tree representations use the same immutable document capture. */
 export const BrowserStructureView = { Dom: 'dom', Accessibility: 'accessibility' };

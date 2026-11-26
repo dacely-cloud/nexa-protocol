@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 import { ConnectorHostJson } from 'nerva-connector-protocol/protocol/ConnectorHostJson.js';
 /** Dependent int64, native-path and JSON limits complement the closed full-host wire schemas. */

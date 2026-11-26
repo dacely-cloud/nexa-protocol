@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 import { Graphics } from '../graphics/Graphic.js';
 import { VisualResponses } from '../visuals/VisualResponses.js';

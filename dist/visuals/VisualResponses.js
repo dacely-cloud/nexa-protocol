@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 import { VisualValue as Value } from './VisualValue.js';
 import { VisualTone, VisualElementKind, VisualIcon, VisualSide, VisualLine, VisualArrow, } from './VisualResponse.js';

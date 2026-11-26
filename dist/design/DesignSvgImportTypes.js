@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Intentional SVG file transfer and parsing remain bounded independently of canvas scrolling. */
 export class DesignSvgImportLimits {

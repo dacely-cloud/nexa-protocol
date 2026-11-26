@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 /** Supported answer shapes for the initial owner question component. */
 export const WorkflowAnswerType = { Text: 'text', Choice: 'choice', Boolean: 'boolean' };

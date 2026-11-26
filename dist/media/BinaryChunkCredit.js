@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 import { BinaryAdmissionError } from './BinaryAdmissionError.js';
 /** Holds admitted transfer storage until cancellation or an atomic handoff to its original budget. */

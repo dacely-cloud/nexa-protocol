@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nexa contributors
+// SPDX-FileCopyrightText: 2026 Dacely <business@dacely.com>
 // SPDX-License-Identifier: LicenseRef-Proprietary
 import { JsonStringBytes } from './JsonStringBytes.js';
 /** Measures admitted JSON projections before any metadata copy, excluding their raw carriers. */
