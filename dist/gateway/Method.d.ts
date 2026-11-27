@@ -258,6 +258,14 @@ export declare enum Method {
     EnvironmentUsage = "environment.usage",
     /** Calls `environment.visit`. */
     EnvironmentVisit = "environment.visit",
+    /** Calls `environments.attach`. */
+    EnvironmentsAttach = "environments.attach",
+    /** Calls `environments.detach`. */
+    EnvironmentsDetach = "environments.detach",
+    /** Calls `environments.list`. */
+    EnvironmentsList = "environments.list",
+    /** Calls `environments.respond`. */
+    EnvironmentsRespond = "environments.respond",
     /** Calls `health`. */
     Health = "health",
     /** Calls `jobs.add`. */
@@ -282,6 +290,20 @@ export declare enum Method {
     LuauEditorStage = "luau.editor.stage",
     /** Calls `luau.editor.start`. */
     LuauEditorStart = "luau.editor.start",
+    /** Calls `maestro.models.list`. */
+    MaestroModelsList = "maestro.models.list",
+    /** Calls `maestro.policy.get`. */
+    MaestroPolicyGet = "maestro.policy.get",
+    /** Calls `maestro.policy.history`. */
+    MaestroPolicyHistory = "maestro.policy.history",
+    /** Calls `maestro.policy.restore`. */
+    MaestroPolicyRestore = "maestro.policy.restore",
+    /** Calls `maestro.policy.set`. */
+    MaestroPolicySet = "maestro.policy.set",
+    /** Calls `maestro.runs.get`. */
+    MaestroRunsGet = "maestro.runs.get",
+    /** Calls `maestro.runs.list`. */
+    MaestroRunsList = "maestro.runs.list",
     /** Calls `media.acknowledge`. */
     MediaAcknowledge = "media.acknowledge",
     /** Calls `processes.input`. */

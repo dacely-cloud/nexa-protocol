@@ -1,6 +1,6 @@
 # RPC reference
 
-All 277 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 276 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 288 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 287 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -130,6 +130,10 @@ All 277 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [environment.status](#environmentstatus)
 - [environment.usage](#environmentusage)
 - [environment.visit](#environmentvisit)
+- [environments.attach](#environmentsattach)
+- [environments.detach](#environmentsdetach)
+- [environments.list](#environmentslist)
+- [environments.respond](#environmentsrespond)
 - [health](#health)
 - [jobs.add](#jobsadd)
 - [jobs.list](#jobslist)
@@ -142,6 +146,13 @@ All 277 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [luau.editor.hover](#luaueditorhover)
 - [luau.editor.stage](#luaueditorstage)
 - [luau.editor.start](#luaueditorstart)
+- [maestro.models.list](#maestromodelslist)
+- [maestro.policy.get](#maestropolicyget)
+- [maestro.policy.history](#maestropolicyhistory)
+- [maestro.policy.restore](#maestropolicyrestore)
+- [maestro.policy.set](#maestropolicyset)
+- [maestro.runs.get](#maestrorunsget)
+- [maestro.runs.list](#maestrorunslist)
 - [media.acknowledge](#mediaacknowledge)
 - [processes.input](#processesinput)
 - [processes.list](#processeslist)
@@ -385,22 +396,24 @@ With a personal API key, omit `userId`; the gateway uses the authenticated ident
 
 Parameters: [AskParams](protocol.md#askparams).
 
-| Field               | Required | Type                                                        | Description                                                                                              |
-| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                                          |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
-| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
+| Field                  | Required | Type                                                        | Description                                                                                              |
+| ---------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`              | No       | `string`                                                    |                                                                                                          |
+| `attachedEnvironments` | No       | Array of `string`                                           | Environments this connection attached that the turn may work in; the first is the main workspace.        |
+| `attachments`          | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`       | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`                  | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `maestro`              | No       | [MaestroTurnOptions](protocol.md#maestroturnoptions)        | Per-turn Maestro options; used only when `model` selects Maestro.                                        |
+| `message`              | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`                | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`          | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`      | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`       | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback`    | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `targetTimeSeconds`    | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`      | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`               | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`           | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 Result: [AskResult](protocol.md#askresult).
 
@@ -578,23 +591,25 @@ With a personal API key, omit `userId`; the gateway uses the authenticated ident
 
 Parameters: [StreamParams](protocol.md#streamparams).
 
-| Field               | Required | Type                                                        | Description                                                                                              |
-| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                                          |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
-| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
-| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
+| Field                  | Required | Type                                                        | Description                                                                                              |
+| ---------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`              | No       | `string`                                                    |                                                                                                          |
+| `attachedEnvironments` | No       | Array of `string`                                           | Environments this connection attached that the turn may work in; the first is the main workspace.        |
+| `attachments`          | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`       | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`                  | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `maestro`              | No       | [MaestroTurnOptions](protocol.md#maestroturnoptions)        | Per-turn Maestro options; used only when `model` selects Maestro.                                        |
+| `message`              | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`                | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`          | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`      | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`       | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback`    | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `streamId`             | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
+| `targetTimeSeconds`    | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`      | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`               | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`           | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 Result: [StreamAccepted](protocol.md#streamaccepted).
 
@@ -3636,6 +3651,108 @@ Type: Dictionary.
 
 Result: [EnvironmentVisitResult](protocol.md#environmentvisitresult).
 
+## environments.attach
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentsAttach> = {
+    name: 'YOUR_NAME',
+    platform: 'linux',
+    root: 'YOUR_ROOT',
+};
+const result: ResultOf<typeof Method.EnvironmentsAttach> = await client.call(
+    Method.EnvironmentsAttach,
+    params,
+);
+```
+
+Parameters: [AttachEnvironmentParams](protocol.md#attachenvironmentparams).
+
+| Field         | Required | Type                                                                   | Description                                                                |
+| ------------- | -------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `description` | No       | `string`                                                               | What the environment is for and what it has installed, shown to the model. |
+| `name`        | Yes      | `string`                                                               | User-facing name, such as "CI container".                                  |
+| `platform`    | Yes      | [AttachedEnvironmentPlatform](protocol.md#attachedenvironmentplatform) |                                                                            |
+| `root`        | Yes      | `string`                                                               | Absolute path of the working directory tools start in.                     |
+
+Result: [AttachedEnvironment](protocol.md#attachedenvironment).
+
+## environments.detach
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentsDetach> = {
+    id: 'YOUR_ID',
+};
+const result: ResultOf<typeof Method.EnvironmentsDetach> = await client.call(
+    Method.EnvironmentsDetach,
+    params,
+);
+```
+
+Parameters: [AttachedEnvironmentParams](protocol.md#attachedenvironmentparams).
+
+| Field | Required | Type     | Description |
+| ----- | -------- | -------- | ----------- |
+| `id`  | Yes      | `string` |             |
+
+Result: [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult).
+
+## environments.list
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentsList> = {};
+const result: ResultOf<typeof Method.EnvironmentsList> = await client.call(
+    Method.EnvironmentsList,
+    params,
+);
+```
+
+Parameters: [Recordstringnever](protocol.md#recordstringnever).
+
+Type: Dictionary.
+
+Result: [AttachedEnvironmentsPage](protocol.md#attachedenvironmentspage).
+
+## environments.respond
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.EnvironmentsRespond> = {
+    requestId: 'YOUR_REQUESTID',
+    result: {
+        exitCode: null,
+        kind: 'exec',
+        signal: null,
+        stderr: 'YOUR_STDERR',
+        stdout: 'YOUR_STDOUT',
+        timedOut: false,
+    },
+};
+const result: ResultOf<typeof Method.EnvironmentsRespond> = await client.call(
+    Method.EnvironmentsRespond,
+    params,
+);
+```
+
+Parameters: [AttachedEnvironmentRespondParams](protocol.md#attachedenvironmentrespondparams).
+
+| Field       | Required | Type                                                               | Description |
+| ----------- | -------- | ------------------------------------------------------------------ | ----------- |
+| `requestId` | Yes      | `string`                                                           |             |
+| `result`    | Yes      | [AttachedEnvironmentResult](protocol.md#attachedenvironmentresult) |             |
+
+Result: [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult).
+
 ## health
 
 ```ts
@@ -3953,6 +4070,203 @@ Parameters: [LuauEditorHandle](protocol.md#luaueditorhandle).
 | `id`     | Yes      | `string` |             |
 
 Result: [LuauEditorAck](protocol.md#luaueditorack).
+
+## maestro.models.list
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroModelsList> = {};
+const result: ResultOf<typeof Method.MaestroModelsList> = await client.call(
+    Method.MaestroModelsList,
+    params,
+);
+```
+
+Parameters: [Recordstringnever](protocol.md#recordstringnever).
+
+Type: Dictionary.
+
+Result: [MaestroModelsPage](protocol.md#maestromodelspage).
+
+## maestro.policy.get
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroPolicyGet> = {};
+const result: ResultOf<typeof Method.MaestroPolicyGet> = await client.call(
+    Method.MaestroPolicyGet,
+    params,
+);
+```
+
+Parameters: [Recordstringnever](protocol.md#recordstringnever).
+
+Type: Dictionary.
+
+Result: [MaestroPolicyView](protocol.md#maestropolicyview).
+
+## maestro.policy.history
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroPolicyHistory> = {};
+const result: ResultOf<typeof Method.MaestroPolicyHistory> = await client.call(
+    Method.MaestroPolicyHistory,
+    params,
+);
+```
+
+Parameters: [Recordstringnever](protocol.md#recordstringnever).
+
+Type: Dictionary.
+
+Result: [MaestroPolicyHistoryPage](protocol.md#maestropolicyhistorypage).
+
+## maestro.policy.restore
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroPolicyRestore> = {
+    restore: 1,
+    revision: 1,
+};
+const result: ResultOf<typeof Method.MaestroPolicyRestore> = await client.call(
+    Method.MaestroPolicyRestore,
+    params,
+);
+```
+
+Parameters: [MaestroPolicyRestoreParams](protocol.md#maestropolicyrestoreparams).
+
+| Field      | Required | Type      | Description                  |
+| ---------- | -------- | --------- | ---------------------------- |
+| `restore`  | Yes      | `integer` | The version to restore.      |
+| `revision` | Yes      | `integer` | The revision the caller saw. |
+
+Result: [MaestroPolicyView](protocol.md#maestropolicyview).
+
+## maestro.policy.set
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroPolicySet> = {
+    policy: {
+        environments: {
+            disabled: [],
+        },
+        goal: 'balanced',
+        limits: {
+            agents: {
+                enabled: false,
+                maxCount: null,
+                maxDepth: null,
+            },
+            ceiling: {
+                enabled: false,
+                tier: 'base',
+            },
+            data: {
+                enabled: false,
+                fileProviders: [],
+            },
+            refusals: 'ask',
+            spending: {
+                enabled: false,
+                monthMicros: null,
+                taskMicros: null,
+            },
+        },
+        models: {
+            baseModel: {
+                model: 'YOUR_MODEL',
+                provider: 'YOUR_PROVIDER',
+            },
+            disabledModels: [],
+            disabledProviders: [],
+            leadModel: {
+                model: 'YOUR_MODEL',
+                provider: 'YOUR_PROVIDER',
+            },
+        },
+        roles: {
+            build: false,
+            fix: false,
+            plan: false,
+            review: false,
+        },
+        width: null,
+    },
+    revision: 1,
+};
+const result: ResultOf<typeof Method.MaestroPolicySet> = await client.call(
+    Method.MaestroPolicySet,
+    params,
+);
+```
+
+Parameters: [MaestroPolicySetParams](protocol.md#maestropolicysetparams).
+
+| Field      | Required | Type                                       | Description                     |
+| ---------- | -------- | ------------------------------------------ | ------------------------------- |
+| `policy`   | Yes      | [MaestroPolicy](protocol.md#maestropolicy) |                                 |
+| `revision` | Yes      | `integer`                                  | The revision the caller edited. |
+
+Result: [MaestroPolicyView](protocol.md#maestropolicyview).
+
+## maestro.runs.get
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroRunsGet> = {
+    id: 'YOUR_ID',
+};
+const result: ResultOf<typeof Method.MaestroRunsGet> = await client.call(
+    Method.MaestroRunsGet,
+    params,
+);
+```
+
+Parameters: [MaestroRunParams](protocol.md#maestrorunparams).
+
+| Field | Required | Type     | Description |
+| ----- | -------- | -------- | ----------- |
+| `id`  | Yes      | `string` |             |
+
+Result: [MaestroRunTrace](protocol.md#maestroruntrace).
+
+## maestro.runs.list
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.MaestroRunsList> = {};
+const result: ResultOf<typeof Method.MaestroRunsList> = await client.call(
+    Method.MaestroRunsList,
+    params,
+);
+```
+
+Parameters: [MaestroRunsListParams](protocol.md#maestrorunslistparams).
+
+| Field    | Required | Type      | Description |
+| -------- | -------- | --------- | ----------- |
+| `cursor` | No       | `string`  |             |
+| `limit`  | No       | `integer` |             |
+
+Result: [MaestroRunsPage](protocol.md#maestrorunspage).
 
 ## media.acknowledge
 

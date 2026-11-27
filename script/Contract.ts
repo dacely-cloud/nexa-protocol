@@ -23,6 +23,7 @@ import type {
     WireError,
 } from '../src/gateway/ProtocolEventTypes.js';
 import type { NcapDelta } from '../src/ncap/DeltaTypes.js';
+import type { AttachedEnvironmentRequestData } from '../src/environments/AttachedEnvironmentTypes.js';
 import type { VoiceCallEvent } from '../src/voice/VoiceCallTypes.js';
 import type { ReverseCatalogPage, ReverseEvidencePage } from '../src/reverse/ArchiveTypes.js';
 import type { ReverseBrowserPage } from '../src/reverse/BrowserCaptureTypes.js';
@@ -79,4 +80,5 @@ export interface Contract {
     /** Internal prompt and token receipts never belong in public payloads. */
     readonly native: Omit<NcapDelta, 'quickDecision'>;
     readonly voice: VoiceCallEvent;
+    readonly environmentRequest: AttachedEnvironmentRequestData;
 }

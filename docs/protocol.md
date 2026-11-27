@@ -589,22 +589,24 @@ Module: `nexa-protocol/gateway/ProtocolEventTypes.js`.
 
 What one turn is asked for.
 
-| Field               | Required | Type                                                        | Description                                                                                              |
-| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                                          |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
-| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
+| Field                  | Required | Type                                                        | Description                                                                                              |
+| ---------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`              | No       | `string`                                                    |                                                                                                          |
+| `attachedEnvironments` | No       | Array of `string`                                           | Environments this connection attached that the turn may work in; the first is the main workspace.        |
+| `attachments`          | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`       | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`                  | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `maestro`              | No       | [MaestroTurnOptions](protocol.md#maestroturnoptions)        | Per-turn Maestro options; used only when `model` selects Maestro.                                        |
+| `message`              | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`                | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`          | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`      | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`       | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback`    | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `targetTimeSeconds`    | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`      | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`               | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`           | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 ## AskResult
 
@@ -624,6 +626,373 @@ What a finished turn produced.
 | `text`             | Yes      | `string`                                                        |                                                                                       |
 | `turnId`           | Yes      | `string`                                                        |                                                                                       |
 | `usage`            | Yes      | [TokenUsage](protocol.md#tokenusage)                            |                                                                                       |
+
+## AttachEnvironmentParams
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Describes an environment to attach.
+
+| Field         | Required | Type                                                                   | Description                                                                |
+| ------------- | -------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `description` | No       | `string`                                                               | What the environment is for and what it has installed, shown to the model. |
+| `name`        | Yes      | `string`                                                               | User-facing name, such as "CI container".                                  |
+| `platform`    | Yes      | [AttachedEnvironmentPlatform](protocol.md#attachedenvironmentplatform) |                                                                            |
+| `root`        | Yes      | `string`                                                               | Absolute path of the working directory tools start in.                     |
+
+## AttachedEnvironment
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+An attached environment.
+
+| Field         | Required | Type                                                                   | Description |
+| ------------- | -------- | ---------------------------------------------------------------------- | ----------- |
+| `description` | No       | `string`                                                               |             |
+| `id`          | Yes      | `string`                                                               |             |
+| `name`        | Yes      | `string`                                                               |             |
+| `platform`    | Yes      | [AttachedEnvironmentPlatform](protocol.md#attachedenvironmentplatform) |             |
+| `root`        | Yes      | `string`                                                               |             |
+
+## AttachedEnvironmentDoneResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+A write or remove finished.
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"done"` |             |
+
+## AttachedEnvironmentEntry
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+One directory entry.
+
+| Field  | Required | Type                                               | Description |
+| ------ | -------- | -------------------------------------------------- | ----------- |
+| `name` | Yes      | `string`                                           |             |
+| `type` | Yes      | `"directory"` / `"file"` / `"other"` / `"symlink"` |             |
+
+## AttachedEnvironmentErrorCode
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Why an operation failed.
+
+Type: `"denied"` / `"failed"` / `"not-found"`.
+
+## AttachedEnvironmentErrorResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+The operation failed.
+
+| Field     | Required | Type                                                                     | Description |
+| --------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `code`    | Yes      | [AttachedEnvironmentErrorCode](protocol.md#attachedenvironmenterrorcode) |             |
+| `kind`    | Yes      | `"error"`                                                                |             |
+| `message` | Yes      | `string`                                                                 |             |
+
+## AttachedEnvironmentExec
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Runs a command. Without `argv` the command goes to the platform shell.
+
+| Field       | Required | Type                                                 | Description |
+| ----------- | -------- | ---------------------------------------------------- | ----------- |
+| `argv`      | No       | Array of `string`                                    |             |
+| `command`   | Yes      | `string`                                             |             |
+| `cwd`       | Yes      | `string`                                             |             |
+| `env`       | No       | [Recordstringstring](protocol.md#recordstringstring) |             |
+| `kind`      | Yes      | `"exec"`                                             |             |
+| `stdin`     | No       | `string`                                             |             |
+| `timeoutMs` | No       | `integer`                                            |             |
+
+## AttachedEnvironmentExecResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+How a command ended, with its bounded output.
+
+| Field      | Required | Type          | Description                                           |
+| ---------- | -------- | ------------- | ----------------------------------------------------- |
+| `exitCode` | Yes      | `null,number` | Null when the command ended on a signal or a timeout. |
+| `kind`     | Yes      | `"exec"`      |                                                       |
+| `signal`   | Yes      | `null,string` |                                                       |
+| `stderr`   | Yes      | `string`      |                                                       |
+| `stdout`   | Yes      | `string`      |                                                       |
+| `timedOut` | Yes      | `boolean`     |                                                       |
+
+## AttachedEnvironmentList
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Lists a directory.
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"list"` |             |
+| `path` | Yes      | `string` |             |
+
+## AttachedEnvironmentListResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+A directory listing.
+
+| Field     | Required | Type                                                                      | Description |
+| --------- | -------- | ------------------------------------------------------------------------- | ----------- |
+| `entries` | Yes      | Array of [AttachedEnvironmentEntry](protocol.md#attachedenvironmententry) |             |
+| `kind`    | Yes      | `"list"`                                                                  |             |
+
+## AttachedEnvironmentOperation
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+One operation Nexa asks the attaching client to run.
+
+Variant 1: [AttachedEnvironmentExec](protocol.md#attachedenvironmentexec)
+
+| Field       | Required | Type                                                 | Description |
+| ----------- | -------- | ---------------------------------------------------- | ----------- |
+| `argv`      | No       | Array of `string`                                    |             |
+| `command`   | Yes      | `string`                                             |             |
+| `cwd`       | Yes      | `string`                                             |             |
+| `env`       | No       | [Recordstringstring](protocol.md#recordstringstring) |             |
+| `kind`      | Yes      | `"exec"`                                             |             |
+| `stdin`     | No       | `string`                                             |             |
+| `timeoutMs` | No       | `integer`                                            |             |
+
+Variant 2: [AttachedEnvironmentRead](protocol.md#attachedenvironmentread)
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"read"` |             |
+| `path` | Yes      | `string` |             |
+
+Variant 3: [AttachedEnvironmentWrite](protocol.md#attachedenvironmentwrite)
+
+| Field     | Required | Type      | Description                         |
+| --------- | -------- | --------- | ----------------------------------- |
+| `data`    | Yes      | `string`  | File bytes, base64.                 |
+| `kind`    | Yes      | `"write"` |                                     |
+| `mode`    | No       | `integer` |                                     |
+| `parents` | No       | `boolean` | Creates missing parent directories. |
+| `path`    | Yes      | `string`  |                                     |
+
+Variant 4: [AttachedEnvironmentList](protocol.md#attachedenvironmentlist)
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"list"` |             |
+| `path` | Yes      | `string` |             |
+
+Variant 5: [AttachedEnvironmentStat](protocol.md#attachedenvironmentstat)
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"stat"` |             |
+| `path` | Yes      | `string` |             |
+
+Variant 6: [AttachedEnvironmentRemove](protocol.md#attachedenvironmentremove)
+
+| Field       | Required | Type       | Description |
+| ----------- | -------- | ---------- | ----------- |
+| `kind`      | Yes      | `"remove"` |             |
+| `path`      | Yes      | `string`   |             |
+| `recursive` | Yes      | `boolean`  |             |
+
+## AttachedEnvironmentParams
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Names one attached environment.
+
+| Field | Required | Type     | Description |
+| ----- | -------- | -------- | ----------- |
+| `id`  | Yes      | `string` |             |
+
+## AttachedEnvironmentPlatform
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Operating systems an attached environment can report.
+
+Type: `"linux"` / `"macos"` / `"windows"`.
+
+## AttachedEnvironmentRead
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Reads a whole file.
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"read"` |             |
+| `path` | Yes      | `string` |             |
+
+## AttachedEnvironmentReadResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+A file's bytes.
+
+| Field  | Required | Type     | Description         |
+| ------ | -------- | -------- | ------------------- |
+| `data` | Yes      | `string` | File bytes, base64. |
+| `kind` | Yes      | `"read"` |                     |
+
+## AttachedEnvironmentRemove
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Removes a path.
+
+| Field       | Required | Type       | Description |
+| ----------- | -------- | ---------- | ----------- |
+| `kind`      | Yes      | `"remove"` |             |
+| `path`      | Yes      | `string`   |             |
+| `recursive` | Yes      | `boolean`  |             |
+
+## AttachedEnvironmentRequestData
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+The payload of an `environment.request` event.
+
+| Field           | Required | Type                                                                     | Description |
+| --------------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `environmentId` | Yes      | `string`                                                                 |             |
+| `operation`     | Yes      | [AttachedEnvironmentOperation](protocol.md#attachedenvironmentoperation) |             |
+| `requestId`     | Yes      | `string`                                                                 |             |
+
+## AttachedEnvironmentRespondParams
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Answers one `environment.request`.
+
+| Field       | Required | Type                                                               | Description |
+| ----------- | -------- | ------------------------------------------------------------------ | ----------- |
+| `requestId` | Yes      | `string`                                                           |             |
+| `result`    | Yes      | [AttachedEnvironmentResult](protocol.md#attachedenvironmentresult) |             |
+
+## AttachedEnvironmentRespondResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+The answer was accepted.
+
+| Field      | Required | Type      | Description |
+| ---------- | -------- | --------- | ----------- |
+| `accepted` | Yes      | `boolean` |             |
+
+## AttachedEnvironmentResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Union of every operation result.
+
+Variant 1: [AttachedEnvironmentExecResult](protocol.md#attachedenvironmentexecresult)
+
+| Field      | Required | Type          | Description                                           |
+| ---------- | -------- | ------------- | ----------------------------------------------------- |
+| `exitCode` | Yes      | `null,number` | Null when the command ended on a signal or a timeout. |
+| `kind`     | Yes      | `"exec"`      |                                                       |
+| `signal`   | Yes      | `null,string` |                                                       |
+| `stderr`   | Yes      | `string`      |                                                       |
+| `stdout`   | Yes      | `string`      |                                                       |
+| `timedOut` | Yes      | `boolean`     |                                                       |
+
+Variant 2: [AttachedEnvironmentReadResult](protocol.md#attachedenvironmentreadresult)
+
+| Field  | Required | Type     | Description         |
+| ------ | -------- | -------- | ------------------- |
+| `data` | Yes      | `string` | File bytes, base64. |
+| `kind` | Yes      | `"read"` |                     |
+
+Variant 3: [AttachedEnvironmentDoneResult](protocol.md#attachedenvironmentdoneresult)
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"done"` |             |
+
+Variant 4: [AttachedEnvironmentListResult](protocol.md#attachedenvironmentlistresult)
+
+| Field     | Required | Type                                                                      | Description |
+| --------- | -------- | ------------------------------------------------------------------------- | ----------- |
+| `entries` | Yes      | Array of [AttachedEnvironmentEntry](protocol.md#attachedenvironmententry) |             |
+| `kind`    | Yes      | `"list"`                                                                  |             |
+
+Variant 5: [AttachedEnvironmentStatResult](protocol.md#attachedenvironmentstatresult)
+
+| Field        | Required | Type                                               | Description         |
+| ------------ | -------- | -------------------------------------------------- | ------------------- |
+| `kind`       | Yes      | `"stat"`                                           |                     |
+| `mode`       | Yes      | `integer`                                          |                     |
+| `modifiedAt` | Yes      | `number`                                           | Epoch milliseconds. |
+| `size`       | Yes      | `integer`                                          |                     |
+| `type`       | Yes      | `"directory"` / `"file"` / `"other"` / `"symlink"` |                     |
+
+Variant 6: [AttachedEnvironmentErrorResult](protocol.md#attachedenvironmenterrorresult)
+
+| Field     | Required | Type                                                                     | Description |
+| --------- | -------- | ------------------------------------------------------------------------ | ----------- |
+| `code`    | Yes      | [AttachedEnvironmentErrorCode](protocol.md#attachedenvironmenterrorcode) |             |
+| `kind`    | Yes      | `"error"`                                                                |             |
+| `message` | Yes      | `string`                                                                 |             |
+
+## AttachedEnvironmentStat
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Describes one path.
+
+| Field  | Required | Type     | Description |
+| ------ | -------- | -------- | ----------- |
+| `kind` | Yes      | `"stat"` |             |
+| `path` | Yes      | `string` |             |
+
+## AttachedEnvironmentStatResult
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+What one path is.
+
+| Field        | Required | Type                                               | Description         |
+| ------------ | -------- | -------------------------------------------------- | ------------------- |
+| `kind`       | Yes      | `"stat"`                                           |                     |
+| `mode`       | Yes      | `integer`                                          |                     |
+| `modifiedAt` | Yes      | `number`                                           | Epoch milliseconds. |
+| `size`       | Yes      | `integer`                                          |                     |
+| `type`       | Yes      | `"directory"` / `"file"` / `"other"` / `"symlink"` |                     |
+
+## AttachedEnvironmentWrite
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Writes a whole file.
+
+| Field     | Required | Type      | Description                         |
+| --------- | -------- | --------- | ----------------------------------- |
+| `data`    | Yes      | `string`  | File bytes, base64.                 |
+| `kind`    | Yes      | `"write"` |                                     |
+| `mode`    | No       | `integer` |                                     |
+| `parents` | No       | `boolean` | Creates missing parent directories. |
+| `path`    | Yes      | `string`  |                                     |
+
+## AttachedEnvironmentsPage
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+Environments attached on this connection.
+
+| Field   | Required | Type                                                            | Description |
+| ------- | -------- | --------------------------------------------------------------- | ----------- |
+| `items` | Yes      | Array of [AttachedEnvironment](protocol.md#attachedenvironment) |             |
 
 ## BackgroundProcess
 
@@ -2484,7 +2853,7 @@ Module: `nexa-protocol/connections/ConnectionTypes.js`.
 
 Who runs a chat model the user selected.
 
-Type: `"api-key"` / `"subscription"`.
+Type: `"api-key"` / `"maestro"` / `"subscription"`.
 
 ## ChatModelsPage
 
@@ -9249,6 +9618,50 @@ A passive visit never claims native, SSH, or tooling readiness.
 
 Type: `"setup-required"` / `"existing"`.
 
+## EnvironmentsAttachMethod
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+`environments.attach` contract.
+
+| Field    | Required | Type                                                           | Description |
+| -------- | -------- | -------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachEnvironmentParams](protocol.md#attachenvironmentparams) |             |
+| `result` | Yes      | [AttachedEnvironment](protocol.md#attachedenvironment)         |             |
+
+## EnvironmentsDetachMethod
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+`environments.detach` contract.
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachedEnvironmentParams](protocol.md#attachedenvironmentparams)               |             |
+| `result` | Yes      | [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult) |             |
+
+## EnvironmentsListMethod
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+`environments.list` contract.
+
+| Field    | Required | Type                                                             | Description |
+| -------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)               |             |
+| `result` | Yes      | [AttachedEnvironmentsPage](protocol.md#attachedenvironmentspage) |             |
+
+## EnvironmentsRespondMethod
+
+Module: `nexa-protocol/environments/AttachedEnvironmentTypes.js`.
+
+`environments.respond` contract.
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachedEnvironmentRespondParams](protocol.md#attachedenvironmentrespondparams) |             |
+| `result` | Yes      | [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult) |             |
+
 ## ErrorCode
 
 Module: `nexa-protocol/core/ErrorTypes.js`.
@@ -9603,6 +10016,7 @@ Methods, events, and additive capabilities supported by this gateway.
 
 | Field                          | Required | Type                                               | Description                                                                                    |
 | ------------------------------ | -------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `attachedEnvironments`         | No       | `true`                                             | Clients can attach their own environments and serve `environment.request` events.              |
 | `attachments`                  | No       | `true`                                             | User media attachments are validated and forwarded to the agent.                               |
 | `binaryDataUploads`            | No       | `true`                                             | Disk upload chunks retain raw bytes from the wire through durable storage.                     |
 | `binaryHistory`                | No       | `true`                                             | History batches use acknowledged raw binary frames.                                            |
@@ -9625,6 +10039,7 @@ Methods, events, and additive capabilities supported by this gateway.
 | `designVectorPatterns`         | No       | `true`                                             | Linked component paints support revision-pinned bounded source-cell sampling.                  |
 | `events`                       | Yes      | Array of `string`                                  |                                                                                                |
 | `jsonReplies`                  | No       | `true`                                             | Host validation of JSON final answers while native tools remain available.                     |
+| `maestro`                      | No       | `true`                                             | Maestro can be selected as a model and its policy, catalog and runs read.                      |
 | `methodScopes`                 | Yes      | [RecordstringScope](protocol.md#recordstringscope) | The scope each method requires.                                                                |
 | `methods`                      | Yes      | Array of `string`                                  |                                                                                                |
 | `modelReview`                  | No       | `true`                                             | Per-turn optional AI completion audits retain mandatory local checks.                          |
@@ -9799,6 +10214,10 @@ Every gateway method with its params and result; the method name is the key.
 | `environment.status`                  | Yes      | Object (fields below) | Reads bounded progress after the last acknowledged cursor.                                             |
 | `environment.usage`                   | Yes      | Object (fields below) | A visible owner panel requests only its current authenticated account.                                 |
 | `environment.visit`                   | Yes      | Object (fields below) | The authenticated account is the only target; client hints cannot enable creation.                     |
+| `environments.attach`                 | Yes      | Object (fields below) | `environments.attach` contract.                                                                        |
+| `environments.detach`                 | Yes      | Object (fields below) | `environments.detach` contract.                                                                        |
+| `environments.list`                   | Yes      | Object (fields below) | `environments.list` contract.                                                                          |
+| `environments.respond`                | Yes      | Object (fields below) | `environments.respond` contract.                                                                       |
 | `health`                              | Yes      | Object (fields below) |                                                                                                        |
 | `jobs.add`                            | Yes      | Object (fields below) |                                                                                                        |
 | `jobs.list`                           | Yes      | Object (fields below) |                                                                                                        |
@@ -9811,6 +10230,13 @@ Every gateway method with its params and result; the method name is the key.
 | `luau.editor.hover`                   | Yes      | Object (fields below) |                                                                                                        |
 | `luau.editor.stage`                   | Yes      | Object (fields below) |                                                                                                        |
 | `luau.editor.start`                   | Yes      | Object (fields below) |                                                                                                        |
+| `maestro.models.list`                 | Yes      | Object (fields below) | `maestro.models.list` contract.                                                                        |
+| `maestro.policy.get`                  | Yes      | Object (fields below) | `maestro.policy.get` contract.                                                                         |
+| `maestro.policy.history`              | Yes      | Object (fields below) | `maestro.policy.history` contract.                                                                     |
+| `maestro.policy.restore`              | Yes      | Object (fields below) | `maestro.policy.restore` contract.                                                                     |
+| `maestro.policy.set`                  | Yes      | Object (fields below) | `maestro.policy.set` contract.                                                                         |
+| `maestro.runs.get`                    | Yes      | Object (fields below) | `maestro.runs.get` contract.                                                                           |
+| `maestro.runs.list`                   | Yes      | Object (fields below) | `maestro.runs.list` contract.                                                                          |
 | `media.acknowledge`                   | Yes      | Object (fields below) |                                                                                                        |
 | `processes.input`                     | Yes      | Object (fields below) |                                                                                                        |
 | `processes.list`                      | Yes      | Object (fields below) |                                                                                                        |
@@ -10895,6 +11321,34 @@ Every gateway method with its params and result; the method name is the key.
 | `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)           |             |
 | `result` | Yes      | [EnvironmentVisitResult](protocol.md#environmentvisitresult) |             |
 
+**environments.attach**
+
+| Field    | Required | Type                                                           | Description |
+| -------- | -------- | -------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachEnvironmentParams](protocol.md#attachenvironmentparams) |             |
+| `result` | Yes      | [AttachedEnvironment](protocol.md#attachedenvironment)         |             |
+
+**environments.detach**
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachedEnvironmentParams](protocol.md#attachedenvironmentparams)               |             |
+| `result` | Yes      | [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult) |             |
+
+**environments.list**
+
+| Field    | Required | Type                                                             | Description |
+| -------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)               |             |
+| `result` | Yes      | [AttachedEnvironmentsPage](protocol.md#attachedenvironmentspage) |             |
+
+**environments.respond**
+
+| Field    | Required | Type                                                                             | Description |
+| -------- | -------- | -------------------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AttachedEnvironmentRespondParams](protocol.md#attachedenvironmentrespondparams) |             |
+| `result` | Yes      | [AttachedEnvironmentRespondResult](protocol.md#attachedenvironmentrespondresult) |             |
+
 **health**
 
 | Field    | Required | Type                                               | Description |
@@ -10978,6 +11432,55 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ------------------------------------------------ | ----------- |
 | `params` | Yes      | [LuauEditorHandle](protocol.md#luaueditorhandle) |             |
 | `result` | Yes      | [LuauEditorAck](protocol.md#luaueditorack)       |             |
+
+**maestro.models.list**
+
+| Field    | Required | Type                                               | Description |
+| -------- | -------- | -------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
+| `result` | Yes      | [MaestroModelsPage](protocol.md#maestromodelspage) |             |
+
+**maestro.policy.get**
+
+| Field    | Required | Type                                               | Description |
+| -------- | -------- | -------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview) |             |
+
+**maestro.policy.history**
+
+| Field    | Required | Type                                                             | Description |
+| -------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)               |             |
+| `result` | Yes      | [MaestroPolicyHistoryPage](protocol.md#maestropolicyhistorypage) |             |
+
+**maestro.policy.restore**
+
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [MaestroPolicyRestoreParams](protocol.md#maestropolicyrestoreparams) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview)                   |             |
+
+**maestro.policy.set**
+
+| Field    | Required | Type                                                         | Description |
+| -------- | -------- | ------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [MaestroPolicySetParams](protocol.md#maestropolicysetparams) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview)           |             |
+
+**maestro.runs.get**
+
+| Field    | Required | Type                                             | Description |
+| -------- | -------- | ------------------------------------------------ | ----------- |
+| `params` | Yes      | [MaestroRunParams](protocol.md#maestrorunparams) |             |
+| `result` | Yes      | [MaestroRunTrace](protocol.md#maestroruntrace)   |             |
+
+**maestro.runs.list**
+
+| Field    | Required | Type                                                       | Description |
+| -------- | -------- | ---------------------------------------------------------- | ----------- |
+| `params` | Yes      | [MaestroRunsListParams](protocol.md#maestrorunslistparams) |             |
+| `result` | Yes      | [MaestroRunsPage](protocol.md#maestrorunspage)             |             |
 
 **media.acknowledge**
 
@@ -12838,6 +13341,775 @@ A bounded source chunk stages an immutable revision without checking an incomple
 | `offset`   | Yes      | `number`  |             |
 | `revision` | Yes      | `number`  |             |
 | `source`   | Yes      | `string`  |             |
+
+## MaestroAgentLimits
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Optional limits on sub-agents.
+
+| Field      | Required | Type          | Description                                     |
+| ---------- | -------- | ------------- | ----------------------------------------------- |
+| `enabled`  | Yes      | `boolean`     |                                                 |
+| `maxCount` | Yes      | `null,number` | Most sub-agents per task, or null for no limit. |
+| `maxDepth` | Yes      | `null,number` | Deepest nesting, or null for no limit.          |
+
+## MaestroAgentState
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Lifecycle of a Maestro run or sub-agent.
+
+Type: `"checking"` / `"done"` / `"failed"` / `"fixing"` / `"queued"` / `"running"` / `"stopped"`.
+
+## MaestroAgentUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A sub-agent changed state. Each sub-agent is a full Maestro.
+
+| Field         | Required | Type                                                       | Description                |
+| ------------- | -------- | ---------------------------------------------------------- | -------------------------- |
+| `activity`    | Yes      | `string`                                                   |                            |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                            |
+| `goal`        | Yes      | `string`                                                   |                            |
+| `kind`        | Yes      | `"agent"`                                                  |                            |
+| `model`       | No       | [MaestroModelUse](protocol.md#maestromodeluse)             |                            |
+| `parentId`    | Yes      | `string`                                                   | The agent that started it. |
+| `state`       | Yes      | [MaestroAgentState](protocol.md#maestroagentstate)         |                            |
+| `switches`    | Yes      | `integer`                                                  | Model switches so far.     |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |                            |
+| `title`       | Yes      | `string`                                                   |                            |
+
+## MaestroBenchmark
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A published benchmark result Maestro seeds its registry with.
+
+| Field    | Required | Type     | Description                 |
+| -------- | -------- | -------- | --------------------------- |
+| `name`   | Yes      | `string` |                             |
+| `score`  | Yes      | `number` | Percentage of tasks solved. |
+| `source` | Yes      | `string` | Where the number was read.  |
+
+## MaestroCheckState
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Lifecycle of one check.
+
+Type: `"failed"` / `"passed"` / `"running"` / `"skipped"`.
+
+## MaestroCheckUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A check ran on the work.
+
+| Field         | Required | Type                                                       | Description |
+| ------------- | -------- | ---------------------------------------------------------- | ----------- |
+| `checkId`     | Yes      | `string`                                                   |             |
+| `durationMs`  | No       | `integer`                                                  |             |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |             |
+| `kind`        | Yes      | `"check"`                                                  |             |
+| `name`        | Yes      | `string`                                                   |             |
+| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |             |
+| `summary`     | Yes      | `string`                                                   |             |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |             |
+
+## MaestroConnection
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The connection currently serving a provider or model.
+
+| Field  | Required | Type                                                       | Description                                                            |
+| ------ | -------- | ---------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `kind` | Yes      | [MaestroConnectionKind](protocol.md#maestroconnectionkind) |                                                                        |
+| `name` | Yes      | `string`                                                   | User-facing name, such as "Your Claude Code plan".                     |
+| `via`  | Yes      | `string`                                                   | The application id for plans, the key's provider for keys, or `nerva`. |
+
+## MaestroConnectionKind
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Where the access to a model comes from, in the order Maestro prefers them.
+
+Type: `"key"` / `"nerva"` / `"plan"`.
+
+## MaestroCost
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The live cost meter of a run.
+
+| Field               | Required | Type                                                      | Description |
+| ------------------- | -------- | --------------------------------------------------------- | ----------- |
+| `cachedInputTokens` | Yes      | `integer`                                                 |             |
+| `costMicros`        | Yes      | `string`                                                  |             |
+| `inputTokens`       | Yes      | `integer`                                                 |             |
+| `models`            | Yes      | Array of [MaestroModelCost](protocol.md#maestromodelcost) |             |
+| `outputTokens`      | Yes      | `integer`                                                 |             |
+
+## MaestroDataRules
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Optional data rules: which providers may receive files and source code.
+
+| Field           | Required | Type              | Description                                                 |
+| --------------- | -------- | ----------------- | ----------------------------------------------------------- |
+| `enabled`       | Yes      | `boolean`         |                                                             |
+| `fileProviders` | Yes      | Array of `string` | Provider families allowed to receive files and source code. |
+
+## MaestroEnvironmentKind
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Kinds of environment Maestro can place work on.
+
+Type: `"attached"` / `"connector"` / `"managed"`.
+
+## MaestroEnvironmentRef
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An environment as shown on a run card.
+
+| Field      | Required | Type                                                         | Description |
+| ---------- | -------- | ------------------------------------------------------------ | ----------- |
+| `id`       | Yes      | `string`                                                     |             |
+| `kind`     | Yes      | [MaestroEnvironmentKind](protocol.md#maestroenvironmentkind) |             |
+| `name`     | Yes      | `string`                                                     |             |
+| `platform` | Yes      | [MaestroPlatform](protocol.md#maestroplatform)               |             |
+
+## MaestroEnvironmentRules
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Which environments Maestro may place work on.
+
+| Field      | Required | Type              | Description                   |
+| ---------- | -------- | ----------------- | ----------------------------- |
+| `disabled` | Yes      | Array of `string` | Environment ids switched off. |
+
+## MaestroEnvironmentUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Maestro placed work on an environment.
+
+| Field         | Required | Type                                                       | Description                                               |
+| ------------- | -------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| `environment` | Yes      | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                                                           |
+| `kind`        | Yes      | `"environment"`                                            |                                                           |
+| `primary`     | Yes      | `boolean`                                                  | True for the main workspace, false for an additional one. |
+| `reason`      | Yes      | `string`                                                   |                                                           |
+
+## MaestroEvent
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One Maestro update in a turn's event stream. Sent only on turns that selected Maestro.
+
+| Field     | Required | Type                                       | Description                 |
+| --------- | -------- | ------------------------------------------ | --------------------------- |
+| `agentId` | Yes      | `string`                                   |                             |
+| `at`      | Yes      | `string`                                   | Decimal epoch milliseconds. |
+| `runId`   | Yes      | `string`                                   |                             |
+| `type`    | Yes      | `"maestro"`                                |                             |
+| `update`  | Yes      | [MaestroUpdate](protocol.md#maestroupdate) |                             |
+
+## MaestroFailureClass
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The closed set of failure classes every provider error maps to.
+
+Type: `"budget-exceeded"` / `"check-failed"` / `"context-overflow"` / `"malformed-output"` / `"rate-limit"` / `"refusal"` / `"reroute-declined"` / `"stall"` / `"transport"`.
+
+## MaestroGoal
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+What Maestro aims for when it picks models, roles and attempts.
+
+Type: `"balanced"` / `"best-result"` / `"lowest-cost"`.
+
+## MaestroLimits
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Every limit Maestro can apply. All are off by default.
+
+| Field      | Required | Type                                                         | Description |
+| ---------- | -------- | ------------------------------------------------------------ | ----------- |
+| `agents`   | Yes      | [MaestroAgentLimits](protocol.md#maestroagentlimits)         |             |
+| `ceiling`  | Yes      | [MaestroModelCeiling](protocol.md#maestromodelceiling)       |             |
+| `data`     | Yes      | [MaestroDataRules](protocol.md#maestrodatarules)             |             |
+| `refusals` | Yes      | [MaestroRefusalHandling](protocol.md#maestrorefusalhandling) |             |
+| `spending` | Yes      | [MaestroSpendingCap](protocol.md#maestrospendingcap)         |             |
+
+## MaestroModelCeiling
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An optional model ceiling: routine work stays at or under the tier unless a verified failure forces more.
+
+| Field     | Required | Type                                   | Description |
+| --------- | -------- | -------------------------------------- | ----------- |
+| `enabled` | Yes      | `boolean`                              |             |
+| `tier`    | Yes      | [MaestroTier](protocol.md#maestrotier) |             |
+
+## MaestroModelCost
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Cost and tokens of one model within a run.
+
+| Field               | Required | Type      | Description                                                                     |
+| ------------------- | -------- | --------- | ------------------------------------------------------------------------------- |
+| `cachedInputTokens` | Yes      | `integer` |                                                                                 |
+| `costMicros`        | Yes      | `string`  |                                                                                 |
+| `inputTokens`       | Yes      | `integer` |                                                                                 |
+| `model`             | Yes      | `string`  |                                                                                 |
+| `name`              | Yes      | `string`  |                                                                                 |
+| `outputTokens`      | Yes      | `integer` |                                                                                 |
+| `provider`          | Yes      | `string`  | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
+
+## MaestroModelRef
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One model, named by its provider family and model id.
+
+| Field      | Required | Type     | Description                                                                     |
+| ---------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| `model`    | Yes      | `string` |                                                                                 |
+| `provider` | Yes      | `string` | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
+
+## MaestroModelRules
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Which models Maestro may choose from.
+
+| Field               | Required | Type                                                    | Description                                             |
+| ------------------- | -------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| `baseModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | The model doing supporting work; null is Athena.        |
+| `disabledModels`    | Yes      | Array of [MaestroModelRef](protocol.md#maestromodelref) | Individual models switched off.                         |
+| `disabledProviders` | Yes      | Array of `string`                                       | Provider families switched off.                         |
+| `leadModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | A pinned lead model; null lets Maestro choose per step. |
+
+## MaestroModelUse
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A model as Maestro used it for one step.
+
+| Field        | Required | Type                                               | Description                                                                     |
+| ------------ | -------- | -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `connection` | Yes      | [MaestroConnection](protocol.md#maestroconnection) |                                                                                 |
+| `effort`     | No       | [ReasoningEffort](protocol.md#reasoningeffort)     |                                                                                 |
+| `model`      | Yes      | `string`                                           |                                                                                 |
+| `name`       | Yes      | `string`                                           | User-facing model name.                                                         |
+| `provider`   | Yes      | `string`                                           | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
+
+## MaestroModelView
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One model in the Maestro catalog.
+
+| Field        | Required | Type                                                        | Description                                                                     |
+| ------------ | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `available`  | Yes      | `boolean`                                                   | Whether a connection can serve it right now.                                    |
+| `benchmark`  | No       | [MaestroBenchmark](protocol.md#maestrobenchmark)            |                                                                                 |
+| `connection` | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null` | The connection that serves it, or null when none can.                           |
+| `enabled`    | Yes      | `boolean`                                                   | Whether the policy lets Maestro use it.                                         |
+| `model`      | Yes      | `string`                                                    |                                                                                 |
+| `name`       | Yes      | `string`                                                    |                                                                                 |
+| `provider`   | Yes      | `string`                                                    | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
+| `tier`       | Yes      | [MaestroTier](protocol.md#maestrotier)                      |                                                                                 |
+
+## MaestroModelsListMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.models.list` contract.
+
+| Field    | Required | Type                                               | Description |
+| -------- | -------- | -------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
+| `result` | Yes      | [MaestroModelsPage](protocol.md#maestromodelspage) |             |
+
+## MaestroModelsPage
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Every model Maestro knows, grouped by provider.
+
+| Field       | Required | Type                                                            | Description |
+| ----------- | -------- | --------------------------------------------------------------- | ----------- |
+| `providers` | Yes      | Array of [MaestroProviderView](protocol.md#maestroproviderview) |             |
+
+## MaestroPattern
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+How the attempts of a task or subtask are arranged.
+
+Type: `"best-of-n"` / `"cascade"` / `"critique"` / `"fan-out"` / `"race"` / `"roles"` / `"single"`.
+
+## MaestroPlanUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Maestro decided how to arrange the work.
+
+| Field      | Required | Type                                                  | Description                        |
+| ---------- | -------- | ----------------------------------------------------- | ---------------------------------- |
+| `kind`     | Yes      | `"plan"`                                              |                                    |
+| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                    |
+| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) |                                    |
+| `summary`  | Yes      | `string`                                              | The quick decision in plain words. |
+
+## MaestroPlatform
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Operating systems an environment can run.
+
+Type: `"linux"` / `"macos"` / `"other"` / `"windows"`.
+
+## MaestroPolicy
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The user's Maestro configuration. One stored policy drives the settings page and the router.
+
+| Field          | Required | Type                                                           | Description                                                       |
+| -------------- | -------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `environments` | Yes      | [MaestroEnvironmentRules](protocol.md#maestroenvironmentrules) |                                                                   |
+| `goal`         | Yes      | [MaestroGoal](protocol.md#maestrogoal)                         |                                                                   |
+| `limits`       | Yes      | [MaestroLimits](protocol.md#maestrolimits)                     |                                                                   |
+| `models`       | Yes      | [MaestroModelRules](protocol.md#maestromodelrules)             |                                                                   |
+| `roles`        | Yes      | [MaestroRoles](protocol.md#maestroroles)                       |                                                                   |
+| `width`        | Yes      | `null,number`                                                  | Parallel attempts on a stuck part, or null to let Maestro choose. |
+
+## MaestroPolicyGetMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.policy.get` contract.
+
+| Field    | Required | Type                                               | Description |
+| -------- | -------- | -------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview) |             |
+
+## MaestroPolicyHistoryMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.policy.history` contract.
+
+| Field    | Required | Type                                                             | Description |
+| -------- | -------- | ---------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [Recordstringnever](protocol.md#recordstringnever)               |             |
+| `result` | Yes      | [MaestroPolicyHistoryPage](protocol.md#maestropolicyhistorypage) |             |
+
+## MaestroPolicyHistoryPage
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Earlier versions of the policy, newest first.
+
+| Field   | Required | Type                                                                | Description |
+| ------- | -------- | ------------------------------------------------------------------- | ----------- |
+| `items` | Yes      | Array of [MaestroPolicyRevision](protocol.md#maestropolicyrevision) |             |
+
+## MaestroPolicyRestoreMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.policy.restore` contract.
+
+| Field    | Required | Type                                                                 | Description |
+| -------- | -------- | -------------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [MaestroPolicyRestoreParams](protocol.md#maestropolicyrestoreparams) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview)                   |             |
+
+## MaestroPolicyRestoreParams
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Restores an earlier version as a new revision.
+
+| Field      | Required | Type      | Description                  |
+| ---------- | -------- | --------- | ---------------------------- |
+| `restore`  | Yes      | `integer` | The version to restore.      |
+| `revision` | Yes      | `integer` | The revision the caller saw. |
+
+## MaestroPolicyRevision
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One earlier version of the policy.
+
+| Field       | Required | Type                                       | Description |
+| ----------- | -------- | ------------------------------------------ | ----------- |
+| `policy`    | Yes      | [MaestroPolicy](protocol.md#maestropolicy) |             |
+| `revision`  | Yes      | `integer`                                  |             |
+| `updatedAt` | Yes      | `string`                                   |             |
+
+## MaestroPolicySetMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.policy.set` contract.
+
+| Field    | Required | Type                                                         | Description |
+| -------- | -------- | ------------------------------------------------------------ | ----------- |
+| `params` | Yes      | [MaestroPolicySetParams](protocol.md#maestropolicysetparams) |             |
+| `result` | Yes      | [MaestroPolicyView](protocol.md#maestropolicyview)           |             |
+
+## MaestroPolicySetParams
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Replaces the policy when the stored revision still matches.
+
+| Field      | Required | Type                                       | Description                     |
+| ---------- | -------- | ------------------------------------------ | ------------------------------- |
+| `policy`   | Yes      | [MaestroPolicy](protocol.md#maestropolicy) |                                 |
+| `revision` | Yes      | `integer`                                  | The revision the caller edited. |
+
+## MaestroPolicyView
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The stored policy with its revision.
+
+| Field       | Required | Type                                       | Description                                                                |
+| ----------- | -------- | ------------------------------------------ | -------------------------------------------------------------------------- |
+| `policy`    | Yes      | [MaestroPolicy](protocol.md#maestropolicy) |                                                                            |
+| `revision`  | Yes      | `integer`                                  | Increases by one on every change; 0 means the defaults were never changed. |
+| `updatedAt` | Yes      | `null,string`                              | When the policy last changed, or null for the defaults.                    |
+
+## MaestroProviderView
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One provider family in the Maestro catalog.
+
+| Field        | Required | Type                                                        | Description                                                                |
+| ------------ | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `connection` | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null` | The connection that currently serves this provider, or null when none can. |
+| `enabled`    | Yes      | `boolean`                                                   | Whether the policy lets Maestro use this provider.                         |
+| `id`         | Yes      | `string`                                                    |                                                                            |
+| `models`     | Yes      | Array of [MaestroModelView](protocol.md#maestromodelview)   |                                                                            |
+| `name`       | Yes      | `string`                                                    |                                                                            |
+
+## MaestroRefusalHandling
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+What Maestro does when a provider declines a request.
+
+Type: `"ask"` / `"off"` / `"reroute"`.
+
+## MaestroRole
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The roles of the orchestra.
+
+Type: `"answer"` / `"build"` / `"fix"` / `"plan"` / `"review"` / `"support"`.
+
+## MaestroRoles
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Whether each role of the orchestra plays.
+
+| Field    | Required | Type      | Description |
+| -------- | -------- | --------- | ----------- |
+| `build`  | Yes      | `boolean` |             |
+| `fix`    | Yes      | `boolean` |             |
+| `plan`   | Yes      | `boolean` |             |
+| `review` | Yes      | `boolean` |             |
+
+## MaestroRouteCause
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Why Maestro chose or changed a model.
+
+Type: `"connection-failed"` / `"escalation"` / `"failure"` / `"handover"` / `"refusal"` / `"start"` / `"step"`.
+
+## MaestroRouteUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Maestro chose or changed the model doing the work.
+
+| Field      | Required | Type                                                   | Description                                                  |
+| ---------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------ |
+| `cause`    | Yes      | [MaestroRouteCause](protocol.md#maestroroutecause)     |                                                              |
+| `failure`  | No       | [MaestroFailureClass](protocol.md#maestrofailureclass) | Present when the cause is a failure or a refusal.            |
+| `kind`     | Yes      | `"route"`                                              |                                                              |
+| `model`    | Yes      | [MaestroModelUse](protocol.md#maestromodeluse)         |                                                              |
+| `previous` | No       | [MaestroModelUse](protocol.md#maestromodeluse)         | The model it replaced, absent for the first choice.          |
+| `reason`   | Yes      | `string`                                               | Plain-words reason, such as "the plan needs deep reasoning". |
+| `role`     | Yes      | [MaestroRole](protocol.md#maestrorole)                 |                                                              |
+
+## MaestroRunParams
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Names one run.
+
+| Field | Required | Type     | Description |
+| ----- | -------- | -------- | ----------- |
+| `id`  | Yes      | `string` |             |
+
+## MaestroRunSummary
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A finished or running Maestro run.
+
+| Field        | Required | Type                                               | Description                                                  |
+| ------------ | -------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| `agents`     | Yes      | `integer`                                          |                                                              |
+| `costMicros` | Yes      | `string`                                           |                                                              |
+| `finishedAt` | Yes      | `null,string`                                      |                                                              |
+| `goal`       | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |                                                              |
+| `id`         | Yes      | `string`                                           |                                                              |
+| `models`     | Yes      | `integer`                                          |                                                              |
+| `sessionId`  | Yes      | `null,string`                                      | The conversation the run answered, when it came from a chat. |
+| `startedAt`  | Yes      | `string`                                           |                                                              |
+| `state`      | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |                                                              |
+| `switches`   | Yes      | `integer`                                          |                                                              |
+| `tests`      | Yes      | [MaestroTestTally](protocol.md#maestrotesttally)   |                                                              |
+| `title`      | Yes      | `string`                                           |                                                              |
+
+## MaestroRunTrace
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The full trace of a run, for replay and inspection.
+
+| Field       | Required | Type                                               | Description                                                  |
+| ----------- | -------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| `events`    | Yes      | Array of [MaestroEvent](protocol.md#maestroevent)  |                                                              |
+| `run`       | Yes      | [MaestroRunSummary](protocol.md#maestrorunsummary) |                                                              |
+| `truncated` | Yes      | `boolean`                                          | True when the oldest events were dropped to bound the trace. |
+
+## MaestroRunUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A run started or finished.
+
+| Field   | Required | Type                                               | Description |
+| ------- | -------- | -------------------------------------------------- | ----------- |
+| `goal`  | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |             |
+| `kind`  | Yes      | `"run"`                                            |             |
+| `state` | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |             |
+| `title` | Yes      | `string`                                           |             |
+
+## MaestroRunsGetMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.runs.get` contract.
+
+| Field    | Required | Type                                             | Description |
+| -------- | -------- | ------------------------------------------------ | ----------- |
+| `params` | Yes      | [MaestroRunParams](protocol.md#maestrorunparams) |             |
+| `result` | Yes      | [MaestroRunTrace](protocol.md#maestroruntrace)   |             |
+
+## MaestroRunsListMethod
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+`maestro.runs.list` contract.
+
+| Field    | Required | Type                                                       | Description |
+| -------- | -------- | ---------------------------------------------------------- | ----------- |
+| `params` | Yes      | [MaestroRunsListParams](protocol.md#maestrorunslistparams) |             |
+| `result` | Yes      | [MaestroRunsPage](protocol.md#maestrorunspage)             |             |
+
+## MaestroRunsListParams
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Pages through recent runs.
+
+| Field    | Required | Type      | Description |
+| -------- | -------- | --------- | ----------- |
+| `cursor` | No       | `string`  |             |
+| `limit`  | No       | `integer` |             |
+
+## MaestroRunsPage
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Recent runs, newest first, with the month's spend.
+
+| Field         | Required | Type                                                        | Description                                           |
+| ------------- | -------- | ----------------------------------------------------------- | ----------------------------------------------------- |
+| `items`       | Yes      | Array of [MaestroRunSummary](protocol.md#maestrorunsummary) |                                                       |
+| `monthMicros` | Yes      | `string`                                                    | USD micros spent on Maestro runs this calendar month. |
+| `nextCursor`  | Yes      | `null,string`                                               | Pass back to read older runs; null at the end.        |
+
+## MaestroSpendingCap
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An optional spending cap.
+
+| Field         | Required | Type          | Description                                                |
+| ------------- | -------- | ------------- | ---------------------------------------------------------- |
+| `enabled`     | Yes      | `boolean`     |                                                            |
+| `monthMicros` | Yes      | `null,string` | USD micros per calendar month, or null for no monthly cap. |
+| `taskMicros`  | Yes      | `null,string` | USD micros per task, or null for no per-task cap.          |
+
+## MaestroSubtask
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One subtask of a plan.
+
+| Field           | Required | Type              | Description                                 |
+| --------------- | -------- | ----------------- | ------------------------------------------- |
+| `dependsOn`     | Yes      | Array of `string` |                                             |
+| `environmentId` | No       | `string`          | The environment it will run on, when known. |
+| `id`            | Yes      | `string`          |                                             |
+| `title`         | Yes      | `string`          |                                             |
+
+## MaestroTestTally
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Passed and failed test counts.
+
+| Field    | Required | Type      | Description |
+| -------- | -------- | --------- | ----------- |
+| `failed` | Yes      | `integer` |             |
+| `passed` | Yes      | `integer` |             |
+
+## MaestroTier
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Model capability tier, used by the optional model ceiling.
+
+Type: `"base"` / `"frontier"` / `"light"` / `"mid"`.
+
+## MaestroTurnOptions
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Per-turn Maestro options.
+
+| Field  | Required | Type                                   | Description                                |
+| ------ | -------- | -------------------------------------- | ------------------------------------------ |
+| `goal` | No       | [MaestroGoal](protocol.md#maestrogoal) | Overrides the policy's goal for this turn. |
+
+## MaestroUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Union of every Maestro update.
+
+Variant 1: [MaestroRunUpdate](protocol.md#maestrorunupdate)
+
+| Field   | Required | Type                                               | Description |
+| ------- | -------- | -------------------------------------------------- | ----------- |
+| `goal`  | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |             |
+| `kind`  | Yes      | `"run"`                                            |             |
+| `state` | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |             |
+| `title` | Yes      | `string`                                           |             |
+
+Variant 2: [MaestroRouteUpdate](protocol.md#maestrorouteupdate)
+
+| Field      | Required | Type                                                   | Description                                                  |
+| ---------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------ |
+| `cause`    | Yes      | [MaestroRouteCause](protocol.md#maestroroutecause)     |                                                              |
+| `failure`  | No       | [MaestroFailureClass](protocol.md#maestrofailureclass) | Present when the cause is a failure or a refusal.            |
+| `kind`     | Yes      | `"route"`                                              |                                                              |
+| `model`    | Yes      | [MaestroModelUse](protocol.md#maestromodeluse)         |                                                              |
+| `previous` | No       | [MaestroModelUse](protocol.md#maestromodeluse)         | The model it replaced, absent for the first choice.          |
+| `reason`   | Yes      | `string`                                               | Plain-words reason, such as "the plan needs deep reasoning". |
+| `role`     | Yes      | [MaestroRole](protocol.md#maestrorole)                 |                                                              |
+
+Variant 3: [MaestroEnvironmentUpdate](protocol.md#maestroenvironmentupdate)
+
+| Field         | Required | Type                                                       | Description                                               |
+| ------------- | -------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| `environment` | Yes      | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                                                           |
+| `kind`        | Yes      | `"environment"`                                            |                                                           |
+| `primary`     | Yes      | `boolean`                                                  | True for the main workspace, false for an additional one. |
+| `reason`      | Yes      | `string`                                                   |                                                           |
+
+Variant 4: [MaestroPlanUpdate](protocol.md#maestroplanupdate)
+
+| Field      | Required | Type                                                  | Description                        |
+| ---------- | -------- | ----------------------------------------------------- | ---------------------------------- |
+| `kind`     | Yes      | `"plan"`                                              |                                    |
+| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                    |
+| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) |                                    |
+| `summary`  | Yes      | `string`                                              | The quick decision in plain words. |
+
+Variant 5: [MaestroAgentUpdate](protocol.md#maestroagentupdate)
+
+| Field         | Required | Type                                                       | Description                |
+| ------------- | -------- | ---------------------------------------------------------- | -------------------------- |
+| `activity`    | Yes      | `string`                                                   |                            |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                            |
+| `goal`        | Yes      | `string`                                                   |                            |
+| `kind`        | Yes      | `"agent"`                                                  |                            |
+| `model`       | No       | [MaestroModelUse](protocol.md#maestromodeluse)             |                            |
+| `parentId`    | Yes      | `string`                                                   | The agent that started it. |
+| `state`       | Yes      | [MaestroAgentState](protocol.md#maestroagentstate)         |                            |
+| `switches`    | Yes      | `integer`                                                  | Model switches so far.     |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |                            |
+| `title`       | Yes      | `string`                                                   |                            |
+
+Variant 6: [MaestroCheckUpdate](protocol.md#maestrocheckupdate)
+
+| Field         | Required | Type                                                       | Description |
+| ------------- | -------- | ---------------------------------------------------------- | ----------- |
+| `checkId`     | Yes      | `string`                                                   |             |
+| `durationMs`  | No       | `integer`                                                  |             |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |             |
+| `kind`        | Yes      | `"check"`                                                  |             |
+| `name`        | Yes      | `string`                                                   |             |
+| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |             |
+| `summary`     | Yes      | `string`                                                   |             |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |             |
+
+Variant 7: [MaestroUsageUpdate](protocol.md#maestrousageupdate)
+
+| Field  | Required | Type                                   | Description |
+| ------ | -------- | -------------------------------------- | ----------- |
+| `cost` | Yes      | [MaestroCost](protocol.md#maestrocost) |             |
+| `kind` | Yes      | `"usage"`                              |             |
+
+## MaestroUsageUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+The run's live cost meter changed.
+
+| Field  | Required | Type                                   | Description |
+| ------ | -------- | -------------------------------------- | ----------- |
+| `cost` | Yes      | [MaestroCost](protocol.md#maestrocost) |             |
+| `kind` | Yes      | `"usage"`                              |             |
 
 ## ManagedWorkspacePreference
 
@@ -15886,23 +17158,25 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 What one turn is asked for, when the client wants its events streamed.
 
-| Field               | Required | Type                                                        | Description                                                                                              |
-| ------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `agentId`           | No       | `string`                                                    |                                                                                                          |
-| `attachments`       | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
-| `conversationId`    | No       | `string`                                                    | Continues an existing conversation.                                                                      |
-| `cwd`               | No       | `string`                                                    | Where tools operate.                                                                                     |
-| `message`           | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
-| `model`             | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
-| `modelReview`       | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
-| `reasoningEffort`   | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
-| `responseFormat`    | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
-| `safeguardFallback` | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
-| `streamId`          | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
-| `targetTimeSeconds` | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
-| `uploadedSources`   | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
-| `userId`            | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
-| `userRegion`        | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
+| Field                  | Required | Type                                                        | Description                                                                                              |
+| ---------------------- | -------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `agentId`              | No       | `string`                                                    |                                                                                                          |
+| `attachedEnvironments` | No       | Array of `string`                                           | Environments this connection attached that the turn may work in; the first is the main workspace.        |
+| `attachments`          | No       | Array of [InboundAttachment](protocol.md#inboundattachment) | User-authored image, video, document, and text blocks, in display order.                                 |
+| `conversationId`       | No       | `string`                                                    | Continues an existing conversation.                                                                      |
+| `cwd`                  | No       | `string`                                                    | Where tools operate.                                                                                     |
+| `maestro`              | No       | [MaestroTurnOptions](protocol.md#maestroturnoptions)        | Per-turn Maestro options; used only when `model` selects Maestro.                                        |
+| `message`              | Yes      | `string`                                                    | User text; may be blank when at least one attachment contains content.                                   |
+| `model`                | No       | [ChatModelSelection](protocol.md#chatmodelselection)        | A model the user connected with their own key or subscription; absent selects the Nexa model.            |
+| `modelReview`          | No       | `boolean`                                                   | Optional AI completion audit for this turn; local execution checks always remain enabled.                |
+| `reasoningEffort`      | No       | [ReasoningEffort](protocol.md#reasoningeffort)              | Per-turn reasoning preference; never changes the saved agent configuration.                              |
+| `responseFormat`       | No       | `"json"` / `"text"`                                         | Final answer format; JSON mode does not disable tools or verification.                                   |
+| `safeguardFallback`    | No       | [SafeguardFallback](protocol.md#safeguardfallback)          | Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. |
+| `streamId`             | No       | `string`                                                    | The stream's id, chosen by the CLIENT.                                                                   |
+| `targetTimeSeconds`    | No       | `integer`                                                   | Soft task time target in seconds; never a cancellation deadline.                                         |
+| `uploadedSources`      | No       | Array of `string`                                           | Opaque completed uploads; not storage paths or authorization.                                            |
+| `userId`               | No       | `string`                                                    | The principal the turn is billed and authorized as.                                                      |
+| `userRegion`           | No       | [UserRegion](protocol.md#userregion)                        | Coarse regional preferences, never authorization or precise location.                                    |
 
 ## SystemPlatform
 
@@ -17431,7 +18705,17 @@ Module: `nexa-protocol/gateway/ProtocolEventTypes.js`.
 
 A turn event as it travels.
 
-Variant 1: [TurnActivityStatusEvent](protocol.md#turnactivitystatusevent)
+Variant 1: [MaestroEvent](protocol.md#maestroevent)
+
+| Field     | Required | Type                                       | Description                 |
+| --------- | -------- | ------------------------------------------ | --------------------------- |
+| `agentId` | Yes      | `string`                                   |                             |
+| `at`      | Yes      | `string`                                   | Decimal epoch milliseconds. |
+| `runId`   | Yes      | `string`                                   |                             |
+| `type`    | Yes      | `"maestro"`                                |                             |
+| `update`  | Yes      | [MaestroUpdate](protocol.md#maestroupdate) |                             |
+
+Variant 2: [TurnActivityStatusEvent](protocol.md#turnactivitystatusevent)
 
 | Field      | Required | Type                                               | Description |
 | ---------- | -------- | -------------------------------------------------- | ----------- |
@@ -17440,7 +18724,7 @@ Variant 1: [TurnActivityStatusEvent](protocol.md#turnactivitystatusevent)
 | `status`   | Yes      | `string`                                           |             |
 | `type`     | Yes      | `"status"`                                         |             |
 
-Variant 2: [GraphicEvent](protocol.md#graphicevent)
+Variant 3: [GraphicEvent](protocol.md#graphicevent)
 
 | Field     | Required | Type                             | Description |
 | --------- | -------- | -------------------------------- | ----------- |
@@ -17448,7 +18732,7 @@ Variant 2: [GraphicEvent](protocol.md#graphicevent)
 | `graphic` | Yes      | [Graphic](protocol.md#graphic)   |             |
 | `type`    | Yes      | `"graphic"`                      |             |
 
-Variant 3: [SafeguardFallbackEvent](protocol.md#safeguardfallbackevent)
+Variant 4: [SafeguardFallbackEvent](protocol.md#safeguardfallbackevent)
 
 | Field               | Required | Type                                                         | Description                                                              |
 | ------------------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
@@ -17458,56 +18742,56 @@ Variant 3: [SafeguardFallbackEvent](protocol.md#safeguardfallbackevent)
 | `selected`          | Yes      | [ChatModelSelection](protocol.md#chatmodelselection)         | The model the user selected, which declined or is paused.                |
 | `type`              | Yes      | `"safeguard-fallback"`                                       |                                                                          |
 
-Variant 4: Object (fields below)
+Variant 5: Object (fields below)
 
 | Field     | Required | Type                                              | Description |
 | --------- | -------- | ------------------------------------------------- | ----------- |
 | `type`    | Yes      | `"agents-status"`                                 |             |
 | `workers` | Yes      | Array of [WorkerStatus](protocol.md#workerstatus) |             |
 
-Variant 5: Object (fields below)
+Variant 6: Object (fields below)
 
 | Field        | Required | Type                                                   | Description |
 | ------------ | -------- | ------------------------------------------------------ | ----------- |
 | `attachment` | Yes      | [DeliveredAttachment](protocol.md#deliveredattachment) |             |
 | `type`       | Yes      | `"attachment"`                                         |             |
 
-Variant 6: Object (fields below)
+Variant 7: Object (fields below)
 
 | Field    | Required | Type           | Description |
 | -------- | -------- | -------------- | ----------- |
 | `turnId` | Yes      | `string`       |             |
 | `type`   | Yes      | `"turn-start"` |             |
 
-Variant 7: Object (fields below)
+Variant 8: Object (fields below)
 
 | Field       | Required | Type                | Description |
 | ----------- | -------- | ------------------- | ----------- |
 | `iteration` | Yes      | `number`            |             |
 | `type`      | Yes      | `"iteration-start"` |             |
 
-Variant 8: Object (fields below)
+Variant 9: Object (fields below)
 
 | Field  | Required | Type     | Description |
 | ------ | -------- | -------- | ----------- |
 | `text` | Yes      | `string` |             |
 | `type` | Yes      | `"text"` |             |
 
-Variant 9: Object (fields below)
+Variant 10: Object (fields below)
 
 | Field  | Required | Type          | Description |
 | ------ | -------- | ------------- | ----------- |
 | `text` | Yes      | `string`      |             |
 | `type` | Yes      | `"reasoning"` |             |
 
-Variant 10: Object (fields below)
+Variant 11: Object (fields below)
 
 | Field  | Required | Type                             | Description |
 | ------ | -------- | -------------------------------- | ----------- |
 | `call` | Yes      | [ToolCall](protocol.md#toolcall) |             |
 | `type` | Yes      | `"tool-start"`                   |             |
 
-Variant 11: Object (fields below)
+Variant 12: Object (fields below)
 
 | Field    | Required | Type                                     | Description |
 | -------- | -------- | ---------------------------------------- | ----------- |
@@ -17515,14 +18799,14 @@ Variant 11: Object (fields below)
 | `type`   | Yes      | `"tool-progress"`                        |             |
 | `update` | Yes      | [ToolProgress](protocol.md#toolprogress) |             |
 
-Variant 12: Object (fields below)
+Variant 13: Object (fields below)
 
 | Field     | Required | Type                                   | Description |
 | --------- | -------- | -------------------------------------- | ----------- |
 | `outcome` | Yes      | [ToolOutcome](protocol.md#tooloutcome) |             |
 | `type`    | Yes      | `"tool-finish"`                        |             |
 
-Variant 13: Object (fields below)
+Variant 14: Object (fields below)
 
 | Field     | Required | Type                  | Description |
 | --------- | -------- | --------------------- | ----------- |
@@ -17530,7 +18814,7 @@ Variant 13: Object (fields below)
 | `tool`    | Yes      | `string`              |             |
 | `type`    | Yes      | `"approval-required"` |             |
 
-Variant 14: Object (fields below)
+Variant 15: Object (fields below)
 
 | Field             | Required | Type          | Description |
 | ----------------- | -------- | ------------- | ----------- |
@@ -17538,14 +18822,14 @@ Variant 14: Object (fields below)
 | `summary`         | Yes      | `string`      |             |
 | `type`            | Yes      | `"compacted"` |             |
 
-Variant 15: Object (fields below)
+Variant 16: Object (fields below)
 
 | Field   | Required | Type                                 | Description |
 | ------- | -------- | ------------------------------------ | ----------- |
 | `type`  | Yes      | `"usage"`                            |             |
 | `usage` | Yes      | [TokenUsage](protocol.md#tokenusage) |             |
 
-Variant 16: Object (fields below)
+Variant 17: Object (fields below)
 
 | Field    | Required | Type                               | Description |
 | -------- | -------- | ---------------------------------- | ----------- |
@@ -17553,7 +18837,7 @@ Variant 16: Object (fields below)
 | `source` | Yes      | `string`                           |             |
 | `type`   | Yes      | `"native"`                         |             |
 
-Variant 17: Object (fields below)
+Variant 18: Object (fields below)
 
 | Field        | Required | Type                                     | Description |
 | ------------ | -------- | ---------------------------------------- | ----------- |
@@ -17563,7 +18847,7 @@ Variant 17: Object (fields below)
 | `type`       | Yes      | `"turn-finish"`                          |             |
 | `usage`      | Yes      | [TokenUsage](protocol.md#tokenusage)     |             |
 
-Variant 18: Object (fields below)
+Variant 19: Object (fields below)
 
 | Field       | Required | Type                               | Description |
 | ----------- | -------- | ---------------------------------- | ----------- |

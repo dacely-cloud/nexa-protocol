@@ -261,6 +261,14 @@ export var Method;
     Method["EnvironmentUsage"] = "environment.usage";
     /** Calls `environment.visit`. */
     Method["EnvironmentVisit"] = "environment.visit";
+    /** Calls `environments.attach`. */
+    Method["EnvironmentsAttach"] = "environments.attach";
+    /** Calls `environments.detach`. */
+    Method["EnvironmentsDetach"] = "environments.detach";
+    /** Calls `environments.list`. */
+    Method["EnvironmentsList"] = "environments.list";
+    /** Calls `environments.respond`. */
+    Method["EnvironmentsRespond"] = "environments.respond";
     /** Calls `health`. */
     Method["Health"] = "health";
     /** Calls `jobs.add`. */
@@ -285,6 +293,20 @@ export var Method;
     Method["LuauEditorStage"] = "luau.editor.stage";
     /** Calls `luau.editor.start`. */
     Method["LuauEditorStart"] = "luau.editor.start";
+    /** Calls `maestro.models.list`. */
+    Method["MaestroModelsList"] = "maestro.models.list";
+    /** Calls `maestro.policy.get`. */
+    Method["MaestroPolicyGet"] = "maestro.policy.get";
+    /** Calls `maestro.policy.history`. */
+    Method["MaestroPolicyHistory"] = "maestro.policy.history";
+    /** Calls `maestro.policy.restore`. */
+    Method["MaestroPolicyRestore"] = "maestro.policy.restore";
+    /** Calls `maestro.policy.set`. */
+    Method["MaestroPolicySet"] = "maestro.policy.set";
+    /** Calls `maestro.runs.get`. */
+    Method["MaestroRunsGet"] = "maestro.runs.get";
+    /** Calls `maestro.runs.list`. */
+    Method["MaestroRunsList"] = "maestro.runs.list";
     /** Calls `media.acknowledge`. */
     Method["MediaAcknowledge"] = "media.acknowledge";
     /** Calls `processes.input`. */

@@ -1,5 +1,6 @@
 import type { ChatModelSelection } from '../connections/ConnectionTypes.js';
 import type { Graphic } from '../graphics/Graphic.js';
+import type { MaestroEvent } from '../maestro/MaestroTypes.js';
 import type { DeliveredAttachment } from '../media/DeliveredAttachment.js';
 import type { FinishReason, TokenUsage } from '../providers/Types.js';
 import type { ToolCall, ToolOutcome, ToolProgress } from '../tools/Types.js';
@@ -90,7 +91,7 @@ export interface SafeguardFallbackEvent {
  * take it. A consumer that needs an end-of-turn signal on an abandoned stream has to take it from
  * its own `finally`, not from this union.
  */
-export type TurnEvent = GraphicEvent | SafeguardFallbackEvent | TurnActivityEvent | {
+export type TurnEvent = GraphicEvent | SafeguardFallbackEvent | MaestroEvent | TurnActivityEvent | {
     readonly type: 'agents-status';
     readonly workers: readonly WorkerStatus[];
 } | {

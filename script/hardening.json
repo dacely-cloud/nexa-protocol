@@ -1589,6 +1589,636 @@
             "": {
                 "additionalProperties": false
             }
+        },
+        "MaestroModelRef": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/provider": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/model": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "MaestroConnection": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/via": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            }
+        },
+        "MaestroModelUse": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/provider": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/model": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            }
+        },
+        "MaestroRoles": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroModelRules": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/disabledProviders": {
+                "maxItems": 256
+            },
+            "properties/disabledProviders/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/disabledModels": {
+                "maxItems": 4096
+            }
+        },
+        "MaestroEnvironmentRules": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/disabled": {
+                "maxItems": 4096
+            },
+            "properties/disabled/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "MaestroSpendingCap": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/taskMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/monthMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "MaestroModelCeiling": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroDataRules": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/fileProviders": {
+                "maxItems": 256
+            },
+            "properties/fileProviders/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "MaestroAgentLimits": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroLimits": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroPolicy": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroPolicyView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/updatedAt": {
+                "maxLength": 40
+            }
+        },
+        "MaestroPolicySetParams": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroPolicyRevision": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/updatedAt": {
+                "maxLength": 40
+            }
+        },
+        "MaestroPolicyHistoryPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/items": {
+                "maxItems": 200
+            }
+        },
+        "MaestroPolicyRestoreParams": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroBenchmark": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/name": {
+                "maxLength": 120
+            },
+            "properties/source": {
+                "maxLength": 500
+            }
+        },
+        "MaestroModelView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/provider": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/model": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            }
+        },
+        "MaestroProviderView": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            },
+            "properties/models": {
+                "maxItems": 512
+            }
+        },
+        "MaestroModelsPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/providers": {
+                "maxItems": 256
+            }
+        },
+        "MaestroEnvironmentRef": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 200
+            }
+        },
+        "MaestroTestTally": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroSubtask": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/title": {
+                "maxLength": 300
+            },
+            "properties/dependsOn": {
+                "maxItems": 256
+            },
+            "properties/dependsOn/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "MaestroModelCost": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/provider": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/model": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            },
+            "properties/costMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "MaestroCost": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/costMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/models": {
+                "maxItems": 512
+            }
+        },
+        "MaestroRunUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/title": {
+                "maxLength": 300
+            }
+        },
+        "MaestroRouteUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/reason": {
+                "maxLength": 1000
+            }
+        },
+        "MaestroEnvironmentUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/reason": {
+                "maxLength": 1000
+            }
+        },
+        "MaestroPlanUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/summary": {
+                "maxLength": 2000
+            },
+            "properties/subtasks": {
+                "maxItems": 1024
+            }
+        },
+        "MaestroAgentUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/parentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/title": {
+                "maxLength": 300
+            },
+            "properties/goal": {
+                "maxLength": 4000
+            },
+            "properties/activity": {
+                "maxLength": 1000
+            }
+        },
+        "MaestroCheckUpdate": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/checkId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 300
+            },
+            "properties/summary": {
+                "maxLength": 2000
+            }
+        },
+        "MaestroUsageUpdate": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroEvent": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/runId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/agentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/at": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "MaestroTurnOptions": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "MaestroRunSummary": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/sessionId": {
+                "maxLength": 512
+            },
+            "properties/title": {
+                "maxLength": 300
+            },
+            "properties/startedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/finishedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/costMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "MaestroRunsPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/items": {
+                "maxItems": 100
+            },
+            "properties/nextCursor": {
+                "maxLength": 256
+            },
+            "properties/monthMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "MaestroRunsListParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/cursor": {
+                "maxLength": 256
+            }
+        },
+        "MaestroRunParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "MaestroRunTrace": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/events": {
+                "maxItems": 20000
+            }
+        },
+        "AttachEnvironmentParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/name": {
+                "minLength": 1,
+                "maxLength": 120
+            },
+            "properties/root": {
+                "minLength": 1,
+                "maxLength": 4096
+            },
+            "properties/description": {
+                "maxLength": 4000
+            }
+        },
+        "AttachedEnvironment": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 120
+            },
+            "properties/root": {
+                "maxLength": 4096
+            },
+            "properties/description": {
+                "maxLength": 4000
+            }
+        },
+        "AttachedEnvironmentParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "AttachedEnvironmentsPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/items": {
+                "maxItems": 1024
+            }
+        },
+        "AttachedEnvironmentExec": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/command": {
+                "maxLength": 1000000
+            },
+            "properties/argv": {
+                "maxItems": 4096
+            },
+            "properties/cwd": {
+                "maxLength": 4096
+            },
+            "properties/stdin": {
+                "maxLength": 16000000
+            }
+        },
+        "AttachedEnvironmentRead": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "AttachedEnvironmentWrite": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/path": {
+                "maxLength": 4096
+            },
+            "properties/data": {
+                "maxLength": 64000000
+            }
+        },
+        "AttachedEnvironmentList": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "AttachedEnvironmentStat": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "AttachedEnvironmentRemove": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/path": {
+                "maxLength": 4096
+            }
+        },
+        "AttachedEnvironmentRequestData": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/environmentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "AttachedEnvironmentExecResult": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/signal": {
+                "maxLength": 64
+            },
+            "properties/stdout": {
+                "maxLength": 16000000
+            },
+            "properties/stderr": {
+                "maxLength": 16000000
+            }
+        },
+        "AttachedEnvironmentReadResult": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/data": {
+                "maxLength": 64000000
+            }
+        },
+        "AttachedEnvironmentDoneResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "AttachedEnvironmentEntry": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/name": {
+                "maxLength": 4096
+            }
+        },
+        "AttachedEnvironmentListResult": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/entries": {
+                "maxItems": 100000
+            }
+        },
+        "AttachedEnvironmentStatResult": {
+            "": {
+                "additionalProperties": false
+            }
+        },
+        "AttachedEnvironmentErrorResult": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/message": {
+                "maxLength": 4000
+            }
+        },
+        "AttachedEnvironmentRespondParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/requestId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            }
+        },
+        "AttachedEnvironmentRespondResult": {
+            "": {
+                "additionalProperties": false
+            }
         }
     }
 }

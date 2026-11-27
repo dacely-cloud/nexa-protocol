@@ -46,6 +46,21 @@ import type {
 } from '../credit/Types.js';
 import type { WalletHistoryPage, WalletSnapshot } from '../credit/WalletReadTypes.js';
 import type {
+    MaestroModelsListMethod,
+    MaestroPolicyGetMethod,
+    MaestroPolicyHistoryMethod,
+    MaestroPolicyRestoreMethod,
+    MaestroPolicySetMethod,
+    MaestroRunsGetMethod,
+    MaestroRunsListMethod,
+} from '../maestro/MaestroTypes.js';
+import type {
+    EnvironmentsAttachMethod,
+    EnvironmentsDetachMethod,
+    EnvironmentsListMethod,
+    EnvironmentsRespondMethod,
+} from '../environments/AttachedEnvironmentTypes.js';
+import type {
     ResetAllowanceParams,
     ResetAllowanceResult,
     ResetHistoryPage,
@@ -446,6 +461,10 @@ export interface GatewayFeatures {
     readonly designStrokeDashOffset?: true;
     /** Supports coarse per-turn regional context for news and local information. */
     readonly userRegion?: true;
+    /** Maestro can be selected as a model and its policy, catalog and runs read. */
+    readonly maestro?: true;
+    /** Clients can attach their own environments and serve `environment.request` events. */
+    readonly attachedEnvironments?: true;
     /** Per-turn optional AI completion audits retain mandatory local checks. */
     readonly modelReview?: true;
     /** Native image framing supports rotation, reflection, affine placement and repeated image tiles. */
@@ -970,6 +989,30 @@ export interface GatewayMethods {
     readonly 'connections.tools.remove': ConnectionToolsRemoveMethod;
     /** List chat models the user connected with their own key or subscription. */
     readonly 'connections.models.list': ConnectionModelsListMethod;
+
+    /** Read the account's Maestro policy. */
+    readonly 'maestro.policy.get': MaestroPolicyGetMethod;
+    /** Replace the account's Maestro policy when the revision still matches. */
+    readonly 'maestro.policy.set': MaestroPolicySetMethod;
+    /** List earlier versions of the account's Maestro policy, newest first. */
+    readonly 'maestro.policy.history': MaestroPolicyHistoryMethod;
+    /** Restore an earlier Maestro policy as a new revision. */
+    readonly 'maestro.policy.restore': MaestroPolicyRestoreMethod;
+    /** List every model Maestro knows, the connection serving each and whether the policy allows it. */
+    readonly 'maestro.models.list': MaestroModelsListMethod;
+    /** List the account's recent Maestro runs with this month's spend. */
+    readonly 'maestro.runs.list': MaestroRunsListMethod;
+    /** Read the full trace of one Maestro run. */
+    readonly 'maestro.runs.get': MaestroRunsGetMethod;
+
+    /** Attach an environment this connection serves, so its turns can work in it. */
+    readonly 'environments.attach': EnvironmentsAttachMethod;
+    /** Detach an environment this connection attached. */
+    readonly 'environments.detach': EnvironmentsDetachMethod;
+    /** List the environments this connection attached. */
+    readonly 'environments.list': EnvironmentsListMethod;
+    /** Answer one `environment.request` event. */
+    readonly 'environments.respond': EnvironmentsRespondMethod;
 
     /** Wake an existing VM without creating a first-time environment. */
     readonly 'environment.visit': EnvironmentVisitMethod;

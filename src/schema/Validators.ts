@@ -13,6 +13,7 @@ import type {
     WorkspacePreferenceSetParams,
     WorkspacePreferenceView,
 } from '../dataplane/WorkspacePreferenceTypes.js';
+import type { AttachedEnvironmentRequestData } from '../environments/AttachedEnvironmentTypes.js';
 import type { SessionHistoryData, SessionHistoryRecord } from '../gateway/HistoryTypes.js';
 import type {
     ApprovalRequestedData,
@@ -69,6 +70,11 @@ export function challenge(value: unknown): value is ConnectChallengeData {
 /** Validates a changed payload and narrows it to its declared type. */
 export function changed(value: unknown): value is ChangedData {
     return validator.validate('#/definitions/ChangedData', value);
+}
+
+/** Validates a environmentRequest payload and narrows it to its declared type. */
+export function environmentRequest(value: unknown): value is AttachedEnvironmentRequestData {
+    return validator.validate('#/definitions/AttachedEnvironmentRequestData', value);
 }
 
 /** Validates a error payload and narrows it to its declared type. */
@@ -2299,6 +2305,70 @@ export function environmentVisitResult(value: unknown): boolean {
     );
 }
 
+/** Validates the params of `environments.attach`. */
+export function environmentsAttachParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.attach/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environments.attach`. */
+export function environmentsAttachResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.attach/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `environments.detach`. */
+export function environmentsDetachParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.detach/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environments.detach`. */
+export function environmentsDetachResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.detach/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `environments.list`. */
+export function environmentsListParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.list/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environments.list`. */
+export function environmentsListResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.list/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `environments.respond`. */
+export function environmentsRespondParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.respond/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `environments.respond`. */
+export function environmentsRespondResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/environments.respond/properties/result',
+        value,
+    );
+}
+
 /** Validates the params of `health`. */
 export function healthParams(value: unknown): boolean {
     return validator.validate(
@@ -2487,6 +2557,118 @@ export function luauEditorStartParams(value: unknown): boolean {
 export function luauEditorStartResult(value: unknown): boolean {
     return validator.validate(
         '#/definitions/GatewayMethods/properties/luau.editor.start/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.models.list`. */
+export function maestroModelsListParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.models.list/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.models.list`. */
+export function maestroModelsListResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.models.list/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.policy.get`. */
+export function maestroPolicyGetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.get/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.policy.get`. */
+export function maestroPolicyGetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.get/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.policy.history`. */
+export function maestroPolicyHistoryParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.history/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.policy.history`. */
+export function maestroPolicyHistoryResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.history/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.policy.restore`. */
+export function maestroPolicyRestoreParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.restore/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.policy.restore`. */
+export function maestroPolicyRestoreResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.restore/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.policy.set`. */
+export function maestroPolicySetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.set/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.policy.set`. */
+export function maestroPolicySetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.policy.set/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.runs.get`. */
+export function maestroRunsGetParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.runs.get/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.runs.get`. */
+export function maestroRunsGetResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.runs.get/properties/result',
+        value,
+    );
+}
+
+/** Validates the params of `maestro.runs.list`. */
+export function maestroRunsListParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.runs.list/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `maestro.runs.list`. */
+export function maestroRunsListResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/maestro.runs.list/properties/result',
         value,
     );
 }

@@ -1,6 +1,7 @@
 import type { AgileChanged } from '../agile/interface/AgileView.js';
 import type { ConnectorExecutionStatus } from '../dataplane/ConnectorExecutionTypes.js';
 import type { WorkspacePreferenceGetParams, WorkspacePreferenceSetParams, WorkspacePreferenceView } from '../dataplane/WorkspacePreferenceTypes.js';
+import type { AttachedEnvironmentRequestData } from '../environments/AttachedEnvironmentTypes.js';
 import type { SessionHistoryData, SessionHistoryRecord } from '../gateway/HistoryTypes.js';
 import type { ApprovalRequestedData, ApprovalResolvedData, SessionMessageData, ToolSitesData, TurnEndData, TurnEventData, WireError } from '../gateway/ProtocolEventTypes.js';
 import type { ChangedData, ConnectChallengeData, GatewayMethods } from '../gateway/ProtocolTypes.js';
@@ -30,6 +31,8 @@ export declare function approvalResolved(value: unknown): value is ApprovalResol
 export declare function challenge(value: unknown): value is ConnectChallengeData;
 /** Validates a changed payload and narrows it to its declared type. */
 export declare function changed(value: unknown): value is ChangedData;
+/** Validates a environmentRequest payload and narrows it to its declared type. */
+export declare function environmentRequest(value: unknown): value is AttachedEnvironmentRequestData;
 /** Validates a error payload and narrows it to its declared type. */
 export declare function error(value: unknown): value is WireError;
 /** Validates a historyRecord payload and narrows it to its declared type. */
@@ -602,6 +605,22 @@ export declare function environmentUsageResult(value: unknown): boolean;
 export declare function environmentVisitParams(value: unknown): boolean;
 /** Validates the result of `environment.visit`. */
 export declare function environmentVisitResult(value: unknown): boolean;
+/** Validates the params of `environments.attach`. */
+export declare function environmentsAttachParams(value: unknown): boolean;
+/** Validates the result of `environments.attach`. */
+export declare function environmentsAttachResult(value: unknown): boolean;
+/** Validates the params of `environments.detach`. */
+export declare function environmentsDetachParams(value: unknown): boolean;
+/** Validates the result of `environments.detach`. */
+export declare function environmentsDetachResult(value: unknown): boolean;
+/** Validates the params of `environments.list`. */
+export declare function environmentsListParams(value: unknown): boolean;
+/** Validates the result of `environments.list`. */
+export declare function environmentsListResult(value: unknown): boolean;
+/** Validates the params of `environments.respond`. */
+export declare function environmentsRespondParams(value: unknown): boolean;
+/** Validates the result of `environments.respond`. */
+export declare function environmentsRespondResult(value: unknown): boolean;
 /** Validates the params of `health`. */
 export declare function healthParams(value: unknown): boolean;
 /** Validates the result of `health`. */
@@ -650,6 +669,34 @@ export declare function luauEditorStageResult(value: unknown): boolean;
 export declare function luauEditorStartParams(value: unknown): boolean;
 /** Validates the result of `luau.editor.start`. */
 export declare function luauEditorStartResult(value: unknown): boolean;
+/** Validates the params of `maestro.models.list`. */
+export declare function maestroModelsListParams(value: unknown): boolean;
+/** Validates the result of `maestro.models.list`. */
+export declare function maestroModelsListResult(value: unknown): boolean;
+/** Validates the params of `maestro.policy.get`. */
+export declare function maestroPolicyGetParams(value: unknown): boolean;
+/** Validates the result of `maestro.policy.get`. */
+export declare function maestroPolicyGetResult(value: unknown): boolean;
+/** Validates the params of `maestro.policy.history`. */
+export declare function maestroPolicyHistoryParams(value: unknown): boolean;
+/** Validates the result of `maestro.policy.history`. */
+export declare function maestroPolicyHistoryResult(value: unknown): boolean;
+/** Validates the params of `maestro.policy.restore`. */
+export declare function maestroPolicyRestoreParams(value: unknown): boolean;
+/** Validates the result of `maestro.policy.restore`. */
+export declare function maestroPolicyRestoreResult(value: unknown): boolean;
+/** Validates the params of `maestro.policy.set`. */
+export declare function maestroPolicySetParams(value: unknown): boolean;
+/** Validates the result of `maestro.policy.set`. */
+export declare function maestroPolicySetResult(value: unknown): boolean;
+/** Validates the params of `maestro.runs.get`. */
+export declare function maestroRunsGetParams(value: unknown): boolean;
+/** Validates the result of `maestro.runs.get`. */
+export declare function maestroRunsGetResult(value: unknown): boolean;
+/** Validates the params of `maestro.runs.list`. */
+export declare function maestroRunsListParams(value: unknown): boolean;
+/** Validates the result of `maestro.runs.list`. */
+export declare function maestroRunsListResult(value: unknown): boolean;
 /** Validates the params of `media.acknowledge`. */
 export declare function mediaAcknowledgeParams(value: unknown): boolean;
 /** Validates the result of `media.acknowledge`. */

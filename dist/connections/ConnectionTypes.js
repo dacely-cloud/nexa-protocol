@@ -25,4 +25,6 @@ export const ChatModelSource = {
     ApiKey: 'api-key',
     /** The user's signed-in Codex or Claude Code CLI, running on the user's VM. */
     Subscription: 'subscription',
+    /** Maestro, which picks the model for every step. Selected as provider `nerva`, model `maestro`. */
+    Maestro: 'maestro',
 };

@@ -1,3 +1,4 @@
+import type { MaestroTurnOptions } from '../maestro/MaestroTypes.js';
 import type { UserRegion } from '../agent/RegionalContextTypes.js';
 import type { TurnEvent } from '../agent/Types.js';
 import type { SitePreview } from '../browser/FaviconTypes.js';
@@ -126,6 +127,10 @@ export interface AskParams {
     readonly model?: ChatModelSelection;
     /** Answers messages a selected subscription model declines on a safety refusal; absent reports the refusal. */
     readonly safeguardFallback?: SafeguardFallback;
+    /** Per-turn Maestro options; used only when `model` selects Maestro. */
+    readonly maestro?: MaestroTurnOptions;
+    /** Environments this connection attached that the turn may work in; the first is the main workspace. */
+    readonly attachedEnvironments?: readonly string[];
     /** Continues an existing conversation. */
     readonly conversationId?: string;
     /** The principal the turn is billed and authorized as. */

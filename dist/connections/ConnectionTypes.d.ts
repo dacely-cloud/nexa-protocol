@@ -58,6 +58,8 @@ export declare const ChatModelSource: {
     readonly ApiKey: 'api-key';
     /** The user's signed-in Codex or Claude Code CLI, running on the user's VM. */
     readonly Subscription: 'subscription';
+    /** Maestro, which picks the model for every step. Selected as provider `nerva`, model `maestro`. */
+    readonly Maestro: 'maestro';
 };
 /** Union of {@link ChatModelSource} values. */
 export type ChatModelSource = (typeof ChatModelSource)[keyof typeof ChatModelSource];

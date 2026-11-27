@@ -1234,6 +1234,14 @@ export const schema: Schema = {
                 agentId: {
                     type: 'string',
                 },
+                attachedEnvironments: {
+                    description:
+                        'Environments this connection attached that the turn may work in; the first is the main workspace.',
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
                 attachments: {
                     description:
                         'User-authored image, video, document, and text blocks, in display order.',
@@ -1249,6 +1257,11 @@ export const schema: Schema = {
                 cwd: {
                     description: 'Where tools operate.',
                     type: 'string',
+                },
+                maestro: {
+                    $ref: '#/definitions/MaestroTurnOptions',
+                    description:
+                        'Per-turn Maestro options; used only when `model` selects Maestro.',
                 },
                 message: {
                     description:
@@ -1364,6 +1377,476 @@ export const schema: Schema = {
                 'usage',
             ],
             type: 'object',
+        },
+        AttachEnvironmentParams: {
+            description: 'Describes an environment to attach.',
+            properties: {
+                description: {
+                    description:
+                        'What the environment is for and what it has installed, shown to the model.',
+                    type: 'string',
+                    maxLength: 4000,
+                },
+                name: {
+                    description: 'User-facing name, such as "CI container".',
+                    type: 'string',
+                    minLength: 1,
+                    maxLength: 120,
+                },
+                platform: {
+                    $ref: '#/definitions/AttachedEnvironmentPlatform',
+                },
+                root: {
+                    description: 'Absolute path of the working directory tools start in.',
+                    type: 'string',
+                    minLength: 1,
+                    maxLength: 4096,
+                },
+            },
+            required: ['name', 'platform', 'root'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironment: {
+            description: 'An attached environment.',
+            properties: {
+                description: {
+                    type: 'string',
+                    maxLength: 4000,
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 120,
+                },
+                platform: {
+                    $ref: '#/definitions/AttachedEnvironmentPlatform',
+                },
+                root: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+            },
+            required: ['id', 'name', 'platform', 'root'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentDoneResult: {
+            description: 'A write or remove finished.',
+            properties: {
+                kind: {
+                    const: 'done',
+                    type: 'string',
+                },
+            },
+            required: ['kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentEntry: {
+            description: 'One directory entry.',
+            properties: {
+                name: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+                type: {
+                    enum: ['directory', 'file', 'other', 'symlink'],
+                    type: 'string',
+                },
+            },
+            required: ['name', 'type'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentErrorCode: {
+            description:
+                'Why an operation failed.\nUnion of {@link AttachedEnvironmentErrorCode} values.',
+            enum: ['denied', 'failed', 'not-found'],
+            type: 'string',
+        },
+        AttachedEnvironmentErrorResult: {
+            description: 'The operation failed.',
+            properties: {
+                code: {
+                    $ref: '#/definitions/AttachedEnvironmentErrorCode',
+                },
+                kind: {
+                    const: 'error',
+                    type: 'string',
+                },
+                message: {
+                    type: 'string',
+                    maxLength: 4000,
+                },
+            },
+            required: ['code', 'kind', 'message'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentExec: {
+            description: 'Runs a command. Without `argv` the command goes to the platform shell.',
+            properties: {
+                argv: {
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                    maxItems: 4096,
+                },
+                command: {
+                    type: 'string',
+                    maxLength: 1000000,
+                },
+                cwd: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+                env: {
+                    $ref: '#/definitions/Record%3Cstring%2Cstring%3E',
+                },
+                kind: {
+                    const: 'exec',
+                    type: 'string',
+                },
+                stdin: {
+                    type: 'string',
+                    maxLength: 16000000,
+                },
+                timeoutMs: {
+                    maximum: 86400000,
+                    minimum: 1,
+                    type: 'integer',
+                },
+            },
+            required: ['command', 'cwd', 'kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentExecResult: {
+            description: 'How a command ended, with its bounded output.',
+            properties: {
+                exitCode: {
+                    description: 'Null when the command ended on a signal or a timeout.',
+                    type: ['null', 'number'],
+                },
+                kind: {
+                    const: 'exec',
+                    type: 'string',
+                },
+                signal: {
+                    type: ['null', 'string'],
+                    maxLength: 64,
+                },
+                stderr: {
+                    type: 'string',
+                    maxLength: 16000000,
+                },
+                stdout: {
+                    type: 'string',
+                    maxLength: 16000000,
+                },
+                timedOut: {
+                    type: 'boolean',
+                },
+            },
+            required: ['exitCode', 'kind', 'signal', 'stderr', 'stdout', 'timedOut'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentList: {
+            description: 'Lists a directory.',
+            properties: {
+                kind: {
+                    const: 'list',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+            },
+            required: ['kind', 'path'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentListResult: {
+            description: 'A directory listing.',
+            properties: {
+                entries: {
+                    items: {
+                        $ref: '#/definitions/AttachedEnvironmentEntry',
+                    },
+                    type: 'array',
+                    maxItems: 100000,
+                },
+                kind: {
+                    const: 'list',
+                    type: 'string',
+                },
+            },
+            required: ['entries', 'kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentOperation: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/AttachedEnvironmentExec',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentRead',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentWrite',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentList',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentStat',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentRemove',
+                },
+            ],
+            description: 'One operation Nexa asks the attaching client to run.',
+        },
+        AttachedEnvironmentParams: {
+            description: 'Names one attached environment.',
+            properties: {
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['id'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentPlatform: {
+            description:
+                'Operating systems an attached environment can report.\nUnion of {@link AttachedEnvironmentPlatform} values.',
+            enum: ['linux', 'macos', 'windows'],
+            type: 'string',
+        },
+        AttachedEnvironmentRead: {
+            description: 'Reads a whole file.',
+            properties: {
+                kind: {
+                    const: 'read',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+            },
+            required: ['kind', 'path'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentReadResult: {
+            description: "A file's bytes.",
+            properties: {
+                data: {
+                    description: 'File bytes, base64.',
+                    type: 'string',
+                    maxLength: 64000000,
+                },
+                kind: {
+                    const: 'read',
+                    type: 'string',
+                },
+            },
+            required: ['data', 'kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentRemove: {
+            description: 'Removes a path.',
+            properties: {
+                kind: {
+                    const: 'remove',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+                recursive: {
+                    type: 'boolean',
+                },
+            },
+            required: ['kind', 'path', 'recursive'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentRequestData: {
+            description: 'The payload of an `environment.request` event.',
+            properties: {
+                environmentId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                operation: {
+                    $ref: '#/definitions/AttachedEnvironmentOperation',
+                },
+                requestId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['environmentId', 'operation', 'requestId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentRespondParams: {
+            description: 'Answers one `environment.request`.',
+            properties: {
+                requestId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                result: {
+                    $ref: '#/definitions/AttachedEnvironmentResult',
+                },
+            },
+            required: ['requestId', 'result'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentRespondResult: {
+            description: 'The answer was accepted.',
+            properties: {
+                accepted: {
+                    type: 'boolean',
+                },
+            },
+            required: ['accepted'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentResult: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/AttachedEnvironmentExecResult',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentReadResult',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentDoneResult',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentListResult',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentStatResult',
+                },
+                {
+                    $ref: '#/definitions/AttachedEnvironmentErrorResult',
+                },
+            ],
+            description: 'Union of every operation result.',
+        },
+        AttachedEnvironmentStat: {
+            description: 'Describes one path.',
+            properties: {
+                kind: {
+                    const: 'stat',
+                    type: 'string',
+                },
+                path: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+            },
+            required: ['kind', 'path'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentStatResult: {
+            description: 'What one path is.',
+            properties: {
+                kind: {
+                    const: 'stat',
+                    type: 'string',
+                },
+                mode: {
+                    maximum: 65535,
+                    minimum: 0,
+                    type: 'integer',
+                },
+                modifiedAt: {
+                    description: 'Epoch milliseconds.',
+                    type: 'number',
+                },
+                size: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                type: {
+                    enum: ['directory', 'file', 'other', 'symlink'],
+                    type: 'string',
+                },
+            },
+            required: ['kind', 'mode', 'modifiedAt', 'size', 'type'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentWrite: {
+            description: 'Writes a whole file.',
+            properties: {
+                data: {
+                    description: 'File bytes, base64.',
+                    type: 'string',
+                    maxLength: 64000000,
+                },
+                kind: {
+                    const: 'write',
+                    type: 'string',
+                },
+                mode: {
+                    maximum: 4095,
+                    minimum: 0,
+                    type: 'integer',
+                },
+                parents: {
+                    description: 'Creates missing parent directories.',
+                    type: 'boolean',
+                },
+                path: {
+                    type: 'string',
+                    maxLength: 4096,
+                },
+            },
+            required: ['data', 'kind', 'path'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AttachedEnvironmentsPage: {
+            description: 'Environments attached on this connection.',
+            properties: {
+                items: {
+                    items: {
+                        $ref: '#/definitions/AttachedEnvironment',
+                    },
+                    type: 'array',
+                    maxItems: 1024,
+                },
+            },
+            required: ['items'],
+            type: 'object',
+            additionalProperties: false,
         },
         BackgroundProcess: {
             description: 'Browser-safe background job receipt, without host pids or log paths.',
@@ -5064,7 +5547,7 @@ export const schema: Schema = {
         ChatModelSource: {
             description:
                 'Who runs a chat model the user selected.\nUnion of {@link ChatModelSource} values.',
-            enum: ['api-key', 'subscription'],
+            enum: ['api-key', 'maestro', 'subscription'],
             type: 'string',
         },
         ChatModelsPage: {
@@ -16506,6 +16989,58 @@ export const schema: Schema = {
             enum: ['setup-required', 'existing'],
             type: 'string',
         },
+        EnvironmentsAttachMethod: {
+            description: '`environments.attach` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/AttachEnvironmentParams',
+                },
+                result: {
+                    $ref: '#/definitions/AttachedEnvironment',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        EnvironmentsDetachMethod: {
+            description: '`environments.detach` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/AttachedEnvironmentParams',
+                },
+                result: {
+                    $ref: '#/definitions/AttachedEnvironmentRespondResult',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        EnvironmentsListMethod: {
+            description: '`environments.list` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                },
+                result: {
+                    $ref: '#/definitions/AttachedEnvironmentsPage',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        EnvironmentsRespondMethod: {
+            description: '`environments.respond` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/AttachedEnvironmentRespondParams',
+                },
+                result: {
+                    $ref: '#/definitions/AttachedEnvironmentRespondResult',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
         ErrorCode: {
             description:
                 'A stable, machine-readable failure classification.\nOne gateway error code.',
@@ -17257,6 +17792,12 @@ export const schema: Schema = {
         GatewayFeatures: {
             description: 'Methods, events, and additive capabilities supported by this gateway.',
             properties: {
+                attachedEnvironments: {
+                    const: true,
+                    description:
+                        'Clients can attach their own environments and serve `environment.request` events.',
+                    type: 'boolean',
+                },
                 attachments: {
                     const: true,
                     description: 'User media attachments are validated and forwarded to the agent.',
@@ -17384,6 +17925,12 @@ export const schema: Schema = {
                     const: true,
                     description:
                         'Host validation of JSON final answers while native tools remain available.',
+                    type: 'boolean',
+                },
+                maestro: {
+                    const: true,
+                    description:
+                        'Maestro can be selected as a model and its policy, catalog and runs read.',
                     type: 'boolean',
                 },
                 methodScopes: {
@@ -19319,6 +19866,58 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'environments.attach': {
+                    description: '`environments.attach` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/AttachEnvironmentParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/AttachedEnvironment',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'environments.detach': {
+                    description: '`environments.detach` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/AttachedEnvironmentParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/AttachedEnvironmentRespondResult',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'environments.list': {
+                    description: '`environments.list` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                        },
+                        result: {
+                            $ref: '#/definitions/AttachedEnvironmentsPage',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'environments.respond': {
+                    description: '`environments.respond` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/AttachedEnvironmentRespondParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/AttachedEnvironmentRespondResult',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 health: {
                     properties: {
                         params: {
@@ -19464,6 +20063,97 @@ export const schema: Schema = {
                         },
                         result: {
                             $ref: '#/definitions/LuauEditorAck',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.models.list': {
+                    description: '`maestro.models.list` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroModelsPage',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.policy.get': {
+                    description: '`maestro.policy.get` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroPolicyView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.policy.history': {
+                    description: '`maestro.policy.history` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroPolicyHistoryPage',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.policy.restore': {
+                    description: '`maestro.policy.restore` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/MaestroPolicyRestoreParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroPolicyView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.policy.set': {
+                    description: '`maestro.policy.set` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/MaestroPolicySetParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroPolicyView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.runs.get': {
+                    description: '`maestro.runs.get` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/MaestroRunParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroRunTrace',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
+                'maestro.runs.list': {
+                    description: '`maestro.runs.list` contract.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/MaestroRunsListParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/MaestroRunsPage',
                         },
                     },
                     required: ['params', 'result'],
@@ -21333,6 +22023,10 @@ export const schema: Schema = {
                 'environment.status',
                 'environment.usage',
                 'environment.visit',
+                'environments.attach',
+                'environments.detach',
+                'environments.list',
+                'environments.respond',
                 'health',
                 'jobs.add',
                 'jobs.list',
@@ -21345,6 +22039,13 @@ export const schema: Schema = {
                 'luau.editor.hover',
                 'luau.editor.stage',
                 'luau.editor.start',
+                'maestro.models.list',
+                'maestro.policy.get',
+                'maestro.policy.history',
+                'maestro.policy.restore',
+                'maestro.policy.set',
+                'maestro.runs.get',
+                'maestro.runs.list',
                 'media.acknowledge',
                 'processes.input',
                 'processes.list',
@@ -23152,6 +23853,1273 @@ export const schema: Schema = {
             },
             required: ['complete', 'handle', 'id', 'name', 'offset', 'revision', 'source'],
             type: 'object',
+        },
+        MaestroAgentLimits: {
+            description: 'Optional limits on sub-agents.',
+            properties: {
+                enabled: {
+                    type: 'boolean',
+                },
+                maxCount: {
+                    description: 'Most sub-agents per task, or null for no limit.',
+                    maximum: 100000,
+                    minimum: 1,
+                    type: ['null', 'number'],
+                },
+                maxDepth: {
+                    description: 'Deepest nesting, or null for no limit.',
+                    maximum: 1000,
+                    minimum: 1,
+                    type: ['null', 'number'],
+                },
+            },
+            required: ['enabled', 'maxCount', 'maxDepth'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroAgentState: {
+            description:
+                'Lifecycle of a Maestro run or sub-agent.\nUnion of {@link MaestroAgentState} values.',
+            enum: ['checking', 'done', 'failed', 'fixing', 'queued', 'running', 'stopped'],
+            type: 'string',
+        },
+        MaestroAgentUpdate: {
+            description: 'A sub-agent changed state. Each sub-agent is a full Maestro.',
+            properties: {
+                activity: {
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                environment: {
+                    $ref: '#/definitions/MaestroEnvironmentRef',
+                },
+                goal: {
+                    type: 'string',
+                    maxLength: 4000,
+                },
+                kind: {
+                    const: 'agent',
+                    type: 'string',
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelUse',
+                },
+                parentId: {
+                    description: 'The agent that started it.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroAgentState',
+                },
+                switches: {
+                    description: 'Model switches so far.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                tests: {
+                    $ref: '#/definitions/MaestroTestTally',
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+            },
+            required: ['activity', 'goal', 'kind', 'parentId', 'state', 'switches', 'title'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroBenchmark: {
+            description: 'A published benchmark result Maestro seeds its registry with.',
+            properties: {
+                name: {
+                    type: 'string',
+                    maxLength: 120,
+                },
+                score: {
+                    description: 'Percentage of tasks solved.',
+                    maximum: 100,
+                    minimum: 0,
+                    type: 'number',
+                },
+                source: {
+                    description: 'Where the number was read.',
+                    type: 'string',
+                    maxLength: 500,
+                },
+            },
+            required: ['name', 'score', 'source'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroCheckState: {
+            description: 'Lifecycle of one check.\nUnion of {@link MaestroCheckState} values.',
+            enum: ['failed', 'passed', 'running', 'skipped'],
+            type: 'string',
+        },
+        MaestroCheckUpdate: {
+            description: 'A check ran on the work.',
+            properties: {
+                checkId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                durationMs: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                environment: {
+                    $ref: '#/definitions/MaestroEnvironmentRef',
+                },
+                kind: {
+                    const: 'check',
+                    type: 'string',
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroCheckState',
+                },
+                summary: {
+                    type: 'string',
+                    maxLength: 2000,
+                },
+                tests: {
+                    $ref: '#/definitions/MaestroTestTally',
+                },
+            },
+            required: ['checkId', 'kind', 'name', 'state', 'summary'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroConnection: {
+            description: 'The connection currently serving a provider or model.',
+            properties: {
+                kind: {
+                    $ref: '#/definitions/MaestroConnectionKind',
+                },
+                name: {
+                    description: 'User-facing name, such as "Your Claude Code plan".',
+                    type: 'string',
+                    maxLength: 120,
+                },
+                via: {
+                    description:
+                        "The application id for plans, the key's provider for keys, or `nerva`.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['kind', 'name', 'via'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroConnectionKind: {
+            description:
+                'Where the access to a model comes from, in the order Maestro prefers them.\nUnion of {@link MaestroConnectionKind} values.',
+            enum: ['key', 'nerva', 'plan'],
+            type: 'string',
+        },
+        MaestroCost: {
+            description: 'The live cost meter of a run.',
+            properties: {
+                cachedInputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                costMicros: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                inputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                models: {
+                    items: {
+                        $ref: '#/definitions/MaestroModelCost',
+                    },
+                    type: 'array',
+                    maxItems: 512,
+                },
+                outputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['cachedInputTokens', 'costMicros', 'inputTokens', 'models', 'outputTokens'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroDataRules: {
+            description: 'Optional data rules: which providers may receive files and source code.',
+            properties: {
+                enabled: {
+                    type: 'boolean',
+                },
+                fileProviders: {
+                    description: 'Provider families allowed to receive files and source code.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+            },
+            required: ['enabled', 'fileProviders'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroEnvironmentKind: {
+            description:
+                'Kinds of environment Maestro can place work on.\nUnion of {@link MaestroEnvironmentKind} values.',
+            enum: ['attached', 'connector', 'managed'],
+            type: 'string',
+        },
+        MaestroEnvironmentRef: {
+            description: 'An environment as shown on a run card.',
+            properties: {
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                kind: {
+                    $ref: '#/definitions/MaestroEnvironmentKind',
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 200,
+                },
+                platform: {
+                    $ref: '#/definitions/MaestroPlatform',
+                },
+            },
+            required: ['id', 'kind', 'name', 'platform'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroEnvironmentRules: {
+            description: 'Which environments Maestro may place work on.',
+            properties: {
+                disabled: {
+                    description: 'Environment ids switched off.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 4096,
+                },
+            },
+            required: ['disabled'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroEnvironmentUpdate: {
+            description: 'Maestro placed work on an environment.',
+            properties: {
+                environment: {
+                    $ref: '#/definitions/MaestroEnvironmentRef',
+                },
+                kind: {
+                    const: 'environment',
+                    type: 'string',
+                },
+                primary: {
+                    description: 'True for the main workspace, false for an additional one.',
+                    type: 'boolean',
+                },
+                reason: {
+                    type: 'string',
+                    maxLength: 1000,
+                },
+            },
+            required: ['environment', 'kind', 'primary', 'reason'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroEvent: {
+            description:
+                "One Maestro update in a turn's event stream. Sent only on turns that selected Maestro.",
+            properties: {
+                agentId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                at: {
+                    description: 'Decimal epoch milliseconds.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                runId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                type: {
+                    const: 'maestro',
+                    type: 'string',
+                },
+                update: {
+                    $ref: '#/definitions/MaestroUpdate',
+                },
+            },
+            required: ['agentId', 'at', 'runId', 'type', 'update'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroFailureClass: {
+            description:
+                'The closed set of failure classes every provider error maps to.\nUnion of {@link MaestroFailureClass} values.',
+            enum: [
+                'budget-exceeded',
+                'check-failed',
+                'context-overflow',
+                'malformed-output',
+                'rate-limit',
+                'refusal',
+                'reroute-declined',
+                'stall',
+                'transport',
+            ],
+            type: 'string',
+        },
+        MaestroGoal: {
+            description:
+                'What Maestro aims for when it picks models, roles and attempts.\nUnion of {@link MaestroGoal} values.',
+            enum: ['balanced', 'best-result', 'lowest-cost'],
+            type: 'string',
+        },
+        MaestroLimits: {
+            description: 'Every limit Maestro can apply. All are off by default.',
+            properties: {
+                agents: {
+                    $ref: '#/definitions/MaestroAgentLimits',
+                },
+                ceiling: {
+                    $ref: '#/definitions/MaestroModelCeiling',
+                },
+                data: {
+                    $ref: '#/definitions/MaestroDataRules',
+                },
+                refusals: {
+                    $ref: '#/definitions/MaestroRefusalHandling',
+                },
+                spending: {
+                    $ref: '#/definitions/MaestroSpendingCap',
+                },
+            },
+            required: ['agents', 'ceiling', 'data', 'refusals', 'spending'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelCeiling: {
+            description:
+                'An optional model ceiling: routine work stays at or under the tier unless a verified failure forces more.',
+            properties: {
+                enabled: {
+                    type: 'boolean',
+                },
+                tier: {
+                    $ref: '#/definitions/MaestroTier',
+                },
+            },
+            required: ['enabled', 'tier'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelCost: {
+            description: 'Cost and tokens of one model within a run.',
+            properties: {
+                cachedInputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                costMicros: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                inputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                model: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 120,
+                },
+                outputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                provider: {
+                    description:
+                        'Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: [
+                'cachedInputTokens',
+                'costMicros',
+                'inputTokens',
+                'model',
+                'name',
+                'outputTokens',
+                'provider',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelRef: {
+            description: 'One model, named by its provider family and model id.',
+            properties: {
+                model: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                provider: {
+                    description:
+                        'Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['model', 'provider'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelRules: {
+            description: 'Which models Maestro may choose from.',
+            properties: {
+                baseModel: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/MaestroModelRef',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                    description: 'The model doing supporting work; null is Athena.',
+                },
+                disabledModels: {
+                    description: 'Individual models switched off.',
+                    items: {
+                        $ref: '#/definitions/MaestroModelRef',
+                    },
+                    type: 'array',
+                    maxItems: 4096,
+                },
+                disabledProviders: {
+                    description: 'Provider families switched off.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+                leadModel: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/MaestroModelRef',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                    description: 'A pinned lead model; null lets Maestro choose per step.',
+                },
+            },
+            required: ['baseModel', 'disabledModels', 'disabledProviders', 'leadModel'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelUse: {
+            description: 'A model as Maestro used it for one step.',
+            properties: {
+                connection: {
+                    $ref: '#/definitions/MaestroConnection',
+                },
+                effort: {
+                    $ref: '#/definitions/ReasoningEffort',
+                },
+                model: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    description: 'User-facing model name.',
+                    type: 'string',
+                    maxLength: 120,
+                },
+                provider: {
+                    description:
+                        'Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['connection', 'model', 'name', 'provider'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelView: {
+            description: 'One model in the Maestro catalog.',
+            properties: {
+                available: {
+                    description: 'Whether a connection can serve it right now.',
+                    type: 'boolean',
+                },
+                benchmark: {
+                    $ref: '#/definitions/MaestroBenchmark',
+                },
+                connection: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/MaestroConnection',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                    description: 'The connection that serves it, or null when none can.',
+                },
+                enabled: {
+                    description: 'Whether the policy lets Maestro use it.',
+                    type: 'boolean',
+                },
+                model: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 120,
+                },
+                provider: {
+                    description:
+                        'Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                tier: {
+                    $ref: '#/definitions/MaestroTier',
+                },
+            },
+            required: ['available', 'connection', 'enabled', 'model', 'name', 'provider', 'tier'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroModelsListMethod: {
+            description: '`maestro.models.list` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroModelsPage',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroModelsPage: {
+            description: 'Every model Maestro knows, grouped by provider.',
+            properties: {
+                providers: {
+                    items: {
+                        $ref: '#/definitions/MaestroProviderView',
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+            },
+            required: ['providers'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPattern: {
+            description:
+                'How the attempts of a task or subtask are arranged.\nUnion of {@link MaestroPattern} values.',
+            enum: ['best-of-n', 'cascade', 'critique', 'fan-out', 'race', 'roles', 'single'],
+            type: 'string',
+        },
+        MaestroPlanUpdate: {
+            description: 'Maestro decided how to arrange the work.',
+            properties: {
+                kind: {
+                    const: 'plan',
+                    type: 'string',
+                },
+                pattern: {
+                    $ref: '#/definitions/MaestroPattern',
+                },
+                subtasks: {
+                    items: {
+                        $ref: '#/definitions/MaestroSubtask',
+                    },
+                    type: 'array',
+                    maxItems: 1024,
+                },
+                summary: {
+                    description: 'The quick decision in plain words.',
+                    type: 'string',
+                    maxLength: 2000,
+                },
+            },
+            required: ['kind', 'pattern', 'subtasks', 'summary'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPlatform: {
+            description:
+                'Operating systems an environment can run.\nUnion of {@link MaestroPlatform} values.',
+            enum: ['linux', 'macos', 'other', 'windows'],
+            type: 'string',
+        },
+        MaestroPolicy: {
+            description:
+                "The user's Maestro configuration. One stored policy drives the settings page and the router.",
+            properties: {
+                environments: {
+                    $ref: '#/definitions/MaestroEnvironmentRules',
+                },
+                goal: {
+                    $ref: '#/definitions/MaestroGoal',
+                },
+                limits: {
+                    $ref: '#/definitions/MaestroLimits',
+                },
+                models: {
+                    $ref: '#/definitions/MaestroModelRules',
+                },
+                roles: {
+                    $ref: '#/definitions/MaestroRoles',
+                },
+                width: {
+                    description:
+                        'Parallel attempts on a stuck part, or null to let Maestro choose.',
+                    maximum: 16,
+                    minimum: 1,
+                    type: ['null', 'number'],
+                },
+            },
+            required: ['environments', 'goal', 'limits', 'models', 'roles', 'width'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPolicyGetMethod: {
+            description: '`maestro.policy.get` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroPolicyView',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroPolicyHistoryMethod: {
+            description: '`maestro.policy.history` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/Record%3Cstring%2Cnever%3E',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroPolicyHistoryPage',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroPolicyHistoryPage: {
+            description: 'Earlier versions of the policy, newest first.',
+            properties: {
+                items: {
+                    items: {
+                        $ref: '#/definitions/MaestroPolicyRevision',
+                    },
+                    type: 'array',
+                    maxItems: 200,
+                },
+            },
+            required: ['items'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPolicyRestoreMethod: {
+            description: '`maestro.policy.restore` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/MaestroPolicyRestoreParams',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroPolicyView',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroPolicyRestoreParams: {
+            description: 'Restores an earlier version as a new revision.',
+            properties: {
+                restore: {
+                    description: 'The version to restore.',
+                    minimum: 1,
+                    type: 'integer',
+                },
+                revision: {
+                    description: 'The revision the caller saw.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['restore', 'revision'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPolicyRevision: {
+            description: 'One earlier version of the policy.',
+            properties: {
+                policy: {
+                    $ref: '#/definitions/MaestroPolicy',
+                },
+                revision: {
+                    minimum: 1,
+                    type: 'integer',
+                },
+                updatedAt: {
+                    type: 'string',
+                    maxLength: 40,
+                },
+            },
+            required: ['policy', 'revision', 'updatedAt'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPolicySetMethod: {
+            description: '`maestro.policy.set` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/MaestroPolicySetParams',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroPolicyView',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroPolicySetParams: {
+            description: 'Replaces the policy when the stored revision still matches.',
+            properties: {
+                policy: {
+                    $ref: '#/definitions/MaestroPolicy',
+                },
+                revision: {
+                    description: 'The revision the caller edited.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['policy', 'revision'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroPolicyView: {
+            description: 'The stored policy with its revision.',
+            properties: {
+                policy: {
+                    $ref: '#/definitions/MaestroPolicy',
+                },
+                revision: {
+                    description:
+                        'Increases by one on every change; 0 means the defaults were never changed.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                updatedAt: {
+                    description: 'When the policy last changed, or null for the defaults.',
+                    type: ['null', 'string'],
+                    maxLength: 40,
+                },
+            },
+            required: ['policy', 'revision', 'updatedAt'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroProviderView: {
+            description: 'One provider family in the Maestro catalog.',
+            properties: {
+                connection: {
+                    anyOf: [
+                        {
+                            $ref: '#/definitions/MaestroConnection',
+                        },
+                        {
+                            type: 'null',
+                        },
+                    ],
+                    description:
+                        'The connection that currently serves this provider, or null when none can.',
+                },
+                enabled: {
+                    description: 'Whether the policy lets Maestro use this provider.',
+                    type: 'boolean',
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                models: {
+                    items: {
+                        $ref: '#/definitions/MaestroModelView',
+                    },
+                    type: 'array',
+                    maxItems: 512,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 120,
+                },
+            },
+            required: ['connection', 'enabled', 'id', 'models', 'name'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRefusalHandling: {
+            description:
+                'What Maestro does when a provider declines a request.\nUnion of {@link MaestroRefusalHandling} values.',
+            enum: ['ask', 'off', 'reroute'],
+            type: 'string',
+        },
+        MaestroRole: {
+            description: 'The roles of the orchestra.\nUnion of {@link MaestroRole} values.',
+            enum: ['answer', 'build', 'fix', 'plan', 'review', 'support'],
+            type: 'string',
+        },
+        MaestroRoles: {
+            description: 'Whether each role of the orchestra plays.',
+            properties: {
+                build: {
+                    type: 'boolean',
+                },
+                fix: {
+                    type: 'boolean',
+                },
+                plan: {
+                    type: 'boolean',
+                },
+                review: {
+                    type: 'boolean',
+                },
+            },
+            required: ['build', 'fix', 'plan', 'review'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRouteCause: {
+            description:
+                'Why Maestro chose or changed a model.\nUnion of {@link MaestroRouteCause} values.',
+            enum: [
+                'connection-failed',
+                'escalation',
+                'failure',
+                'handover',
+                'refusal',
+                'start',
+                'step',
+            ],
+            type: 'string',
+        },
+        MaestroRouteUpdate: {
+            description: 'Maestro chose or changed the model doing the work.',
+            properties: {
+                cause: {
+                    $ref: '#/definitions/MaestroRouteCause',
+                },
+                failure: {
+                    $ref: '#/definitions/MaestroFailureClass',
+                    description: 'Present when the cause is a failure or a refusal.',
+                },
+                kind: {
+                    const: 'route',
+                    type: 'string',
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelUse',
+                },
+                previous: {
+                    $ref: '#/definitions/MaestroModelUse',
+                    description: 'The model it replaced, absent for the first choice.',
+                },
+                reason: {
+                    description: 'Plain-words reason, such as "the plan needs deep reasoning".',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                role: {
+                    $ref: '#/definitions/MaestroRole',
+                },
+            },
+            required: ['cause', 'kind', 'model', 'reason', 'role'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunParams: {
+            description: 'Names one run.',
+            properties: {
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['id'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunSummary: {
+            description: 'A finished or running Maestro run.',
+            properties: {
+                agents: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                costMicros: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                finishedAt: {
+                    type: ['null', 'string'],
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                goal: {
+                    $ref: '#/definitions/MaestroGoal',
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                models: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                sessionId: {
+                    description: 'The conversation the run answered, when it came from a chat.',
+                    type: ['null', 'string'],
+                    maxLength: 512,
+                },
+                startedAt: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroAgentState',
+                },
+                switches: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                tests: {
+                    $ref: '#/definitions/MaestroTestTally',
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+            },
+            required: [
+                'agents',
+                'costMicros',
+                'finishedAt',
+                'goal',
+                'id',
+                'models',
+                'sessionId',
+                'startedAt',
+                'state',
+                'switches',
+                'tests',
+                'title',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunTrace: {
+            description: 'The full trace of a run, for replay and inspection.',
+            properties: {
+                events: {
+                    items: {
+                        $ref: '#/definitions/MaestroEvent',
+                    },
+                    type: 'array',
+                    maxItems: 20000,
+                },
+                run: {
+                    $ref: '#/definitions/MaestroRunSummary',
+                },
+                truncated: {
+                    description: 'True when the oldest events were dropped to bound the trace.',
+                    type: 'boolean',
+                },
+            },
+            required: ['events', 'run', 'truncated'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunUpdate: {
+            description: 'A run started or finished.',
+            properties: {
+                goal: {
+                    $ref: '#/definitions/MaestroGoal',
+                },
+                kind: {
+                    const: 'run',
+                    type: 'string',
+                },
+                state: {
+                    $ref: '#/definitions/MaestroAgentState',
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+            },
+            required: ['goal', 'kind', 'state', 'title'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunsGetMethod: {
+            description: '`maestro.runs.get` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/MaestroRunParams',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroRunTrace',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroRunsListMethod: {
+            description: '`maestro.runs.list` contract.',
+            properties: {
+                params: {
+                    $ref: '#/definitions/MaestroRunsListParams',
+                },
+                result: {
+                    $ref: '#/definitions/MaestroRunsPage',
+                },
+            },
+            required: ['params', 'result'],
+            type: 'object',
+        },
+        MaestroRunsListParams: {
+            description: 'Pages through recent runs.',
+            properties: {
+                cursor: {
+                    type: 'string',
+                    maxLength: 256,
+                },
+                limit: {
+                    maximum: 100,
+                    minimum: 1,
+                    type: 'integer',
+                },
+            },
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroRunsPage: {
+            description: "Recent runs, newest first, with the month's spend.",
+            properties: {
+                items: {
+                    items: {
+                        $ref: '#/definitions/MaestroRunSummary',
+                    },
+                    type: 'array',
+                    maxItems: 100,
+                },
+                monthMicros: {
+                    description: 'USD micros spent on Maestro runs this calendar month.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                nextCursor: {
+                    description: 'Pass back to read older runs; null at the end.',
+                    type: ['null', 'string'],
+                    maxLength: 256,
+                },
+            },
+            required: ['items', 'monthMicros', 'nextCursor'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroSpendingCap: {
+            description: 'An optional spending cap.',
+            properties: {
+                enabled: {
+                    type: 'boolean',
+                },
+                monthMicros: {
+                    description: 'USD micros per calendar month, or null for no monthly cap.',
+                    type: ['null', 'string'],
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                taskMicros: {
+                    description: 'USD micros per task, or null for no per-task cap.',
+                    type: ['null', 'string'],
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+            },
+            required: ['enabled', 'monthMicros', 'taskMicros'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroSubtask: {
+            description: 'One subtask of a plan.',
+            properties: {
+                dependsOn: {
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+                environmentId: {
+                    description: 'The environment it will run on, when known.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+            },
+            required: ['dependsOn', 'id', 'title'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroTestTally: {
+            description: 'Passed and failed test counts.',
+            properties: {
+                failed: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                passed: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['failed', 'passed'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroTier: {
+            description:
+                'Model capability tier, used by the optional model ceiling.\nUnion of {@link MaestroTier} values.',
+            enum: ['base', 'frontier', 'light', 'mid'],
+            type: 'string',
+        },
+        MaestroTurnOptions: {
+            description: 'Per-turn Maestro options.',
+            properties: {
+                goal: {
+                    $ref: '#/definitions/MaestroGoal',
+                    description: "Overrides the policy's goal for this turn.",
+                },
+            },
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroUpdate: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/MaestroRunUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroRouteUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroEnvironmentUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroPlanUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroAgentUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroCheckUpdate',
+                },
+                {
+                    $ref: '#/definitions/MaestroUsageUpdate',
+                },
+            ],
+            description: 'Union of every Maestro update.',
+        },
+        MaestroUsageUpdate: {
+            description: "The run's live cost meter changed.",
+            properties: {
+                cost: {
+                    $ref: '#/definitions/MaestroCost',
+                },
+                kind: {
+                    const: 'usage',
+                    type: 'string',
+                },
+            },
+            required: ['cost', 'kind'],
+            type: 'object',
+            additionalProperties: false,
         },
         ManagedWorkspacePreference: {
             description: "Use the account's managed VM as the main workspace.",
@@ -28936,6 +30904,14 @@ export const schema: Schema = {
                 agentId: {
                     type: 'string',
                 },
+                attachedEnvironments: {
+                    description:
+                        'Environments this connection attached that the turn may work in; the first is the main workspace.',
+                    items: {
+                        type: 'string',
+                    },
+                    type: 'array',
+                },
                 attachments: {
                     description:
                         'User-authored image, video, document, and text blocks, in display order.',
@@ -28951,6 +30927,11 @@ export const schema: Schema = {
                 cwd: {
                     description: 'Where tools operate.',
                     type: 'string',
+                },
+                maestro: {
+                    $ref: '#/definitions/MaestroTurnOptions',
+                    description:
+                        'Per-turn Maestro options; used only when `model` selects Maestro.',
                 },
                 message: {
                     description:
@@ -31971,6 +33952,9 @@ export const schema: Schema = {
         },
         WireTurnEvent: {
             anyOf: [
+                {
+                    $ref: '#/definitions/MaestroEvent',
+                },
                 {
                     $ref: '#/definitions/TurnActivityStatusEvent',
                 },
@@ -36520,6 +38504,9 @@ export const schema: Schema = {
         changed: {
             $ref: '#/definitions/ChangedData',
         },
+        environmentRequest: {
+            $ref: '#/definitions/AttachedEnvironmentRequestData',
+        },
         error: {
             $ref: '#/definitions/WireError',
         },
@@ -36617,6 +38604,7 @@ export const schema: Schema = {
         'approvalResolved',
         'challenge',
         'changed',
+        'environmentRequest',
         'error',
         'historyRecord',
         'methods',
