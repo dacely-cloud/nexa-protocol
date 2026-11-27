@@ -1,6 +1,6 @@
 # RPC reference
 
-All 276 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 275 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 277 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 276 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -196,6 +196,7 @@ All 276 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [sessions.transcript](#sessionstranscript)
 - [sessions.unpin](#sessionsunpin)
 - [sessions.unsubscribe](#sessionsunsubscribe)
+- [sessions.versions](#sessionsversions)
 - [shares.create](#sharescreate)
 - [shares.list](#shareslist)
 - [shares.remove](#sharesremove)
@@ -5369,6 +5370,29 @@ Parameters: [SessionRef](protocol.md#sessionref).
 | `sessionId` | Yes      | `string` |             |
 
 Result: [OkResult](protocol.md#okresult).
+
+## sessions.versions
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.SessionsVersions> = {
+    id: 'YOUR_ID',
+};
+const result: ResultOf<typeof Method.SessionsVersions> = await client.call(
+    Method.SessionsVersions,
+    params,
+);
+```
+
+Parameters: [IdParams](protocol.md#idparams).
+
+| Field | Required | Type     | Description |
+| ----- | -------- | -------- | ----------- |
+| `id`  | Yes      | `string` |             |
+
+Result: Array of [Session](protocol.md#session).
 
 ## shares.create
 

@@ -393,6 +393,8 @@ export enum Method {
     SessionsUnpin = 'sessions.unpin',
     /** Calls `sessions.unsubscribe`. */
     SessionsUnsubscribe = 'sessions.unsubscribe',
+    /** Calls `sessions.versions`. */
+    SessionsVersions = 'sessions.versions',
     /** Calls `shares.create`. */
     SharesCreate = 'shares.create',
     /** Calls `shares.list`. */

@@ -866,6 +866,10 @@ export declare function sessionsUnpinResult(value: unknown): boolean;
 export declare function sessionsUnsubscribeParams(value: unknown): boolean;
 /** Validates the result of `sessions.unsubscribe`. */
 export declare function sessionsUnsubscribeResult(value: unknown): boolean;
+/** Validates the params of `sessions.versions`. */
+export declare function sessionsVersionsParams(value: unknown): boolean;
+/** Validates the result of `sessions.versions`. */
+export declare function sessionsVersionsResult(value: unknown): boolean;
 /** Validates the params of `shares.create`. */
 export declare function sharesCreateParams(value: unknown): boolean;
 /** Validates the result of `shares.create`. */

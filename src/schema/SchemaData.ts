@@ -20147,6 +20147,23 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'sessions.versions': {
+                    description:
+                        'Every saved version of an owned conversation, the conversation itself included, oldest first.\nAn edit or regeneration starts a version; together they are one conversation with branches.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/IdParams',
+                        },
+                        result: {
+                            items: {
+                                $ref: '#/definitions/Session',
+                            },
+                            type: 'array',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'shares.create': {
                     properties: {
                         params: {
@@ -21382,6 +21399,7 @@ export const schema: Schema = {
                 'sessions.transcript',
                 'sessions.unpin',
                 'sessions.unsubscribe',
+                'sessions.versions',
                 'shares.create',
                 'shares.list',
                 'shares.remove',
@@ -28411,6 +28429,26 @@ export const schema: Schema = {
                         "Cumulative usage, so a session's cost is available without replaying the ledger.",
                 },
                 userId: {
+                    type: 'string',
+                },
+                versionBranchIndex: {
+                    description:
+                        'Saved prompts before the replaced one. Versions copy everything before it, so the count is the\nsame in every version that shares those prompts.',
+                    type: 'number',
+                },
+                versionBranchInputId: {
+                    description:
+                        "The source version's saved prompt this version replaces, by its journal record identity.",
+                    type: 'string',
+                },
+                versionBranchStreamId: {
+                    description:
+                        'The stream identity of that saved prompt, when the prompt has one.',
+                    type: 'string',
+                },
+                versionRootId: {
+                    description:
+                        'The first conversation of a set of versions. Every edit or regeneration of any version shares\nit, so the versions are presented as one conversation whose prompts branch.',
                     type: 'string',
                 },
                 workspaceId: {

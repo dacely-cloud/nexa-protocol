@@ -24,6 +24,20 @@ export interface Session {
     /** A prepared edit/regeneration is claimed once before starting model or tool work. */
     readonly retryState?: string;
     readonly retryFingerprint?: string;
+    /**
+     * The first conversation of a set of versions. Every edit or regeneration of any version shares
+     * it, so the versions are presented as one conversation whose prompts branch.
+     */
+    readonly versionRootId?: string;
+    /** The source version's saved prompt this version replaces, by its journal record identity. */
+    readonly versionBranchInputId?: string;
+    /** The stream identity of that saved prompt, when the prompt has one. */
+    readonly versionBranchStreamId?: string;
+    /**
+     * Saved prompts before the replaced one. Versions copy everything before it, so the count is the
+     * same in every version that shares those prompts.
+     */
+    readonly versionBranchIndex?: number;
     readonly createdAt: number;
     readonly updatedAt: number;
     /** The provider-owned conversation id, when the provider holds history itself. */

@@ -9865,6 +9865,7 @@ Every gateway method with its params and result; the method name is the key.
 | `sessions.transcript`                 | Yes      | Object (fields below) | Compact transcript blocks with original journal byte cursors.                                          |
 | `sessions.unpin`                      | Yes      | Object (fields below) |                                                                                                        |
 | `sessions.unsubscribe`                | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.versions`                   | Yes      | Object (fields below) | Every saved version of an owned conversation, the conversation itself included, oldest first.          |
 | `shares.create`                       | Yes      | Object (fields below) |                                                                                                        |
 | `shares.list`                         | Yes      | Object (fields below) |                                                                                                        |
 | `shares.remove`                       | Yes      | Object (fields below) |                                                                                                        |
@@ -11355,6 +11356,13 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ------------------------------------ | ----------- |
 | `params` | Yes      | [SessionRef](protocol.md#sessionref) |             |
 | `result` | Yes      | [OkResult](protocol.md#okresult)     |             |
+
+**sessions.versions**
+
+| Field    | Required | Type                                    | Description |
+| -------- | -------- | --------------------------------------- | ----------- |
+| `params` | Yes      | [IdParams](protocol.md#idparams)        |             |
+| `result` | Yes      | Array of [Session](protocol.md#session) |             |
 
 **shares.create**
 
@@ -15532,28 +15540,32 @@ Module: `nexa-protocol/session/SessionTypes.js`.
 
 A stored conversation as the gateway lists and reads it.
 
-| Field                | Required | Type                                 | Description                                                                            |
-| -------------------- | -------- | ------------------------------------ | -------------------------------------------------------------------------------------- |
-| `activeToolFamilies` | No       | Array of `string`                    | Tool discovery survives transcript compaction without copying schemas into messages.   |
-| `agentId`            | Yes      | `string`                             | Which agent ran the turns.                                                             |
-| `conversationId`     | Yes      | `null,string`                        | The provider-owned conversation id, when the provider holds history itself.            |
-| `createdAt`          | Yes      | `number`                             |                                                                                        |
-| `id`                 | Yes      | `string`                             |                                                                                        |
-| `messageCount`       | Yes      | `number`                             | A cached projection of the transcript's length, not the authority on it.               |
-| `parentSessionId`    | No       | `string`                             | Delegated transcripts belong to this coordination conversation, never the chat picker. |
-| `participants`       | Yes      | Array of `string`                    | Everyone who has taken a turn in this session, by principal id, the owner included.    |
-| `projectId`          | No       | `string`                             |                                                                                        |
-| `retryFingerprint`   | No       | `string`                             |                                                                                        |
-| `retryRequestId`     | No       | `string`                             | Stable caller request identity makes an edit or regeneration safe to retry.            |
-| `retrySourceId`      | No       | `string`                             | The original owned conversation whose saved prompt was edited or regenerated.          |
-| `retryState`         | No       | `string`                             | A prepared edit/regeneration is claimed once before starting model or tool work.       |
-| `title`              | Yes      | `null,string`                        |                                                                                        |
-| `titleEdited`        | No       | `boolean`                            | A user title remains stable when an automatic title job finishes later.                |
-| `turnOpen`           | No       | `boolean`                            | Whether a turn is in flight on this session's transcript.                              |
-| `updatedAt`          | Yes      | `number`                             |                                                                                        |
-| `usage`              | Yes      | [TokenUsage](protocol.md#tokenusage) | Cumulative usage, so a session's cost is available without replaying the ledger.       |
-| `userId`             | No       | `string`                             |                                                                                        |
-| `workspaceId`        | No       | `string`                             | The workspace this session's tools are rooted at.                                      |
+| Field                   | Required | Type                                 | Description                                                                                    |
+| ----------------------- | -------- | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `activeToolFamilies`    | No       | Array of `string`                    | Tool discovery survives transcript compaction without copying schemas into messages.           |
+| `agentId`               | Yes      | `string`                             | Which agent ran the turns.                                                                     |
+| `conversationId`        | Yes      | `null,string`                        | The provider-owned conversation id, when the provider holds history itself.                    |
+| `createdAt`             | Yes      | `number`                             |                                                                                                |
+| `id`                    | Yes      | `string`                             |                                                                                                |
+| `messageCount`          | Yes      | `number`                             | A cached projection of the transcript's length, not the authority on it.                       |
+| `parentSessionId`       | No       | `string`                             | Delegated transcripts belong to this coordination conversation, never the chat picker.         |
+| `participants`          | Yes      | Array of `string`                    | Everyone who has taken a turn in this session, by principal id, the owner included.            |
+| `projectId`             | No       | `string`                             |                                                                                                |
+| `retryFingerprint`      | No       | `string`                             |                                                                                                |
+| `retryRequestId`        | No       | `string`                             | Stable caller request identity makes an edit or regeneration safe to retry.                    |
+| `retrySourceId`         | No       | `string`                             | The original owned conversation whose saved prompt was edited or regenerated.                  |
+| `retryState`            | No       | `string`                             | A prepared edit/regeneration is claimed once before starting model or tool work.               |
+| `title`                 | Yes      | `null,string`                        |                                                                                                |
+| `titleEdited`           | No       | `boolean`                            | A user title remains stable when an automatic title job finishes later.                        |
+| `turnOpen`              | No       | `boolean`                            | Whether a turn is in flight on this session's transcript.                                      |
+| `updatedAt`             | Yes      | `number`                             |                                                                                                |
+| `usage`                 | Yes      | [TokenUsage](protocol.md#tokenusage) | Cumulative usage, so a session's cost is available without replaying the ledger.               |
+| `userId`                | No       | `string`                             |                                                                                                |
+| `versionBranchIndex`    | No       | `number`                             | Saved prompts before the replaced one. Versions copy everything before it, so the count is the |
+| `versionBranchInputId`  | No       | `string`                             | The source version's saved prompt this version replaces, by its journal record identity.       |
+| `versionBranchStreamId` | No       | `string`                             | The stream identity of that saved prompt, when the prompt has one.                             |
+| `versionRootId`         | No       | `string`                             | The first conversation of a set of versions. Every edit or regeneration of any version shares  |
+| `workspaceId`           | No       | `string`                             | The workspace this session's tools are rooted at.                                              |
 
 ## SessionFileListParams
 

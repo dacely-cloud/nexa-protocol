@@ -3355,6 +3355,22 @@ export function sessionsUnsubscribeResult(value: unknown): boolean {
     );
 }
 
+/** Validates the params of `sessions.versions`. */
+export function sessionsVersionsParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/sessions.versions/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `sessions.versions`. */
+export function sessionsVersionsResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/sessions.versions/properties/result',
+        value,
+    );
+}
+
 /** Validates the params of `shares.create`. */
 export function sharesCreateParams(value: unknown): boolean {
     return validator.validate(

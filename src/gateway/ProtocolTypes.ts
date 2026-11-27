@@ -1505,6 +1505,14 @@ export interface GatewayMethods {
         readonly params: ConversationRetryParams;
         readonly result: ConversationRetryResult;
     };
+    /**
+     * Every saved version of an owned conversation, the conversation itself included, oldest first.
+     * An edit or regeneration starts a version; together they are one conversation with branches.
+     */
+    readonly 'sessions.versions': {
+        readonly params: IdParams;
+        readonly result: readonly Session[];
+    };
     readonly 'sessions.pin': {
         readonly params: ConversationPinParams;
         readonly result: ConversationPin;

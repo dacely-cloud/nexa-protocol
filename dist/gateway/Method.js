@@ -393,6 +393,8 @@ export var Method;
     Method["SessionsUnpin"] = "sessions.unpin";
     /** Calls `sessions.unsubscribe`. */
     Method["SessionsUnsubscribe"] = "sessions.unsubscribe";
+    /** Calls `sessions.versions`. */
+    Method["SessionsVersions"] = "sessions.versions";
     /** Calls `shares.create`. */
     Method["SharesCreate"] = "shares.create";
     /** Calls `shares.list`. */

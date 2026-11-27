@@ -1701,6 +1701,14 @@ export function sessionsUnsubscribeParams(value) {
 export function sessionsUnsubscribeResult(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/sessions.unsubscribe/properties/result', value);
 }
+/** Validates the params of `sessions.versions`. */
+export function sessionsVersionsParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/sessions.versions/properties/params', value);
+}
+/** Validates the result of `sessions.versions`. */
+export function sessionsVersionsResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/sessions.versions/properties/result', value);
+}
 /** Validates the params of `shares.create`. */
 export function sharesCreateParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/shares.create/properties/params', value);
