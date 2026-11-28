@@ -1,4 +1,4 @@
-import type { MaestroAgentState, MaestroChannelAction, MaestroCheckState, MaestroCost, MaestroEnvironmentRef, MaestroFailureClass, MaestroGoal, MaestroModelRef, MaestroModelUse, MaestroRole, MaestroRouteCause, MaestroSubtaskState, MaestroTestTally, MaestroWaitResolution } from '../../maestro/MaestroTypes.js';
+import type { MaestroAgentState, MaestroChannelAction, MaestroCheckState, MaestroCost, MaestroEnvironmentRef, MaestroFailureClass, MaestroGoal, MaestroModelRef, MaestroModelUse, MaestroPayerCost, MaestroRole, MaestroRouteCause, MaestroSubtaskState, MaestroTestTally, MaestroWaitResolution } from '../../maestro/MaestroTypes.js';
 import type { ReasoningEffort } from '../../providers/Types.js';
 import type { PlanStepStatus } from '../../tools/planning/PlanningStateTypes.js';
 /**
@@ -88,12 +88,14 @@ export interface AgileMaestroRoute {
     readonly role: MaestroRole;
     readonly reason: string;
 }
-/** What the agents that worked a node spent, as the run's meter measured it. */
+/** What a node and every node under it cost, as the run's meter measured it; the epic's usage is the whole run. */
 export interface AgileMaestroUsage {
     /** Tokens at each model's published API price, including plan-covered usage; USD micros. */
     readonly costMicros: string;
-    /** What was actually charged; plan-covered usage bills nothing; USD micros. */
+    /** What the user's Nerva wallet was charged; keys, subscriptions and exemptions bill "0"; USD micros. */
     readonly billedMicros: string;
+    /** What each payer recorded; absent on boards written before payers were split. */
+    readonly payers?: readonly MaestroPayerCost[];
     /** False when a model it used has no published price, so `costMicros` leaves it out. */
     readonly priced: boolean;
     /**

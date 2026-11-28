@@ -513,16 +513,17 @@ Session ownership is checked before the action reaches Maestro.
 
 Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
 
-What the agents that worked a node spent, as the run's meter measured it.
+What a node and every node under it cost, as the run's meter measured it; the epic's usage is the whole run.
 
-| Field               | Required | Type      | Description                                                                           |
-| ------------------- | -------- | --------- | ------------------------------------------------------------------------------------- |
-| `billedMicros`      | Yes      | `string`  | What was actually charged; plan-covered usage bills nothing; USD micros.              |
-| `cachedInputTokens` | Yes      | `integer` |                                                                                       |
-| `costMicros`        | Yes      | `string`  | Tokens at each model's published API price, including plan-covered usage; USD micros. |
-| `inputTokens`       | Yes      | `integer` |                                                                                       |
-| `outputTokens`      | Yes      | `integer` |                                                                                       |
-| `priced`            | Yes      | `boolean` | False when a model it used has no published price, so `costMicros` leaves it out.     |
+| Field               | Required | Type                                                      | Description                                                                                        |
+| ------------------- | -------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `billedMicros`      | Yes      | `string`                                                  | What the user's Nerva wallet was charged; keys, subscriptions and exemptions bill "0"; USD micros. |
+| `cachedInputTokens` | Yes      | `integer`                                                 |                                                                                                    |
+| `costMicros`        | Yes      | `string`                                                  | Tokens at each model's published API price, including plan-covered usage; USD micros.              |
+| `inputTokens`       | Yes      | `integer`                                                 |                                                                                                    |
+| `outputTokens`      | Yes      | `integer`                                                 |                                                                                                    |
+| `payers`            | No       | Array of [MaestroPayerCost](protocol.md#maestropayercost) | What each payer recorded; absent on boards written before payers were split.                       |
+| `priced`            | Yes      | `boolean`                                                 | False when a model it used has no published price, so `costMicros` leaves it out.                  |
 
 ## AgileMaestroWait
 
@@ -13885,16 +13886,17 @@ Type: `"key"` / `"nerva"` / `"plan"`.
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
-The live cost meter of a run.
+The live cost meter of a run: every call of every agent at any depth.
 
-| Field               | Required | Type                                                      | Description                                                                            |
-| ------------------- | -------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `billedMicros`      | No       | `string`                                                  | What the run actually charged; plan-covered usage bills nothing. Absent on older runs. |
-| `cachedInputTokens` | Yes      | `integer`                                                 |                                                                                        |
-| `costMicros`        | Yes      | `string`                                                  | The run's tokens at each model's published API price, including plan-covered usage.    |
-| `inputTokens`       | Yes      | `integer`                                                 |                                                                                        |
-| `models`            | Yes      | Array of [MaestroModelCost](protocol.md#maestromodelcost) |                                                                                        |
-| `outputTokens`      | Yes      | `integer`                                                 |                                                                                        |
+| Field               | Required | Type                                                      | Description                                                                                                         |
+| ------------------- | -------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `billedMicros`      | No       | `string`                                                  | What the run charged the user's Nerva wallet (the wallet payer line in USD micros); keys and plans are in `payers`. |
+| `cachedInputTokens` | Yes      | `integer`                                                 |                                                                                                                     |
+| `costMicros`        | Yes      | `string`                                                  | The run's tokens at each model's published API price, including plan-covered usage.                                 |
+| `inputTokens`       | Yes      | `integer`                                                 |                                                                                                                     |
+| `models`            | Yes      | Array of [MaestroModelCost](protocol.md#maestromodelcost) |                                                                                                                     |
+| `outputTokens`      | Yes      | `integer`                                                 |                                                                                                                     |
+| `payers`            | No       | Array of [MaestroPayerCost](protocol.md#maestropayercost) | What each payer recorded for the run's calls; absent on runs recorded before payers were split.                     |
 
 ## MaestroDataRules
 
@@ -14010,20 +14012,23 @@ An optional model ceiling: routine work stays at or under the tier unless a veri
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
-Cost and tokens of one model within a run.
+Cost and tokens of one model reached through one payer within a run.
 
-| Field               | Required | Type                                                       | Description                                                                                |
-| ------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `billedMicros`      | No       | `string`                                                   | What was actually charged for this model: the user's key, Nerva-provided access or Athena. |
-| `cachedInputTokens` | Yes      | `integer`                                                  |                                                                                            |
-| `connection`        | No       | [MaestroConnectionKind](protocol.md#maestroconnectionkind) | How the model was reached; `plan` usage is covered by the user's subscription.             |
-| `costMicros`        | Yes      | `string`                                                   | What this model's tokens cost at its published API price, whoever paid: a plan's usage is  |
-| `inputTokens`       | Yes      | `integer`                                                  |                                                                                            |
-| `model`             | Yes      | `string`                                                   |                                                                                            |
-| `name`              | Yes      | `string`                                                   |                                                                                            |
-| `outputTokens`      | Yes      | `integer`                                                  |                                                                                            |
-| `priced`            | No       | `boolean`                                                  | False when no published price is known for this model, so `costMicros` is not an estimate. |
-| `provider`          | Yes      | `string`                                                   | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.            |
+| Field               | Required | Type                                                       | Description                                                                                      |
+| ------------------- | -------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `billedMicros`      | No       | `string`                                                   | What this line charged the user's Nerva wallet; "0" for a key, a subscription or an exemption.   |
+| `cachedInputTokens` | Yes      | `integer`                                                  |                                                                                                  |
+| `chargedMicrocents` | No       | `string`                                                   | What the payer recorded for this line in USD microcents, as {@link MaestroPayerCost.microcents}. |
+| `connection`        | No       | [MaestroConnectionKind](protocol.md#maestroconnectionkind) | How the model was reached; `plan` usage is covered by the user's subscription.                   |
+| `costMicros`        | Yes      | `string`                                                   | What this model's tokens cost at its published API price, whoever paid: a plan's usage is        |
+| `inputTokens`       | Yes      | `integer`                                                  |                                                                                                  |
+| `model`             | Yes      | `string`                                                   |                                                                                                  |
+| `name`              | Yes      | `string`                                                   |                                                                                                  |
+| `outputTokens`      | Yes      | `integer`                                                  |                                                                                                  |
+| `priced`            | No       | `boolean`                                                  | False when no published price is known for this model, so `costMicros` is not an estimate.       |
+| `provider`          | Yes      | `string`                                                   | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.                  |
+| `route`             | No       | [SpendRoute](protocol.md#spendroute)                       | Who paid for this line; a model reached through two payers has a line for each.                  |
+| `via`               | No       | `string`                                                   | The payer's `via`, as {@link MaestroPayerCost.via} names it.                                     |
 
 ## MaestroModelRef
 
@@ -14113,6 +14118,21 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 How the attempts of a task or subtask are arranged.
 
 Type: `"best-of-n"` / `"cascade"` / `"critique"` / `"fan-out"` / `"race"` / `"roles"` / `"single"`.
+
+## MaestroPayerCost
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Who paid for a share of a run's usage and what it came to.
+
+| Field           | Required | Type                                 | Description                                                                                                                       |
+| --------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `calls`         | Yes      | `integer`                            |                                                                                                                                   |
+| `estimated`     | Yes      | `boolean`                            | True when at least one call's amount was priced from listed rates rather than stated.                                             |
+| `microcents`    | Yes      | `string`                             | USD microcents the wallet charged or the provider stated; where none was stated, the calls at the listed price.                   |
+| `route`         | Yes      | [SpendRoute](protocol.md#spendroute) | `wallet` charged the Nerva wallet, `included` an exemption covered, `key` the user's own key, `subscription` the user's plan.     |
+| `unpricedCalls` | Yes      | `integer`                            | Calls no price covers; they add nothing to `microcents`.                                                                          |
+| `via`           | Yes      | `string`                             | `nerva` for the wallet and exemptions, the key's provider id (`openrouter`) or the subscription's application id (`claude-code`). |
 
 ## MaestroPlanUpdate
 
@@ -14333,21 +14353,22 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 A finished or running Maestro run.
 
-| Field          | Required | Type                                               | Description                                                                      |
-| -------------- | -------- | -------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `agents`       | Yes      | `integer`                                          |                                                                                  |
-| `billedMicros` | No       | `string`                                           | What the run actually charged. Absent on runs recorded before billing was split. |
-| `costMicros`   | Yes      | `string`                                           | The run's tokens at published API prices, including plan-covered usage.          |
-| `finishedAt`   | Yes      | `null,string`                                      |                                                                                  |
-| `goal`         | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |                                                                                  |
-| `id`           | Yes      | `string`                                           |                                                                                  |
-| `models`       | Yes      | `integer`                                          |                                                                                  |
-| `sessionId`    | Yes      | `null,string`                                      | The conversation the run answered, when it came from a chat.                     |
-| `startedAt`    | Yes      | `string`                                           |                                                                                  |
-| `state`        | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |                                                                                  |
-| `switches`     | Yes      | `integer`                                          |                                                                                  |
-| `tests`        | Yes      | [MaestroTestTally](protocol.md#maestrotesttally)   |                                                                                  |
-| `title`        | Yes      | `string`                                           |                                                                                  |
+| Field          | Required | Type                                                      | Description                                                                                                     |
+| -------------- | -------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `agents`       | Yes      | `integer`                                                 | Sub-agents the run started at any depth, each retry a new one; 0 when the lead worked alone.                    |
+| `billedMicros` | No       | `string`                                                  | What the run charged the user's Nerva wallet; on runs recorded before `payers` it also counted own-key charges. |
+| `costMicros`   | Yes      | `string`                                                  | The run's tokens at published API prices, including plan-covered usage.                                         |
+| `finishedAt`   | Yes      | `null,string`                                             |                                                                                                                 |
+| `goal`         | Yes      | [MaestroGoal](protocol.md#maestrogoal)                    |                                                                                                                 |
+| `id`           | Yes      | `string`                                                  |                                                                                                                 |
+| `models`       | Yes      | `integer`                                                 |                                                                                                                 |
+| `payers`       | No       | Array of [MaestroPayerCost](protocol.md#maestropayercost) | What each payer recorded for the run's calls; absent on runs recorded before payers were split.                 |
+| `sessionId`    | Yes      | `null,string`                                             | The conversation the run answered, when it came from a chat.                                                    |
+| `startedAt`    | Yes      | `string`                                                  |                                                                                                                 |
+| `state`        | Yes      | [MaestroAgentState](protocol.md#maestroagentstate)        |                                                                                                                 |
+| `switches`     | Yes      | `integer`                                                 |                                                                                                                 |
+| `tests`        | Yes      | [MaestroTestTally](protocol.md#maestrotesttally)          |                                                                                                                 |
+| `title`        | Yes      | `string`                                                  |                                                                                                                 |
 
 ## MaestroRunTrace
 
@@ -14414,12 +14435,13 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 Recent runs, newest first, with the month's spend.
 
-| Field               | Required | Type                                                        | Description                                                                                     |
-| ------------------- | -------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `items`             | Yes      | Array of [MaestroRunSummary](protocol.md#maestrorunsummary) |                                                                                                 |
-| `monthBilledMicros` | No       | `string`                                                    | What this calendar month's Maestro runs actually charged; the monthly spending cap counts this. |
-| `monthMicros`       | Yes      | `string`                                                    | This calendar month's Maestro runs at published API prices, including plan-covered usage.       |
-| `nextCursor`        | Yes      | `null,string`                                               | Pass back to read older runs; null at the end.                                                  |
+| Field               | Required | Type                                                        | Description                                                                                                   |
+| ------------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `items`             | Yes      | Array of [MaestroRunSummary](protocol.md#maestrorunsummary) |                                                                                                               |
+| `monthBilledMicros` | No       | `string`                                                    | What this calendar month's Maestro runs charged the user's Nerva wallet.                                      |
+| `monthMicros`       | Yes      | `string`                                                    | This calendar month's Maestro runs at published API prices, including plan-covered usage.                     |
+| `monthPayers`       | No       | Array of [MaestroPayerCost](protocol.md#maestropayercost)   | What each payer recorded for this month's runs; the monthly spending cap counts the `wallet` and `key` lines. |
+| `nextCursor`        | Yes      | `null,string`                                               | Pass back to read older runs; null at the end.                                                                |
 
 ## MaestroSpendingCap
 

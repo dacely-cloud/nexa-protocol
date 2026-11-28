@@ -1,3 +1,4 @@
+import type { SpendRoute } from '../credit/SpendTypes.js';
 import type { ReasoningEffort } from '../providers/Types.js';
 /**
  * Maestro: the orchestrating model a user selects beside Athena.
@@ -7,7 +8,9 @@ import type { ReasoningEffort } from '../providers/Types.js';
  * middle of a task, starts sub-agents that each run as a full Maestro on the environment their
  * goal needs, and commits only work that passed its checks. It prefers the user's own plans and
  * keys over Nerva-provided access and never stops a task because one model failed or refused.
- * Every amount of money on this wire is a decimal string of USD micros (1 USD = 1000000).
+ * Every amount of money on this wire is a decimal string of USD micros (1 USD = 1000000), except
+ * the exact charges of {@link MaestroPayerCost}, which are USD microcents (1 USD = 100000000) as the
+ * wallet records them.
  */
 /** What Maestro aims for when it picks models, roles and attempts. */
 export declare const MaestroGoal: {
@@ -438,7 +441,36 @@ export interface MaestroSubtask {
     /** The sub-agent running it, matching that agent's `agentId` in its events; absent when the lead runs it. */
     readonly agentId?: string;
 }
-/** Cost and tokens of one model within a run. */
+/**
+ * Who paid for a share of a run's usage and what it came to.
+ *
+ * @remarks
+ * Every model call has exactly one payer, the same one the account's spend (`credit.spend`) shows
+ * for it, so a run's payer lines add up to what the wallet, the user's keys and the user's
+ * subscriptions recorded for its calls.
+ */
+export interface MaestroPayerCost {
+    /** `wallet` charged the Nerva wallet, `included` an exemption covered, `key` the user's own key, `subscription` the user's plan. */
+    readonly route: SpendRoute;
+    /** `nerva` for the wallet and exemptions, the key's provider id (`openrouter`) or the subscription's application id (`claude-code`). */
+    readonly via: string;
+    /** USD microcents the wallet charged or the provider stated; where none was stated, the calls at the listed price. */
+    readonly microcents: string;
+    /** True when at least one call's amount was priced from listed rates rather than stated. */
+    readonly estimated: boolean;
+    /**
+     * @minimum 0
+     * @TJS-type integer
+     */
+    readonly calls: number;
+    /**
+     * Calls no price covers; they add nothing to `microcents`.
+     * @minimum 0
+     * @TJS-type integer
+     */
+    readonly unpricedCalls: number;
+}
+/** Cost and tokens of one model reached through one payer within a run. */
 export interface MaestroModelCost extends MaestroModelRef {
     readonly name: string;
     /**
@@ -446,13 +478,16 @@ export interface MaestroModelCost extends MaestroModelRef {
      * priced too, so a run's footprint is never hidden. "0" with `priced` false means no price is known.
      */
     readonly costMicros: string;
-    /**
-     * What was actually charged for this model: the user's key, Nerva-provided access or Athena.
-     * Usage covered by the user's plan bills "0". Absent on runs recorded before billing was split.
-     */
+    /** What this line charged the user's Nerva wallet; "0" for a key, a subscription or an exemption. */
     readonly billedMicros?: string;
     /** How the model was reached; `plan` usage is covered by the user's subscription. */
     readonly connection?: MaestroConnectionKind;
+    /** Who paid for this line; a model reached through two payers has a line for each. */
+    readonly route?: SpendRoute;
+    /** The payer's `via`, as {@link MaestroPayerCost.via} names it. */
+    readonly via?: string;
+    /** What the payer recorded for this line in USD microcents, as {@link MaestroPayerCost.microcents}. */
+    readonly chargedMicrocents?: string;
     /** False when no published price is known for this model, so `costMicros` is not an estimate. */
     readonly priced?: boolean;
     /**
@@ -471,12 +506,14 @@ export interface MaestroModelCost extends MaestroModelRef {
      */
     readonly cachedInputTokens: number;
 }
-/** The live cost meter of a run. */
+/** The live cost meter of a run: every call of every agent at any depth. */
 export interface MaestroCost {
     /** The run's tokens at each model's published API price, including plan-covered usage. */
     readonly costMicros: string;
-    /** What the run actually charged; plan-covered usage bills nothing. Absent on older runs. */
+    /** What the run charged the user's Nerva wallet (the wallet payer line in USD micros); keys and plans are in `payers`. */
     readonly billedMicros?: string;
+    /** What each payer recorded for the run's calls; absent on runs recorded before payers were split. */
+    readonly payers?: readonly MaestroPayerCost[];
     /**
      * @minimum 0
      * @TJS-type integer
@@ -750,8 +787,10 @@ export interface MaestroRunSummary {
     readonly finishedAt: string | null;
     /** The run's tokens at published API prices, including plan-covered usage. */
     readonly costMicros: string;
-    /** What the run actually charged. Absent on runs recorded before billing was split. */
+    /** What the run charged the user's Nerva wallet; on runs recorded before `payers` it also counted own-key charges. */
     readonly billedMicros?: string;
+    /** What each payer recorded for the run's calls; absent on runs recorded before payers were split. */
+    readonly payers?: readonly MaestroPayerCost[];
     /**
      * @minimum 0
      * @TJS-type integer
@@ -763,6 +802,7 @@ export interface MaestroRunSummary {
      */
     readonly switches: number;
     /**
+     * Sub-agents the run started at any depth, each retry a new one; 0 when the lead worked alone.
      * @minimum 0
      * @TJS-type integer
      */
@@ -776,8 +816,10 @@ export interface MaestroRunsPage {
     readonly nextCursor: string | null;
     /** This calendar month's Maestro runs at published API prices, including plan-covered usage. */
     readonly monthMicros: string;
-    /** What this calendar month's Maestro runs actually charged; the monthly spending cap counts this. */
+    /** What this calendar month's Maestro runs charged the user's Nerva wallet. */
     readonly monthBilledMicros?: string;
+    /** What each payer recorded for this month's runs; the monthly spending cap counts the `wallet` and `key` lines. */
+    readonly monthPayers?: readonly MaestroPayerCost[];
 }
 /** Pages through recent runs. */
 export interface MaestroRunsListParams {

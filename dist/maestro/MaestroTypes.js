@@ -8,7 +8,9 @@
  * middle of a task, starts sub-agents that each run as a full Maestro on the environment their
  * goal needs, and commits only work that passed its checks. It prefers the user's own plans and
  * keys over Nerva-provided access and never stops a task because one model failed or refused.
- * Every amount of money on this wire is a decimal string of USD micros (1 USD = 1000000).
+ * Every amount of money on this wire is a decimal string of USD micros (1 USD = 1000000), except
+ * the exact charges of {@link MaestroPayerCost}, which are USD microcents (1 USD = 100000000) as the
+ * wallet records them.
  */
 /** What Maestro aims for when it picks models, roles and attempts. */
 export const MaestroGoal = {

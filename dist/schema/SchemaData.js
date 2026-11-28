@@ -1193,10 +1193,10 @@ export const schema = {
             additionalProperties: false,
         },
         AgileMaestroUsage: {
-            description: "What the agents that worked a node spent, as the run's meter measured it.",
+            description: "What a node and every node under it cost, as the run's meter measured it; the epic's usage is the whole run.",
             properties: {
                 billedMicros: {
-                    description: 'What was actually charged; plan-covered usage bills nothing; USD micros.',
+                    description: 'What the user\'s Nerva wallet was charged; keys, subscriptions and exemptions bill "0"; USD micros.',
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -1218,6 +1218,13 @@ export const schema = {
                 outputTokens: {
                     minimum: 0,
                     type: 'integer',
+                },
+                payers: {
+                    description: 'What each payer recorded; absent on boards written before payers were split.',
+                    items: {
+                        $ref: '#/definitions/MaestroPayerCost',
+                    },
+                    type: 'array',
                 },
                 priced: {
                     description: 'False when a model it used has no published price, so `costMicros` leaves it out.',
@@ -24239,10 +24246,10 @@ export const schema = {
             type: 'string',
         },
         MaestroCost: {
-            description: 'The live cost meter of a run.',
+            description: 'The live cost meter of a run: every call of every agent at any depth.',
             properties: {
                 billedMicros: {
-                    description: 'What the run actually charged; plan-covered usage bills nothing. Absent on older runs.',
+                    description: "What the run charged the user's Nerva wallet (the wallet payer line in USD micros); keys and plans are in `payers`.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -24271,6 +24278,13 @@ export const schema = {
                 outputTokens: {
                     minimum: 0,
                     type: 'integer',
+                },
+                payers: {
+                    description: "What each payer recorded for the run's calls; absent on runs recorded before payers were split.",
+                    items: {
+                        $ref: '#/definitions/MaestroPayerCost',
+                    },
+                    type: 'array',
                 },
             },
             required: ['cachedInputTokens', 'costMicros', 'inputTokens', 'models', 'outputTokens'],
@@ -24456,10 +24470,10 @@ export const schema = {
             additionalProperties: false,
         },
         MaestroModelCost: {
-            description: 'Cost and tokens of one model within a run.',
+            description: 'Cost and tokens of one model reached through one payer within a run.',
             properties: {
                 billedMicros: {
-                    description: 'What was actually charged for this model: the user\'s key, Nerva-provided access or Athena.\nUsage covered by the user\'s plan bills "0". Absent on runs recorded before billing was split.',
+                    description: 'What this line charged the user\'s Nerva wallet; "0" for a key, a subscription or an exemption.',
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -24467,6 +24481,10 @@ export const schema = {
                 cachedInputTokens: {
                     minimum: 0,
                     type: 'integer',
+                },
+                chargedMicrocents: {
+                    description: 'What the payer recorded for this line in USD microcents, as {@link MaestroPayerCost.microcents}.',
+                    type: 'string',
                 },
                 connection: {
                     $ref: '#/definitions/MaestroConnectionKind',
@@ -24504,6 +24522,14 @@ export const schema = {
                     type: 'string',
                     pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
                     maxLength: 128,
+                },
+                route: {
+                    $ref: '#/definitions/SpendRoute',
+                    description: 'Who paid for this line; a model reached through two payers has a line for each.',
+                },
+                via: {
+                    description: "The payer's `via`, as {@link MaestroPayerCost.via} names it.",
+                    type: 'string',
                 },
             },
             required: [
@@ -24717,6 +24743,38 @@ export const schema = {
             description: 'How the attempts of a task or subtask are arranged.\nUnion of {@link MaestroPattern} values.',
             enum: ['best-of-n', 'cascade', 'critique', 'fan-out', 'race', 'roles', 'single'],
             type: 'string',
+        },
+        MaestroPayerCost: {
+            description: "Who paid for a share of a run's usage and what it came to.",
+            properties: {
+                calls: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                estimated: {
+                    description: "True when at least one call's amount was priced from listed rates rather than stated.",
+                    type: 'boolean',
+                },
+                microcents: {
+                    description: 'USD microcents the wallet charged or the provider stated; where none was stated, the calls at the listed price.',
+                    type: 'string',
+                },
+                route: {
+                    $ref: '#/definitions/SpendRoute',
+                    description: "`wallet` charged the Nerva wallet, `included` an exemption covered, `key` the user's own key, `subscription` the user's plan.",
+                },
+                unpricedCalls: {
+                    description: 'Calls no price covers; they add nothing to `microcents`.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                via: {
+                    description: "`nerva` for the wallet and exemptions, the key's provider id (`openrouter`) or the subscription's application id (`claude-code`).",
+                    type: 'string',
+                },
+            },
+            required: ['calls', 'estimated', 'microcents', 'route', 'unpricedCalls', 'via'],
+            type: 'object',
         },
         MaestroPlanUpdate: {
             description: 'Maestro decided how to arrange the work, or the arrangement changed.',
@@ -25054,11 +25112,12 @@ export const schema = {
             description: 'A finished or running Maestro run.',
             properties: {
                 agents: {
+                    description: 'Sub-agents the run started at any depth, each retry a new one; 0 when the lead worked alone.',
                     minimum: 0,
                     type: 'integer',
                 },
                 billedMicros: {
-                    description: 'What the run actually charged. Absent on runs recorded before billing was split.',
+                    description: "What the run charged the user's Nerva wallet; on runs recorded before `payers` it also counted own-key charges.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -25085,6 +25144,13 @@ export const schema = {
                 models: {
                     minimum: 0,
                     type: 'integer',
+                },
+                payers: {
+                    description: "What each payer recorded for the run's calls; absent on runs recorded before payers were split.",
+                    items: {
+                        $ref: '#/definitions/MaestroPayerCost',
+                    },
+                    type: 'array',
                 },
                 sessionId: {
                     description: 'The conversation the run answered, when it came from a chat.',
@@ -25230,7 +25296,7 @@ export const schema = {
                     maxItems: 100,
                 },
                 monthBilledMicros: {
-                    description: "What this calendar month's Maestro runs actually charged; the monthly spending cap counts this.",
+                    description: "What this calendar month's Maestro runs charged the user's Nerva wallet.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -25240,6 +25306,13 @@ export const schema = {
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
+                },
+                monthPayers: {
+                    description: "What each payer recorded for this month's runs; the monthly spending cap counts the `wallet` and `key` lines.",
+                    items: {
+                        $ref: '#/definitions/MaestroPayerCost',
+                    },
+                    type: 'array',
                 },
                 nextCursor: {
                     description: 'Pass back to read older runs; null at the end.',
