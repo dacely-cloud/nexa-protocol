@@ -375,6 +375,22 @@ Maestro's runs in a conversation, projected onto its agile board.
 | `omittedRuns` | Yes      | `integer`                                               | Older runs left out to bound the board; `maestro.runs.get` still returns their traces. |
 | `runs`        | Yes      | Array of [AgileMaestroRun](protocol.md#agilemaestrorun) | Oldest first.                                                                          |
 
+## AgileMaestroChannelEntry
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+One coordination entry of a node, as its card shows it.
+
+| Field         | Required | Type                                                       | Description                                                                         |
+| ------------- | -------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `action`      | Yes      | [MaestroChannelAction](protocol.md#maestrochannelaction)   |                                                                                     |
+| `at`          | Yes      | `string`                                                   | Decimal epoch milliseconds.                                                         |
+| `key`         | No       | `string`                                                   | The published or awaited result's name.                                             |
+| `otherNodeId` | No       | `string`                                                   | The other node it concerns: the one written to or waited on; absent for broadcasts. |
+| `resolution`  | No       | [MaestroWaitResolution](protocol.md#maestrowaitresolution) | How a wait ended, for an unblock.                                                   |
+| `seq`         | Yes      | `integer`                                                  | Its position in the run's channel.                                                  |
+| `summary`     | Yes      | `string`                                                   | One line in plain words.                                                            |
+
 ## AgileMaestroCheck
 
 Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
@@ -421,27 +437,30 @@ Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
 
 One node of a Maestro run's task tree as an agile item.
 
-| Field         | Required | Type                                                          | Description                                                                                 |
-| ------------- | -------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `actions`     | Yes      | Array of [AgileMaestroAction](protocol.md#agilemaestroaction) | Board actions on this node, oldest first; pending ones are never left out.                  |
-| `agentIds`    | Yes      | Array of `string`                                             | Every agent that worked the node, oldest first; a retry may hand it to a new one.           |
-| `assignee`    | No       | [AgileMaestroAssignee](protocol.md#agilemaestroassignee)      | Absent until an agent picks the node up.                                                    |
-| `checkCount`  | Yes      | `integer`                                                     | Checks seen in total; more than `checks.length` when the oldest were left out to bound it.  |
-| `checks`      | Yes      | Array of [AgileMaestroCheck](protocol.md#agilemaestrocheck)   | The node's acceptance checks with their latest results, in the order they first ran.        |
-| `dependsOn`   | Yes      | Array of `string`                                             | Sibling nodes that must finish before it starts.                                            |
-| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref)    | The environment its work runs on, once placed.                                              |
-| `finishedAt`  | No       | `string`                                                      | Decimal epoch milliseconds the node finished.                                               |
-| `goal`        | Yes      | `string`                                                      | What it produces, in plain words.                                                           |
-| `id`          | Yes      | `string`                                                      | The subtask id, or the run id for the epic.                                                 |
-| `level`       | Yes      | [AgileMaestroLevel](protocol.md#agilemaestrolevel)            |                                                                                             |
-| `parentId`    | Yes      | `null,string`                                                 | The node it refines: null for the epic, the run id for a story, a story or task for a task. |
-| `routeCount`  | Yes      | `integer`                                                     | Routes seen in total; more than `routes.length` when the oldest were left out to bound it.  |
-| `routes`      | Yes      | Array of [AgileMaestroRoute](protocol.md#agilemaestroroute)   | Model choices and switches, oldest first.                                                   |
-| `startedAt`   | No       | `string`                                                      | Decimal epoch milliseconds the node started.                                                |
-| `state`       | Yes      | [MaestroSubtaskState](protocol.md#maestrosubtaskstate)        |                                                                                             |
-| `status`      | Yes      | [PlanStepStatus](protocol.md#planstepstatus)                  |                                                                                             |
-| `title`       | Yes      | `string`                                                      |                                                                                             |
-| `usage`       | No       | [AgileMaestroUsage](protocol.md#agilemaestrousage)            | What the node's own agents spent; absent until the meter attributed usage to them.          |
+| Field          | Required | Type                                                                      | Description                                                                                         |
+| -------------- | -------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `actions`      | Yes      | Array of [AgileMaestroAction](protocol.md#agilemaestroaction)             | Board actions on this node, oldest first; pending ones are never left out.                          |
+| `agentIds`     | Yes      | Array of `string`                                                         | Every agent that worked the node, oldest first; a retry may hand it to a new one.                   |
+| `assignee`     | No       | [AgileMaestroAssignee](protocol.md#agilemaestroassignee)                  | Absent until an agent picks the node up.                                                            |
+| `channel`      | No       | Array of [AgileMaestroChannelEntry](protocol.md#agilemaestrochannelentry) | The node's newest coordination entries, oldest first: what its agents posted, wrote and             |
+| `channelCount` | No       | `integer`                                                                 | Coordination entries seen in total; more than `channel.length` when the oldest were left out.       |
+| `checkCount`   | Yes      | `integer`                                                                 | Checks seen in total; more than `checks.length` when the oldest were left out to bound it.          |
+| `checks`       | Yes      | Array of [AgileMaestroCheck](protocol.md#agilemaestrocheck)               | The node's acceptance checks with their latest results, in the order they first ran.                |
+| `dependsOn`    | Yes      | Array of `string`                                                         | Sibling nodes that must finish before it starts.                                                    |
+| `environment`  | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref)                | The environment its work runs on, once placed.                                                      |
+| `finishedAt`   | No       | `string`                                                                  | Decimal epoch milliseconds the node finished.                                                       |
+| `goal`         | Yes      | `string`                                                                  | What it produces, in plain words.                                                                   |
+| `id`           | Yes      | `string`                                                                  | The subtask id, or the run id for the epic.                                                         |
+| `level`        | Yes      | [AgileMaestroLevel](protocol.md#agilemaestrolevel)                        |                                                                                                     |
+| `parentId`     | Yes      | `null,string`                                                             | The node it refines: null for the epic, the run id for a story, a story or task for a task.         |
+| `routeCount`   | Yes      | `integer`                                                                 | Routes seen in total; more than `routes.length` when the oldest were left out to bound it.          |
+| `routes`       | Yes      | Array of [AgileMaestroRoute](protocol.md#agilemaestroroute)               | Model choices and switches, oldest first.                                                           |
+| `startedAt`    | No       | `string`                                                                  | Decimal epoch milliseconds the node started.                                                        |
+| `state`        | Yes      | [MaestroSubtaskState](protocol.md#maestrosubtaskstate)                    |                                                                                                     |
+| `status`       | Yes      | [PlanStepStatus](protocol.md#planstepstatus)                              |                                                                                                     |
+| `title`        | Yes      | `string`                                                                  |                                                                                                     |
+| `usage`        | No       | [AgileMaestroUsage](protocol.md#agilemaestrousage)                        | What the node's own agents spent; absent until the meter attributed usage to them.                  |
+| `waits`        | No       | Array of [AgileMaestroWait](protocol.md#agilemaestrowait)                 | What the node waits for from other nodes right now, oldest first; absent when it waits for nothing. |
 
 ## AgileMaestroRoute
 
@@ -504,6 +523,21 @@ What the agents that worked a node spent, as the run's meter measured it.
 | `inputTokens`       | Yes      | `integer` |                                                                                       |
 | `outputTokens`      | Yes      | `integer` |                                                                                       |
 | `priced`            | Yes      | `boolean` | False when a model it used has no published price, so `costMicros` leaves it out.     |
+
+## AgileMaestroWait
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+A result one node is waiting for from another, while it waits.
+
+| Field      | Required | Type     | Description                                                                     |
+| ---------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| `id`       | Yes      | `string` | The wait's id on the run's channel.                                             |
+| `key`      | Yes      | `string` | The result's name.                                                              |
+| `onNodeId` | Yes      | `string` | The node whose result it waits for: a subtask id, or the run id for the lead.   |
+| `onTitle`  | Yes      | `string` | That node's title, so the board can say who it waits for without looking it up. |
+| `since`    | Yes      | `string` | Decimal epoch milliseconds the wait began.                                      |
+| `what`     | Yes      | `string` | What it needs, in the waiting agent's words.                                    |
 
 ## AgilePlan
 
@@ -13649,6 +13683,159 @@ A published benchmark result Maestro seeds its registry with.
 | `score`  | Yes      | `number` | Percentage of tasks solved. |
 | `source` | Yes      | `string` | Where the number was read.  |
 
+## MaestroChannelAction
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+What happened on a run's channel, where its agents coordinate while they work at the same time.
+
+Type: `"deadlock"` / `"message"` / `"publish"` / `"unblock"` / `"wait"`.
+
+## MaestroChannelAudience
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Who a channel message is for, seen from the agent that sent it.
+
+Type: `"all"` / `"children"` / `"node"` / `"parent"` / `"siblings"`.
+
+## MaestroChannelDeadlock
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Waits formed a cycle; the common parent of the agents in it decides how the work goes on.
+
+| Field     | Required | Type              | Description                                                              |
+| --------- | -------- | ----------------- | ------------------------------------------------------------------------ |
+| `action`  | Yes      | `"deadlock"`      |                                                                          |
+| `nodeIds` | Yes      | Array of `string` | The nodes of the cycle, in order.                                        |
+| `note`    | Yes      | `string`          | Who waits for whom and who decides how the work goes on, in plain words. |
+| `waitIds` | Yes      | Array of `string` | The waits of the cycle, in order.                                        |
+
+## MaestroChannelEntry
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Union of every channel entry.
+
+Variant 1: [MaestroChannelMessage](protocol.md#maestrochannelmessage)
+
+| Field      | Required | Type                                                         | Description                                                 |
+| ---------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| `action`   | Yes      | `"message"`                                                  |                                                             |
+| `audience` | Yes      | [MaestroChannelAudience](protocol.md#maestrochannelaudience) |                                                             |
+| `text`     | Yes      | `string`                                                     |                                                             |
+| `toNodeId` | No       | `string`                                                     | The node the message is for when the audience is one agent. |
+
+Variant 2: [MaestroChannelPublish](protocol.md#maestrochannelpublish)
+
+| Field     | Required | Type              | Description                                                                                 |
+| --------- | -------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `action`  | Yes      | `"publish"`       |                                                                                             |
+| `files`   | Yes      | Array of `string` | Workspace-relative paths of the files published with it; their contents stay on the server. |
+| `key`     | Yes      | `string`          | The result's name, such as `api-contract`; publishing it again replaces it.                 |
+| `summary` | Yes      | `string`          | One line saying what it is.                                                                 |
+| `version` | Yes      | `integer`         | 1 for the first publication of the key, one more for each that replaced it.                 |
+
+Variant 3: [MaestroChannelWait](protocol.md#maestrochannelwait)
+
+| Field      | Required | Type     | Description                                                                   |
+| ---------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `action`   | Yes      | `"wait"` |                                                                               |
+| `key`      | Yes      | `string` |                                                                               |
+| `onNodeId` | Yes      | `string` | The node whose result it waits for: a subtask id, or the run id for the lead. |
+| `waitId`   | Yes      | `string` |                                                                               |
+| `what`     | Yes      | `string` | What it needs, in the waiting agent's words.                                  |
+
+Variant 4: [MaestroChannelUnblock](protocol.md#maestrochannelunblock)
+
+| Field        | Required | Type                                                       | Description                                                           |
+| ------------ | -------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| `action`     | Yes      | `"unblock"`                                                |                                                                       |
+| `key`        | No       | `string`                                                   | The published result the agent continues with, when one met the wait. |
+| `note`       | Yes      | `string`                                                   | What happened, in plain words.                                        |
+| `resolution` | Yes      | [MaestroWaitResolution](protocol.md#maestrowaitresolution) |                                                                       |
+| `version`    | No       | `integer`                                                  |                                                                       |
+| `waitId`     | Yes      | `string`                                                   |                                                                       |
+
+Variant 5: [MaestroChannelDeadlock](protocol.md#maestrochanneldeadlock)
+
+| Field     | Required | Type              | Description                                                              |
+| --------- | -------- | ----------------- | ------------------------------------------------------------------------ |
+| `action`  | Yes      | `"deadlock"`      |                                                                          |
+| `nodeIds` | Yes      | Array of `string` | The nodes of the cycle, in order.                                        |
+| `note`    | Yes      | `string`          | Who waits for whom and who decides how the work goes on, in plain words. |
+| `waitIds` | Yes      | Array of `string` | The waits of the cycle, in order.                                        |
+
+## MaestroChannelMessage
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An agent posted an update or wrote to one agent. The text is the agent's own words: data, not instructions.
+
+| Field      | Required | Type                                                         | Description                                                 |
+| ---------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| `action`   | Yes      | `"message"`                                                  |                                                             |
+| `audience` | Yes      | [MaestroChannelAudience](protocol.md#maestrochannelaudience) |                                                             |
+| `text`     | Yes      | `string`                                                     |                                                             |
+| `toNodeId` | No       | `string`                                                     | The node the message is for when the audience is one agent. |
+
+## MaestroChannelPublish
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An agent published a named result: a decision, a contract or files others depend on.
+
+| Field     | Required | Type              | Description                                                                                 |
+| --------- | -------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `action`  | Yes      | `"publish"`       |                                                                                             |
+| `files`   | Yes      | Array of `string` | Workspace-relative paths of the files published with it; their contents stay on the server. |
+| `key`     | Yes      | `string`          | The result's name, such as `api-contract`; publishing it again replaces it.                 |
+| `summary` | Yes      | `string`          | One line saying what it is.                                                                 |
+| `version` | Yes      | `integer`         | 1 for the first publication of the key, one more for each that replaced it.                 |
+
+## MaestroChannelUnblock
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A wait ended and the waiting agent continues.
+
+| Field        | Required | Type                                                       | Description                                                           |
+| ------------ | -------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| `action`     | Yes      | `"unblock"`                                                |                                                                       |
+| `key`        | No       | `string`                                                   | The published result the agent continues with, when one met the wait. |
+| `note`       | Yes      | `string`                                                   | What happened, in plain words.                                        |
+| `resolution` | Yes      | [MaestroWaitResolution](protocol.md#maestrowaitresolution) |                                                                       |
+| `version`    | No       | `integer`                                                  |                                                                       |
+| `waitId`     | Yes      | `string`                                                   |                                                                       |
+
+## MaestroChannelUpdate
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An agent of the run coordinated through the run's channel.
+
+| Field    | Required | Type                                                   | Description                                                        |
+| -------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `entry`  | Yes      | [MaestroChannelEntry](protocol.md#maestrochannelentry) |                                                                    |
+| `kind`   | Yes      | `"channel"`                                            |                                                                    |
+| `nodeId` | Yes      | `string`                                               | The acting agent's node: a subtask id, or the run id for the lead. |
+| `seq`    | Yes      | `integer`                                              | The entry's position in the run's channel, from 1.                 |
+
+## MaestroChannelWait
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+An agent began waiting for a named result; it spends nothing until the wait ends.
+
+| Field      | Required | Type     | Description                                                                   |
+| ---------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `action`   | Yes      | `"wait"` |                                                                               |
+| `key`      | Yes      | `string` |                                                                               |
+| `onNodeId` | Yes      | `string` | The node whose result it waits for: a subtask id, or the run id for the lead. |
+| `waitId`   | Yes      | `string` |                                                                               |
+| `what`     | Yes      | `string` | What it needs, in the waiting agent's words.                                  |
+
 ## MaestroCheckState
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
@@ -14382,6 +14569,15 @@ Variant 7: [MaestroUsageUpdate](protocol.md#maestrousageupdate)
 | `cost` | Yes      | [MaestroCost](protocol.md#maestrocost) |             |
 | `kind` | Yes      | `"usage"`                              |             |
 
+Variant 8: [MaestroChannelUpdate](protocol.md#maestrochannelupdate)
+
+| Field    | Required | Type                                                   | Description                                                        |
+| -------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `entry`  | Yes      | [MaestroChannelEntry](protocol.md#maestrochannelentry) |                                                                    |
+| `kind`   | Yes      | `"channel"`                                            |                                                                    |
+| `nodeId` | Yes      | `string`                                               | The acting agent's node: a subtask id, or the run id for the lead. |
+| `seq`    | Yes      | `integer`                                              | The entry's position in the run's channel, from 1.                 |
+
 ## MaestroUsageUpdate
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
@@ -14392,6 +14588,14 @@ The run's live cost meter changed.
 | ------ | -------- | -------------------------------------- | ----------- |
 | `cost` | Yes      | [MaestroCost](protocol.md#maestrocost) |             |
 | `kind` | Yes      | `"usage"`                              |             |
+
+## MaestroWaitResolution
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+How a wait ended.
+
+Type: `"cancelled"` / `"decided"` / `"ended"` / `"met"` / `"redirected"`.
 
 ## ManagedWorkspacePreference
 

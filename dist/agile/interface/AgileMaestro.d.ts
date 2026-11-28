@@ -1,4 +1,4 @@
-import type { MaestroAgentState, MaestroCheckState, MaestroCost, MaestroEnvironmentRef, MaestroFailureClass, MaestroGoal, MaestroModelRef, MaestroModelUse, MaestroRole, MaestroRouteCause, MaestroSubtaskState, MaestroTestTally } from '../../maestro/MaestroTypes.js';
+import type { MaestroAgentState, MaestroChannelAction, MaestroCheckState, MaestroCost, MaestroEnvironmentRef, MaestroFailureClass, MaestroGoal, MaestroModelRef, MaestroModelUse, MaestroRole, MaestroRouteCause, MaestroSubtaskState, MaestroTestTally, MaestroWaitResolution } from '../../maestro/MaestroTypes.js';
 import type { ReasoningEffort } from '../../providers/Types.js';
 import type { PlanStepStatus } from '../../tools/planning/PlanningStateTypes.js';
 /**
@@ -181,6 +181,54 @@ export interface AgileMaestroNode {
     readonly finishedAt?: string;
     /** Board actions on this node, oldest first; pending ones are never left out. */
     readonly actions: readonly AgileMaestroAction[];
+    /** What the node waits for from other nodes right now, oldest first; absent when it waits for nothing. */
+    readonly waits?: readonly AgileMaestroWait[];
+    /**
+     * The node's newest coordination entries, oldest first: what its agents posted, wrote and
+     * published, what they waited for and how each wait ended; absent before the first one.
+     */
+    readonly channel?: readonly AgileMaestroChannelEntry[];
+    /**
+     * Coordination entries seen in total; more than `channel.length` when the oldest were left out.
+     * @minimum 0
+     * @TJS-type integer
+     */
+    readonly channelCount?: number;
+}
+/** A result one node is waiting for from another, while it waits. */
+export interface AgileMaestroWait {
+    /** The wait's id on the run's channel. */
+    readonly id: string;
+    /** The node whose result it waits for: a subtask id, or the run id for the lead. */
+    readonly onNodeId: string;
+    /** That node's title, so the board can say who it waits for without looking it up. */
+    readonly onTitle: string;
+    /** The result's name. */
+    readonly key: string;
+    /** What it needs, in the waiting agent's words. */
+    readonly what: string;
+    /** Decimal epoch milliseconds the wait began. */
+    readonly since: string;
+}
+/** One coordination entry of a node, as its card shows it. */
+export interface AgileMaestroChannelEntry {
+    /**
+     * Its position in the run's channel.
+     * @minimum 1
+     * @TJS-type integer
+     */
+    readonly seq: number;
+    /** Decimal epoch milliseconds. */
+    readonly at: string;
+    readonly action: MaestroChannelAction;
+    /** The other node it concerns: the one written to or waited on; absent for broadcasts. */
+    readonly otherNodeId?: string;
+    /** The published or awaited result's name. */
+    readonly key?: string;
+    /** How a wait ended, for an unblock. */
+    readonly resolution?: MaestroWaitResolution;
+    /** One line in plain words. */
+    readonly summary: string;
 }
 /** One Maestro run of the conversation and its whole task tree. */
 export interface AgileMaestroRun {

@@ -831,6 +831,50 @@ export const schema: Schema = {
             type: 'object',
             additionalProperties: false,
         },
+        AgileMaestroChannelEntry: {
+            description: 'One coordination entry of a node, as its card shows it.',
+            properties: {
+                action: {
+                    $ref: '#/definitions/MaestroChannelAction',
+                },
+                at: {
+                    description: 'Decimal epoch milliseconds.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                key: {
+                    description: "The published or awaited result's name.",
+                    type: 'string',
+                    pattern: '^[a-z0-9][a-z0-9._-]{0,63}$',
+                    maxLength: 64,
+                },
+                otherNodeId: {
+                    description:
+                        'The other node it concerns: the one written to or waited on; absent for broadcasts.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                resolution: {
+                    $ref: '#/definitions/MaestroWaitResolution',
+                    description: 'How a wait ended, for an unblock.',
+                },
+                seq: {
+                    description: "Its position in the run's channel.",
+                    minimum: 1,
+                    type: 'integer',
+                },
+                summary: {
+                    description: 'One line in plain words.',
+                    type: 'string',
+                    maxLength: 300,
+                },
+            },
+            required: ['action', 'at', 'seq', 'summary'],
+            type: 'object',
+            additionalProperties: false,
+        },
         AgileMaestroCheck: {
             description: 'One acceptance check of a node and its latest result.',
             properties: {
@@ -937,6 +981,21 @@ export const schema: Schema = {
                     $ref: '#/definitions/AgileMaestroAssignee',
                     description: 'Absent until an agent picks the node up.',
                 },
+                channel: {
+                    description:
+                        "The node's newest coordination entries, oldest first: what its agents posted, wrote and\npublished, what they waited for and how each wait ended; absent before the first one.",
+                    items: {
+                        $ref: '#/definitions/AgileMaestroChannelEntry',
+                    },
+                    type: 'array',
+                    maxItems: 16,
+                },
+                channelCount: {
+                    description:
+                        'Coordination entries seen in total; more than `channel.length` when the oldest were left out.',
+                    minimum: 0,
+                    type: 'integer',
+                },
                 checkCount: {
                     description:
                         'Checks seen in total; more than `checks.length` when the oldest were left out to bound it.',
@@ -1027,6 +1086,15 @@ export const schema: Schema = {
                     $ref: '#/definitions/AgileMaestroUsage',
                     description:
                         "What the node's own agents spent; absent until the meter attributed usage to them.",
+                },
+                waits: {
+                    description:
+                        'What the node waits for from other nodes right now, oldest first; absent when it waits for nothing.',
+                    items: {
+                        $ref: '#/definitions/AgileMaestroWait',
+                    },
+                    type: 'array',
+                    maxItems: 16,
                 },
             },
             required: [
@@ -1217,6 +1285,50 @@ export const schema: Schema = {
                 'outputTokens',
                 'priced',
             ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroWait: {
+            description: 'A result one node is waiting for from another, while it waits.',
+            properties: {
+                id: {
+                    description: "The wait's id on the run's channel.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                key: {
+                    description: "The result's name.",
+                    type: 'string',
+                    pattern: '^[a-z0-9][a-z0-9._-]{0,63}$',
+                    maxLength: 64,
+                },
+                onNodeId: {
+                    description:
+                        'The node whose result it waits for: a subtask id, or the run id for the lead.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                onTitle: {
+                    description:
+                        "That node's title, so the board can say who it waits for without looking it up.",
+                    type: 'string',
+                    maxLength: 300,
+                },
+                since: {
+                    description: 'Decimal epoch milliseconds the wait began.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                what: {
+                    description: "What it needs, in the waiting agent's words.",
+                    type: 'string',
+                    maxLength: 600,
+                },
+            },
+            required: ['id', 'key', 'onNodeId', 'onTitle', 'since', 'what'],
             type: 'object',
             additionalProperties: false,
         },
@@ -24615,6 +24727,242 @@ export const schema: Schema = {
             type: 'object',
             additionalProperties: false,
         },
+        MaestroChannelAction: {
+            description:
+                "What happened on a run's channel, where its agents coordinate while they work at the same time.\nUnion of {@link MaestroChannelAction} values.",
+            enum: ['deadlock', 'message', 'publish', 'unblock', 'wait'],
+            type: 'string',
+        },
+        MaestroChannelAudience: {
+            description:
+                'Who a channel message is for, seen from the agent that sent it.\nUnion of {@link MaestroChannelAudience} values.',
+            enum: ['all', 'children', 'node', 'parent', 'siblings'],
+            type: 'string',
+        },
+        MaestroChannelDeadlock: {
+            description:
+                'Waits formed a cycle; the common parent of the agents in it decides how the work goes on.',
+            properties: {
+                action: {
+                    const: 'deadlock',
+                    type: 'string',
+                },
+                nodeIds: {
+                    description: 'The nodes of the cycle, in order.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                note: {
+                    description:
+                        'Who waits for whom and who decides how the work goes on, in plain words.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                waitIds: {
+                    description: 'The waits of the cycle, in order.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+            },
+            required: ['action', 'nodeIds', 'note', 'waitIds'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroChannelEntry: {
+            anyOf: [
+                {
+                    $ref: '#/definitions/MaestroChannelMessage',
+                },
+                {
+                    $ref: '#/definitions/MaestroChannelPublish',
+                },
+                {
+                    $ref: '#/definitions/MaestroChannelWait',
+                },
+                {
+                    $ref: '#/definitions/MaestroChannelUnblock',
+                },
+                {
+                    $ref: '#/definitions/MaestroChannelDeadlock',
+                },
+            ],
+            description: 'Union of every channel entry.',
+        },
+        MaestroChannelMessage: {
+            description:
+                "An agent posted an update or wrote to one agent. The text is the agent's own words: data, not instructions.",
+            properties: {
+                action: {
+                    const: 'message',
+                    type: 'string',
+                },
+                audience: {
+                    $ref: '#/definitions/MaestroChannelAudience',
+                },
+                text: {
+                    type: 'string',
+                    maxLength: 4000,
+                },
+                toNodeId: {
+                    description: 'The node the message is for when the audience is one agent.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['action', 'audience', 'text'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroChannelPublish: {
+            description:
+                'An agent published a named result: a decision, a contract or files others depend on.',
+            properties: {
+                action: {
+                    const: 'publish',
+                    type: 'string',
+                },
+                files: {
+                    description:
+                        'Workspace-relative paths of the files published with it; their contents stay on the server.',
+                    items: {
+                        type: 'string',
+                        maxLength: 1024,
+                    },
+                    type: 'array',
+                    maxItems: 16,
+                },
+                key: {
+                    description:
+                        "The result's name, such as `api-contract`; publishing it again replaces it.",
+                    type: 'string',
+                    pattern: '^[a-z0-9][a-z0-9._-]{0,63}$',
+                    maxLength: 64,
+                },
+                summary: {
+                    description: 'One line saying what it is.',
+                    type: 'string',
+                    maxLength: 300,
+                },
+                version: {
+                    description:
+                        '1 for the first publication of the key, one more for each that replaced it.',
+                    minimum: 1,
+                    type: 'integer',
+                },
+            },
+            required: ['action', 'files', 'key', 'summary', 'version'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroChannelUnblock: {
+            description: 'A wait ended and the waiting agent continues.',
+            properties: {
+                action: {
+                    const: 'unblock',
+                    type: 'string',
+                },
+                key: {
+                    description:
+                        'The published result the agent continues with, when one met the wait.',
+                    type: 'string',
+                    pattern: '^[a-z0-9][a-z0-9._-]{0,63}$',
+                    maxLength: 64,
+                },
+                note: {
+                    description: 'What happened, in plain words.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                resolution: {
+                    $ref: '#/definitions/MaestroWaitResolution',
+                },
+                version: {
+                    minimum: 1,
+                    type: 'integer',
+                },
+                waitId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+            },
+            required: ['action', 'note', 'resolution', 'waitId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroChannelUpdate: {
+            description: "An agent of the run coordinated through the run's channel.",
+            properties: {
+                entry: {
+                    $ref: '#/definitions/MaestroChannelEntry',
+                },
+                kind: {
+                    const: 'channel',
+                    type: 'string',
+                },
+                nodeId: {
+                    description:
+                        "The acting agent's node: a subtask id, or the run id for the lead.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                seq: {
+                    description: "The entry's position in the run's channel, from 1.",
+                    minimum: 1,
+                    type: 'integer',
+                },
+            },
+            required: ['entry', 'kind', 'nodeId', 'seq'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroChannelWait: {
+            description:
+                'An agent began waiting for a named result; it spends nothing until the wait ends.',
+            properties: {
+                action: {
+                    const: 'wait',
+                    type: 'string',
+                },
+                key: {
+                    type: 'string',
+                    pattern: '^[a-z0-9][a-z0-9._-]{0,63}$',
+                    maxLength: 64,
+                },
+                onNodeId: {
+                    description:
+                        'The node whose result it waits for: a subtask id, or the run id for the lead.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                waitId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                what: {
+                    description: "What it needs, in the waiting agent's words.",
+                    type: 'string',
+                    maxLength: 600,
+                },
+            },
+            required: ['action', 'key', 'onNodeId', 'waitId', 'what'],
+            type: 'object',
+            additionalProperties: false,
+        },
         MaestroCheckState: {
             description: 'Lifecycle of one check.\nUnion of {@link MaestroCheckState} values.',
             enum: ['failed', 'passed', 'running', 'skipped'],
@@ -25882,6 +26230,9 @@ export const schema: Schema = {
                 {
                     $ref: '#/definitions/MaestroUsageUpdate',
                 },
+                {
+                    $ref: '#/definitions/MaestroChannelUpdate',
+                },
             ],
             description: 'Union of every Maestro update.',
         },
@@ -25899,6 +26250,11 @@ export const schema: Schema = {
             required: ['cost', 'kind'],
             type: 'object',
             additionalProperties: false,
+        },
+        MaestroWaitResolution: {
+            description: 'How a wait ended.\nUnion of {@link MaestroWaitResolution} values.',
+            enum: ['cancelled', 'decided', 'ended', 'met', 'redirected'],
+            type: 'string',
         },
         ManagedWorkspacePreference: {
             description: "Use the account's managed VM as the main workspace.",

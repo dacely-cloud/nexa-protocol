@@ -155,3 +155,42 @@ export const MaestroCheckState = {
     Failed: 'failed',
     Skipped: 'skipped',
 };
+/** What happened on a run's channel, where its agents coordinate while they work at the same time. */
+export const MaestroChannelAction = {
+    /** An agent posted an update to the agents around it or wrote to one agent. */
+    Message: 'message',
+    /** An agent published a named result that other agents can wait for. */
+    Publish: 'publish',
+    /** An agent began waiting for a named result from another agent. */
+    Wait: 'wait',
+    /** A wait ended. */
+    Unblock: 'unblock',
+    /** Waits formed a cycle that none of the waiting agents can break; their common parent resolves it. */
+    Deadlock: 'deadlock',
+};
+/** Who a channel message is for, seen from the agent that sent it. */
+export const MaestroChannelAudience = {
+    /** The agents with the same parent as the sender. */
+    Siblings: 'siblings',
+    /** The sender's parent. */
+    Parent: 'parent',
+    /** The sender's own sub-agents. */
+    Children: 'children',
+    /** Every agent of the run. */
+    All: 'all',
+    /** One agent, the one working the node {@link MaestroChannelMessage.toNodeId} names. */
+    Node: 'node',
+};
+/** How a wait ended. */
+export const MaestroWaitResolution = {
+    /** The result was published, by the agent waited on or by another one. */
+    Met: 'met',
+    /** The agents' common parent decided the result itself and published it. */
+    Decided: 'decided',
+    /** The parent told the waiting agent to do that part of the work itself. */
+    Redirected: 'redirected',
+    /** The agent waited on finished without publishing the result. */
+    Ended: 'ended',
+    /** The waiting agent stopped waiting: it was stopped, or the run ended first. */
+    Cancelled: 'cancelled',
+};

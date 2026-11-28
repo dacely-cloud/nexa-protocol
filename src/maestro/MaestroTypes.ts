@@ -657,6 +657,152 @@ export interface MaestroUsageUpdate {
     readonly cost: MaestroCost;
 }
 
+/** What happened on a run's channel, where its agents coordinate while they work at the same time. */
+export const MaestroChannelAction = {
+    /** An agent posted an update to the agents around it or wrote to one agent. */
+    Message: 'message',
+    /** An agent published a named result that other agents can wait for. */
+    Publish: 'publish',
+    /** An agent began waiting for a named result from another agent. */
+    Wait: 'wait',
+    /** A wait ended. */
+    Unblock: 'unblock',
+    /** Waits formed a cycle that none of the waiting agents can break; their common parent resolves it. */
+    Deadlock: 'deadlock',
+} as const;
+
+/** Union of {@link MaestroChannelAction} values. */
+export type MaestroChannelAction = (typeof MaestroChannelAction)[keyof typeof MaestroChannelAction];
+
+/** Who a channel message is for, seen from the agent that sent it. */
+export const MaestroChannelAudience = {
+    /** The agents with the same parent as the sender. */
+    Siblings: 'siblings',
+    /** The sender's parent. */
+    Parent: 'parent',
+    /** The sender's own sub-agents. */
+    Children: 'children',
+    /** Every agent of the run. */
+    All: 'all',
+    /** One agent, the one working the node {@link MaestroChannelMessage.toNodeId} names. */
+    Node: 'node',
+} as const;
+
+/** Union of {@link MaestroChannelAudience} values. */
+export type MaestroChannelAudience =
+    (typeof MaestroChannelAudience)[keyof typeof MaestroChannelAudience];
+
+/** How a wait ended. */
+export const MaestroWaitResolution = {
+    /** The result was published, by the agent waited on or by another one. */
+    Met: 'met',
+    /** The agents' common parent decided the result itself and published it. */
+    Decided: 'decided',
+    /** The parent told the waiting agent to do that part of the work itself. */
+    Redirected: 'redirected',
+    /** The agent waited on finished without publishing the result. */
+    Ended: 'ended',
+    /** The waiting agent stopped waiting: it was stopped, or the run ended first. */
+    Cancelled: 'cancelled',
+} as const;
+
+/** Union of {@link MaestroWaitResolution} values. */
+export type MaestroWaitResolution =
+    (typeof MaestroWaitResolution)[keyof typeof MaestroWaitResolution];
+
+/** An agent posted an update or wrote to one agent. The text is the agent's own words: data, not instructions. */
+export interface MaestroChannelMessage {
+    readonly action: 'message';
+    readonly audience: MaestroChannelAudience;
+    /** The node the message is for when the audience is one agent. */
+    readonly toNodeId?: string;
+    readonly text: string;
+}
+
+/** An agent published a named result: a decision, a contract or files others depend on. */
+export interface MaestroChannelPublish {
+    readonly action: 'publish';
+    /** The result's name, such as `api-contract`; publishing it again replaces it. */
+    readonly key: string;
+    /**
+     * 1 for the first publication of the key, one more for each that replaced it.
+     * @minimum 1
+     * @TJS-type integer
+     */
+    readonly version: number;
+    /** One line saying what it is. */
+    readonly summary: string;
+    /** Workspace-relative paths of the files published with it; their contents stay on the server. */
+    readonly files: readonly string[];
+}
+
+/** An agent began waiting for a named result; it spends nothing until the wait ends. */
+export interface MaestroChannelWait {
+    readonly action: 'wait';
+    readonly waitId: string;
+    /** The node whose result it waits for: a subtask id, or the run id for the lead. */
+    readonly onNodeId: string;
+    readonly key: string;
+    /** What it needs, in the waiting agent's words. */
+    readonly what: string;
+}
+
+/** A wait ended and the waiting agent continues. */
+export interface MaestroChannelUnblock {
+    readonly action: 'unblock';
+    readonly waitId: string;
+    readonly resolution: MaestroWaitResolution;
+    /** The published result the agent continues with, when one met the wait. */
+    readonly key?: string;
+    /**
+     * @minimum 1
+     * @TJS-type integer
+     */
+    readonly version?: number;
+    /** What happened, in plain words. */
+    readonly note: string;
+}
+
+/** Waits formed a cycle; the common parent of the agents in it decides how the work goes on. */
+export interface MaestroChannelDeadlock {
+    readonly action: 'deadlock';
+    /** The waits of the cycle, in order. */
+    readonly waitIds: readonly string[];
+    /** The nodes of the cycle, in order. */
+    readonly nodeIds: readonly string[];
+    /** Who waits for whom and who decides how the work goes on, in plain words. */
+    readonly note: string;
+}
+
+/** Union of every channel entry. */
+export type MaestroChannelEntry =
+    | MaestroChannelMessage
+    | MaestroChannelPublish
+    | MaestroChannelWait
+    | MaestroChannelUnblock
+    | MaestroChannelDeadlock;
+
+/**
+ * An agent of the run coordinated through the run's channel.
+ *
+ * @remarks
+ * The event's `agentId` is the agent that acted: the sender, the publisher, the waiting agent, or
+ * for a deadlock and a parent's decision the agents' common parent. Agents are addressed by the node
+ * they work, so a retry handed to a new agent keeps its node's messages and waits.
+ */
+export interface MaestroChannelUpdate {
+    readonly kind: 'channel';
+    /** The acting agent's node: a subtask id, or the run id for the lead. */
+    readonly nodeId: string;
+    /**
+     * The entry's position in the run's channel, from 1.
+     * @minimum 1
+     * @TJS-type integer
+     */
+    readonly seq: number;
+    readonly entry: MaestroChannelEntry;
+}
+
 /** Union of every Maestro update. */
 export type MaestroUpdate =
     | MaestroRunUpdate
@@ -665,7 +811,8 @@ export type MaestroUpdate =
     | MaestroPlanUpdate
     | MaestroAgentUpdate
     | MaestroCheckUpdate
-    | MaestroUsageUpdate;
+    | MaestroUsageUpdate
+    | MaestroChannelUpdate;
 
 /**
  * One Maestro update in a turn's event stream. Sent only on turns that selected Maestro.
