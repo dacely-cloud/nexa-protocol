@@ -24028,11 +24028,20 @@ export const schema: Schema = {
         MaestroCost: {
             description: 'The live cost meter of a run.',
             properties: {
+                billedMicros: {
+                    description:
+                        'What the run actually charged; plan-covered usage bills nothing. Absent on older runs.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
                 cachedInputTokens: {
                     minimum: 0,
                     type: 'integer',
                 },
                 costMicros: {
+                    description:
+                        "The run's tokens at each model's published API price, including plan-covered usage.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -24243,11 +24252,25 @@ export const schema: Schema = {
         MaestroModelCost: {
             description: 'Cost and tokens of one model within a run.',
             properties: {
+                billedMicros: {
+                    description:
+                        'What was actually charged for this model: the user\'s key, Nerva-provided access or Athena.\nUsage covered by the user\'s plan bills "0". Absent on runs recorded before billing was split.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
                 cachedInputTokens: {
                     minimum: 0,
                     type: 'integer',
                 },
+                connection: {
+                    $ref: '#/definitions/MaestroConnectionKind',
+                    description:
+                        "How the model was reached; `plan` usage is covered by the user's subscription.",
+                },
                 costMicros: {
+                    description:
+                        "What this model's tokens cost at its published API price, whoever paid: a plan's usage is\npriced too, so a run's footprint is never hidden. \"0\" with `priced` false means no price is known.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -24268,6 +24291,11 @@ export const schema: Schema = {
                 outputTokens: {
                     minimum: 0,
                     type: 'integer',
+                },
+                priced: {
+                    description:
+                        'False when no published price is known for this model, so `costMicros` is not an estimate.',
+                    type: 'boolean',
                 },
                 provider: {
                     description:
@@ -24816,7 +24844,16 @@ export const schema: Schema = {
                     minimum: 0,
                     type: 'integer',
                 },
+                billedMicros: {
+                    description:
+                        'What the run actually charged. Absent on runs recorded before billing was split.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
                 costMicros: {
+                    description:
+                        "The run's tokens at published API prices, including plan-covered usage.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,
@@ -24976,8 +25013,16 @@ export const schema: Schema = {
                     type: 'array',
                     maxItems: 100,
                 },
+                monthBilledMicros: {
+                    description:
+                        "What this calendar month's Maestro runs actually charged; the monthly spending cap counts this.",
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
                 monthMicros: {
-                    description: 'USD micros spent on Maestro runs this calendar month.',
+                    description:
+                        "This calendar month's Maestro runs at published API prices, including plan-covered usage.",
                     type: 'string',
                     pattern: '^(0|[1-9][0-9]{0,18})$',
                     maxLength: 19,

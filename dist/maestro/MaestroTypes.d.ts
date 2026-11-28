@@ -372,7 +372,20 @@ export interface MaestroSubtask {
 /** Cost and tokens of one model within a run. */
 export interface MaestroModelCost extends MaestroModelRef {
     readonly name: string;
+    /**
+     * What this model's tokens cost at its published API price, whoever paid: a plan's usage is
+     * priced too, so a run's footprint is never hidden. "0" with `priced` false means no price is known.
+     */
     readonly costMicros: string;
+    /**
+     * What was actually charged for this model: the user's key, Nerva-provided access or Athena.
+     * Usage covered by the user's plan bills "0". Absent on runs recorded before billing was split.
+     */
+    readonly billedMicros?: string;
+    /** How the model was reached; `plan` usage is covered by the user's subscription. */
+    readonly connection?: MaestroConnectionKind;
+    /** False when no published price is known for this model, so `costMicros` is not an estimate. */
+    readonly priced?: boolean;
     /**
      * @minimum 0
      * @TJS-type integer
@@ -391,7 +404,10 @@ export interface MaestroModelCost extends MaestroModelRef {
 }
 /** The live cost meter of a run. */
 export interface MaestroCost {
+    /** The run's tokens at each model's published API price, including plan-covered usage. */
     readonly costMicros: string;
+    /** What the run actually charged; plan-covered usage bills nothing. Absent on older runs. */
+    readonly billedMicros?: string;
     /**
      * @minimum 0
      * @TJS-type integer
@@ -525,7 +541,10 @@ export interface MaestroRunSummary {
     readonly state: MaestroAgentState;
     readonly startedAt: string;
     readonly finishedAt: string | null;
+    /** The run's tokens at published API prices, including plan-covered usage. */
     readonly costMicros: string;
+    /** What the run actually charged. Absent on runs recorded before billing was split. */
+    readonly billedMicros?: string;
     /**
      * @minimum 0
      * @TJS-type integer
@@ -548,8 +567,10 @@ export interface MaestroRunsPage {
     readonly items: readonly MaestroRunSummary[];
     /** Pass back to read older runs; null at the end. */
     readonly nextCursor: string | null;
-    /** USD micros spent on Maestro runs this calendar month. */
+    /** This calendar month's Maestro runs at published API prices, including plan-covered usage. */
     readonly monthMicros: string;
+    /** What this calendar month's Maestro runs actually charged; the monthly spending cap counts this. */
+    readonly monthBilledMicros?: string;
 }
 /** Pages through recent runs. */
 export interface MaestroRunsListParams {
