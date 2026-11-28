@@ -614,18 +614,19 @@ Module: `nexa-protocol/gateway/ProtocolEventTypes.js`.
 
 What a finished turn produced.
 
-| Field              | Required | Type                                                            | Description                                                                           |
-| ------------------ | -------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `attachments`      | No       | Array of [DeliveredAttachment](protocol.md#deliveredattachment) | Delivered files; IDs match attachment events so clients can deduplicate.              |
-| `conversationId`   | Yes      | `null,string`                                                   |                                                                                       |
-| `finishReason`     | Yes      | [FinishReason](protocol.md#finishreason)                        |                                                                                       |
-| `incompleteReason` | No       | `string`                                                        | A stopped response may leave the task unfinished and its background resources active. |
-| `iterations`       | Yes      | `number`                                                        |                                                                                       |
-| `reasoning`        | Yes      | `string`                                                        |                                                                                       |
-| `sessionKey`       | Yes      | `string`                                                        | The session id this turn was filed under — `sessions.get`'s id, not the provider's.   |
-| `text`             | Yes      | `string`                                                        |                                                                                       |
-| `turnId`           | Yes      | `string`                                                        |                                                                                       |
-| `usage`            | Yes      | [TokenUsage](protocol.md#tokenusage)                            |                                                                                       |
+| Field              | Required | Type                                                            | Description                                                                                    |
+| ------------------ | -------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `attachments`      | No       | Array of [DeliveredAttachment](protocol.md#deliveredattachment) | Delivered files; IDs match attachment events so clients can deduplicate.                       |
+| `conversationId`   | Yes      | `null,string`                                                   |                                                                                                |
+| `cost`             | No       | [ReplyCost](protocol.md#replycost)                              | What the reply's model calls cost by who paid; absent from gateways that do not meter replies. |
+| `finishReason`     | Yes      | [FinishReason](protocol.md#finishreason)                        |                                                                                                |
+| `incompleteReason` | No       | `string`                                                        | A stopped response may leave the task unfinished and its background resources active.          |
+| `iterations`       | Yes      | `number`                                                        |                                                                                                |
+| `reasoning`        | Yes      | `string`                                                        |                                                                                                |
+| `sessionKey`       | Yes      | `string`                                                        | The session id this turn was filed under — `sessions.get`'s id, not the provider's.            |
+| `text`             | Yes      | `string`                                                        |                                                                                                |
+| `turnId`           | Yes      | `string`                                                        |                                                                                                |
+| `usage`            | Yes      | [TokenUsage](protocol.md#tokenusage)                            |                                                                                                |
 
 ## AttachEnvironmentParams
 
@@ -2825,15 +2826,34 @@ Type: `"adjustment"` / `"completion"` / `"embedding"` / `"media"` / `"speech"` /
 
 Module: `nexa-protocol/connections/ConnectionTypes.js`.
 
-One selectable chat model backed by the user's own key or subscription.
+One selectable chat model, with the connection it runs on for this account.
 
-| Field          | Required | Type                                           | Description                                                        |
-| -------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------ |
-| `model`        | Yes      | `string`                                       |                                                                    |
-| `name`         | Yes      | `string`                                       |                                                                    |
-| `provider`     | Yes      | `string`                                       | Provider id for API keys, or the application id for subscriptions. |
-| `providerName` | Yes      | `string`                                       |                                                                    |
-| `source`       | Yes      | [ChatModelSource](protocol.md#chatmodelsource) |                                                                    |
+| Field               | Required | Type                                                     | Description                                                                                  |
+| ------------------- | -------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `family`            | No       | `string`                                                 | The model's vendor family for grouping and its logo, such as `anthropic`.                    |
+| `familyName`        | No       | `string`                                                 |                                                                                              |
+| `model`             | Yes      | `string`                                                 |                                                                                              |
+| `name`              | Yes      | `string`                                                 |                                                                                              |
+| `openRouterId`      | No       | `string`                                                 | The model's OpenRouter id when Nerva-provided access can also reach it.                      |
+| `price`             | No       | [ChatModelPrice](protocol.md#chatmodelprice)             | Listed price on this connection; absent for subscriptions and unknown prices.                |
+| `provider`          | Yes      | `string`                                                 | Provider id for API keys, or the application id for subscriptions.                           |
+| `providerName`      | Yes      | `string`                                                 | The connection's provider: the subscription, the API key's provider, or Nerva.               |
+| `source`            | Yes      | [ChatModelSource](protocol.md#chatmodelsource)           |                                                                                              |
+| `toolCalling`       | No       | [ChatModelToolCalling](protocol.md#chatmodeltoolcalling) | Conformance result; absent when the model was not checked. A flagged model stays selectable. |
+| `toolCallingReason` | No       | `string`                                                 | Plain words on what failed, present with `unreliable`.                                       |
+
+## ChatModelPrice
+
+Module: `nexa-protocol/connections/ConnectionTypes.js`.
+
+A model's listed price per million tokens, in USD microcents (1e-8 USD) as decimal strings.
+
+| Field                   | Required | Type     | Description                                                               |
+| ----------------------- | -------- | -------- | ------------------------------------------------------------------------- |
+| `cachedInputPerMillion` | No       | `string` | Cached input, where the listing prices it apart.                          |
+| `inputPerMillion`       | Yes      | `string` |                                                                           |
+| `outputPerMillion`      | Yes      | `string` |                                                                           |
+| `source`                | Yes      | `string` | Where the price was read, in plain words, such as "OpenRouter's listing". |
 
 ## ChatModelSelection
 
@@ -2853,17 +2873,36 @@ Module: `nexa-protocol/connections/ConnectionTypes.js`.
 
 Who runs a chat model the user selected.
 
-Type: `"api-key"` / `"maestro"` / `"subscription"`.
+Type: `"api-key"` / `"maestro"` / `"nerva"` / `"subscription"`.
+
+## ChatModelToolCalling
+
+Module: `nexa-protocol/connections/ConnectionTypes.js`.
+
+What Nerva's tool-calling conformance check found for a model.
+
+Type: `"reliable"` / `"unreliable"`.
+
+## ChatModelWalletState
+
+Module: `nexa-protocol/connections/ConnectionTypes.js`.
+
+Whether the account's wallet can pay for wallet-billed models.
+
+Type: `"empty"` / `"funded"` / `"included"`.
 
 ## ChatModelsPage
 
 Module: `nexa-protocol/connections/ConnectionTypes.js`.
 
-Chat models the authenticated account has connected.
+Chat models the authenticated account can select.
 
-| Field   | Required | Type                                                    | Description |
-| ------- | -------- | ------------------------------------------------------- | ----------- |
-| `items` | Yes      | Array of [ChatModelChoice](protocol.md#chatmodelchoice) |             |
+| Field                | Required | Type                                                     | Description                                                                             |
+| -------------------- | -------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `items`              | Yes      | Array of [ChatModelChoice](protocol.md#chatmodelchoice)  |                                                                                         |
+| `refreshPending`     | No       | `true`                                                   | A background check of the account's connections is still running; list again shortly.   |
+| `unavailableSources` | No       | Array of [ChatModelSource](protocol.md#chatmodelsource)  | Connection sources whose listing failed; their earlier choices may still be shown.      |
+| `wallet`             | No       | [ChatModelWalletState](protocol.md#chatmodelwalletstate) | The wallet's state for wallet-billed models; absent where the deployment has no wallet. |
 
 ## CommandExecutionCleanupUnconfirmed
 
@@ -5006,6 +5045,17 @@ A saved version is returned even when its model run was already started by a los
 | `session`  | Yes      | [Session](protocol.md#session) |             |
 | `started`  | Yes      | `boolean`                      |             |
 | `streamId` | Yes      | `string`                       |             |
+
+## ConversationSpend
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+One conversation's spend by route and model.
+
+| Field            | Required | Type                                        | Description |
+| ---------------- | -------- | ------------------------------------------- | ----------- |
+| `conversationId` | Yes      | `string`                                    |             |
+| `lines`          | Yes      | Array of [SpendLine](protocol.md#spendline) |             |
 
 ## ConversationUnpinParams
 
@@ -10152,6 +10202,7 @@ Every gateway method with its params and result; the method name is the key.
 | `credit.resetHistory`                 | Yes      | Object (fields below) |                                                                                                        |
 | `credit.resets`                       | Yes      | Object (fields below) |                                                                                                        |
 | `credit.setBudget`                    | Yes      | Object (fields below) |                                                                                                        |
+| `credit.spend`                        | Yes      | Object (fields below) | The caller's model spend by who paid: the wallet, each own API key and each subscription.              |
 | `credit.summary`                      | Yes      | Object (fields below) |                                                                                                        |
 | `credit.wallet`                       | Yes      | Object (fields below) |                                                                                                        |
 | `credit.walletHistory`                | Yes      | Object (fields below) |                                                                                                        |
@@ -10873,6 +10924,13 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | ---------------------------------------------- | ----------- |
 | `params` | Yes      | [BudgetSetParams](protocol.md#budgetsetparams) |             |
 | `result` | Yes      | [Budget](protocol.md#budget)                   |             |
+
+**credit.spend**
+
+| Field    | Required | Type                                   | Description |
+| -------- | -------- | -------------------------------------- | ----------- |
+| `params` | Yes      | [SpendParams](protocol.md#spendparams) |             |
+| `result` | Yes      | [SpendPage](protocol.md#spendpage)     |             |
 
 **credit.summary**
 
@@ -15703,6 +15761,16 @@ A durable message to the conversation that requested it; no model execution.
 | `text`           | Yes      | `string`     |             |
 | `threadId`       | No       | `string`     |             |
 
+## ReplyCost
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+What one reply's model calls cost, by who paid; its sub-agents included.
+
+| Field   | Required | Type                                        | Description |
+| ------- | -------- | ------------------------------------------- | ----------- |
+| `lines` | Yes      | Array of [SpendLine](protocol.md#spendline) |             |
+
 ## RequirementState
 
 Module: `nexa-protocol/workflows/planning/PlanningTypes.js`.
@@ -17132,6 +17200,99 @@ Module: `nexa-protocol/reverse/SourcePrimitives.js`.
 Source grammars are explicit; bytecode formats use separate version-aware adapters.
 
 Type: `"c"` / `"cpp"` / `"javascript"` / `"lua"` / `"luau"`.
+
+## SpendAmount
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+How a spend amount was obtained and how many calls it covers.
+
+| Field           | Required | Type      | Description                                                                                         |
+| --------------- | -------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `calls`         | Yes      | `integer` |                                                                                                     |
+| `estimated`     | Yes      | `boolean` | True when part of the amount was priced from listed rates rather than reported by the provider.     |
+| `microcents`    | Yes      | `string`  | USD microcents (1e-8 USD) as a decimal string: what the wallet or the key was charged, or the       |
+| `unpricedCalls` | Yes      | `integer` | Calls with no known price, which `microcents` leaves out; equal to `calls` means no price is known. |
+
+## SpendLine
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+One model's spend on one route in a reply or a conversation.
+
+| Field               | Required | Type                                 | Description                                                                                         |
+| ------------------- | -------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `cachedInputTokens` | Yes      | `integer`                            |                                                                                                     |
+| `calls`             | Yes      | `integer`                            |                                                                                                     |
+| `estimated`         | Yes      | `boolean`                            | True when part of the amount was priced from listed rates rather than reported by the provider.     |
+| `inputTokens`       | Yes      | `integer`                            |                                                                                                     |
+| `microcents`        | Yes      | `string`                             | USD microcents (1e-8 USD) as a decimal string: what the wallet or the key was charged, or the       |
+| `model`             | Yes      | `string`                             | The model that ran, as its provider names it.                                                       |
+| `outputTokens`      | Yes      | `integer`                            |                                                                                                     |
+| `route`             | Yes      | [SpendRoute](protocol.md#spendroute) |                                                                                                     |
+| `unpricedCalls`     | Yes      | `integer`                            | Calls with no known price, which `microcents` leaves out; equal to `calls` means no price is known. |
+| `via`               | Yes      | `string`                             | Who was charged: `nerva` for the wallet and exemptions, the API key's provider id (`openrouter`,    |
+
+## SpendModelTotals
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+One model's spend on a route over today, this month and all time.
+
+| Field               | Required | Type                                   | Description               |
+| ------------------- | -------- | -------------------------------------- | ------------------------- |
+| `cachedInputTokens` | Yes      | `integer`                              |                           |
+| `inputTokens`       | Yes      | `integer`                              |                           |
+| `model`             | Yes      | `string`                               |                           |
+| `month`             | Yes      | [SpendAmount](protocol.md#spendamount) | This calendar month, UTC. |
+| `outputTokens`      | Yes      | `integer`                              |                           |
+| `today`             | Yes      | [SpendAmount](protocol.md#spendamount) | Today, UTC.               |
+| `total`             | Yes      | [SpendAmount](protocol.md#spendamount) |                           |
+
+## SpendPage
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+The caller's model spend by who paid: wallet, each API key and each subscription.
+
+| Field          | Required | Type                                                        | Description                              |
+| -------------- | -------- | ----------------------------------------------------------- | ---------------------------------------- |
+| `asOf`         | Yes      | `number`                                                    | Epoch milliseconds the totals were read. |
+| `conversation` | No       | [ConversationSpend](protocol.md#conversationspend)          |                                          |
+| `sources`      | Yes      | Array of [SpendSourceTotals](protocol.md#spendsourcetotals) |                                          |
+
+## SpendParams
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+`credit.spend` parameters.
+
+| Field            | Required | Type     | Description                                                                         |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------- |
+| `conversationId` | No       | `string` | Also returns this conversation's spend; the conversation must belong to the caller. |
+
+## SpendRoute
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+Who paid for a model call.
+
+Type: `"included"` / `"key"` / `"subscription"` / `"wallet"`.
+
+## SpendSourceTotals
+
+Module: `nexa-protocol/credit/SpendTypes.js`.
+
+One route's spend, such as one API key or one subscription, with its models.
+
+| Field    | Required | Type                                                      | Description               |
+| -------- | -------- | --------------------------------------------------------- | ------------------------- |
+| `models` | Yes      | Array of [SpendModelTotals](protocol.md#spendmodeltotals) |                           |
+| `month`  | Yes      | [SpendAmount](protocol.md#spendamount)                    |                           |
+| `route`  | Yes      | [SpendRoute](protocol.md#spendroute)                      |                           |
+| `today`  | Yes      | [SpendAmount](protocol.md#spendamount)                    |                           |
+| `total`  | Yes      | [SpendAmount](protocol.md#spendamount)                    |                           |
+| `via`    | Yes      | `string`                                                  | As {@link SpendLine.via}. |
 
 ## SteerParams
 

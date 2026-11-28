@@ -681,6 +681,14 @@ export function creditSetBudgetParams(value) {
 export function creditSetBudgetResult(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/credit.setBudget/properties/result', value);
 }
+/** Validates the params of `credit.spend`. */
+export function creditSpendParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/credit.spend/properties/params', value);
+}
+/** Validates the result of `credit.spend`. */
+export function creditSpendResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/credit.spend/properties/result', value);
+}
 /** Validates the params of `credit.summary`. */
 export function creditSummaryParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/credit.summary/properties/params', value);

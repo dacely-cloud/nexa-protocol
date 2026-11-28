@@ -9,6 +9,7 @@ import type { ChatModelSelection, SafeguardFallback } from '../connections/Conne
 import type { ErrorCode } from '../core/ErrorTypes.js';
 import type { DeliveredAttachment } from '../media/DeliveredAttachment.js';
 import type { FinishReason, ReasoningEffort, TokenUsage } from '../providers/Types.js';
+import type { ReplyCost } from '../credit/SpendTypes.js';
 import type { RiskLevel } from '../tools/RiskLevel.js';
 import type { InboundAttachment } from './AttachmentTypes.js';
 import type { JsonValue } from '../json/JsonValue.js';
@@ -159,6 +160,8 @@ export interface AskResult {
     readonly reasoning: string;
     readonly finishReason: FinishReason;
     readonly usage: TokenUsage;
+    /** What the reply's model calls cost by who paid; absent from gateways that do not meter replies. */
+    readonly cost?: ReplyCost;
     readonly iterations: number;
     readonly conversationId: string | null;
     /**

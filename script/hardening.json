@@ -1492,6 +1492,18 @@
         "ChatModelChoice": {
             "": {
                 "additionalProperties": false
+            },
+            "properties/family": {
+                "maxLength": 64
+            },
+            "properties/familyName": {
+                "maxLength": 80
+            },
+            "properties/openRouterId": {
+                "maxLength": 256
+            },
+            "properties/toolCallingReason": {
+                "maxLength": 300
             }
         },
         "ChatModelSelection": {
@@ -2254,6 +2266,104 @@
         "AttachedEnvironmentRespondResult": {
             "": {
                 "additionalProperties": false
+            }
+        },
+        "SpendAmount": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/microcents": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "SpendLine": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/microcents": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/via": {
+                "maxLength": 256
+            },
+            "properties/model": {
+                "maxLength": 256
+            }
+        },
+        "ReplyCost": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/lines": {
+                "maxItems": 256
+            }
+        },
+        "SpendModelTotals": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/model": {
+                "maxLength": 256
+            }
+        },
+        "SpendSourceTotals": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/via": {
+                "maxLength": 256
+            },
+            "properties/models": {
+                "maxItems": 512
+            }
+        },
+        "ConversationSpend": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/conversationId": {
+                "maxLength": 512
+            },
+            "properties/lines": {
+                "maxItems": 1024
+            }
+        },
+        "SpendParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/conversationId": {
+                "maxLength": 512
+            }
+        },
+        "SpendPage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/sources": {
+                "maxItems": 256
+            }
+        },
+        "ChatModelPrice": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/inputPerMillion": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/outputPerMillion": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/cachedInputPerMillion": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/source": {
+                "maxLength": 80
             }
         }
     }

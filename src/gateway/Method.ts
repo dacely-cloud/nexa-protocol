@@ -137,6 +137,8 @@ export enum Method {
     CreditResets = 'credit.resets',
     /** Calls `credit.setBudget`. */
     CreditSetBudget = 'credit.setBudget',
+    /** Calls `credit.spend`. */
+    CreditSpend = 'credit.spend',
     /** Calls `credit.summary`. */
     CreditSummary = 'credit.summary',
     /** Calls `credit.wallet`. */

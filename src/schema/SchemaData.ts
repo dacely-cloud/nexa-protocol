@@ -1337,6 +1337,11 @@ export const schema: Schema = {
                 conversationId: {
                     type: ['null', 'string'],
                 },
+                cost: {
+                    $ref: '#/definitions/ReplyCost',
+                    description:
+                        "What the reply's model calls cost by who paid; absent from gateways that do not meter replies.",
+                },
                 finishReason: {
                     $ref: '#/definitions/FinishReason',
                 },
@@ -5500,13 +5505,35 @@ export const schema: Schema = {
             type: 'string',
         },
         ChatModelChoice: {
-            description: "One selectable chat model backed by the user's own key or subscription.",
+            description:
+                'One selectable chat model, with the connection it runs on for this account.',
             properties: {
+                family: {
+                    description:
+                        "The model's vendor family for grouping and its logo, such as `anthropic`.",
+                    type: 'string',
+                    maxLength: 64,
+                },
+                familyName: {
+                    type: 'string',
+                    maxLength: 80,
+                },
                 model: {
                     type: 'string',
                 },
                 name: {
                     type: 'string',
+                },
+                openRouterId: {
+                    description:
+                        "The model's OpenRouter id when Nerva-provided access can also reach it.",
+                    type: 'string',
+                    maxLength: 256,
+                },
+                price: {
+                    $ref: '#/definitions/ChatModelPrice',
+                    description:
+                        'Listed price on this connection; absent for subscriptions and unknown prices.',
                 },
                 provider: {
                     description:
@@ -5514,13 +5541,56 @@ export const schema: Schema = {
                     type: 'string',
                 },
                 providerName: {
+                    description:
+                        "The connection's provider: the subscription, the API key's provider, or Nerva.",
                     type: 'string',
                 },
                 source: {
                     $ref: '#/definitions/ChatModelSource',
                 },
+                toolCalling: {
+                    $ref: '#/definitions/ChatModelToolCalling',
+                    description:
+                        'Conformance result; absent when the model was not checked. A flagged model stays selectable.',
+                },
+                toolCallingReason: {
+                    description: 'Plain words on what failed, present with `unreliable`.',
+                    type: 'string',
+                    maxLength: 300,
+                },
             },
             required: ['model', 'name', 'provider', 'providerName', 'source'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        ChatModelPrice: {
+            description:
+                "A model's listed price per million tokens, in USD microcents (1e-8 USD) as decimal strings.",
+            properties: {
+                cachedInputPerMillion: {
+                    description: 'Cached input, where the listing prices it apart.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                inputPerMillion: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                outputPerMillion: {
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                source: {
+                    description:
+                        'Where the price was read, in plain words, such as "OpenRouter\'s listing".',
+                    type: 'string',
+                    maxLength: 80,
+                },
+            },
+            required: ['inputPerMillion', 'outputPerMillion', 'source'],
             type: 'object',
             additionalProperties: false,
         },
@@ -5547,17 +5617,48 @@ export const schema: Schema = {
         ChatModelSource: {
             description:
                 'Who runs a chat model the user selected.\nUnion of {@link ChatModelSource} values.',
-            enum: ['api-key', 'maestro', 'subscription'],
+            enum: ['api-key', 'maestro', 'nerva', 'subscription'],
+            type: 'string',
+        },
+        ChatModelToolCalling: {
+            description:
+                "What Nerva's tool-calling conformance check found for a model.\nUnion of {@link ChatModelToolCalling} values.",
+            enum: ['reliable', 'unreliable'],
+            type: 'string',
+        },
+        ChatModelWalletState: {
+            description:
+                "Whether the account's wallet can pay for wallet-billed models.\nUnion of {@link ChatModelWalletState} values.",
+            enum: ['empty', 'funded', 'included'],
             type: 'string',
         },
         ChatModelsPage: {
-            description: 'Chat models the authenticated account has connected.',
+            description: 'Chat models the authenticated account can select.',
             properties: {
                 items: {
                     items: {
                         $ref: '#/definitions/ChatModelChoice',
                     },
                     type: 'array',
+                },
+                refreshPending: {
+                    const: true,
+                    description:
+                        "A background check of the account's connections is still running; list again shortly.",
+                    type: 'boolean',
+                },
+                unavailableSources: {
+                    description:
+                        'Connection sources whose listing failed; their earlier choices may still be shown.',
+                    items: {
+                        $ref: '#/definitions/ChatModelSource',
+                    },
+                    type: 'array',
+                },
+                wallet: {
+                    $ref: '#/definitions/ChatModelWalletState',
+                    description:
+                        "The wallet's state for wallet-billed models; absent where the deployment has no wallet.",
                 },
             },
             required: ['items'],
@@ -9402,6 +9503,25 @@ export const schema: Schema = {
             },
             required: ['session', 'started', 'streamId'],
             type: 'object',
+        },
+        ConversationSpend: {
+            description: "One conversation's spend by route and model.",
+            properties: {
+                conversationId: {
+                    type: 'string',
+                    maxLength: 512,
+                },
+                lines: {
+                    items: {
+                        $ref: '#/definitions/SpendLine',
+                    },
+                    type: 'array',
+                    maxItems: 1024,
+                },
+            },
+            required: ['conversationId', 'lines'],
+            type: 'object',
+            additionalProperties: false,
         },
         ConversationUnpinParams: {
             description:
@@ -19035,6 +19155,20 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'credit.spend': {
+                    description:
+                        "The caller's model spend by who paid: the wallet, each own API key and each subscription.",
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/SpendParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/SpendPage',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'credit.summary': {
                     properties: {
                         params: {
@@ -21961,6 +22095,7 @@ export const schema: Schema = {
                 'credit.resetHistory',
                 'credit.resets',
                 'credit.setBudget',
+                'credit.spend',
                 'credit.summary',
                 'credit.wallet',
                 'credit.walletHistory',
@@ -28323,6 +28458,21 @@ export const schema: Schema = {
             required: ['channelId', 'conversationId', 'kind', 'text'],
             type: 'object',
         },
+        ReplyCost: {
+            description: "What one reply's model calls cost, by who paid; its sub-agents included.",
+            properties: {
+                lines: {
+                    items: {
+                        $ref: '#/definitions/SpendLine',
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+            },
+            required: ['lines'],
+            type: 'object',
+            additionalProperties: false,
+        },
         RequirementState: {
             enum: ['drafted', 'missing', 'question'],
             type: 'string',
@@ -30940,6 +31090,220 @@ export const schema: Schema = {
                 'Source grammars are explicit; bytecode formats use separate version-aware adapters.\nOne source language.',
             enum: ['c', 'cpp', 'javascript', 'lua', 'luau'],
             type: 'string',
+        },
+        SpendAmount: {
+            description: 'How a spend amount was obtained and how many calls it covers.',
+            properties: {
+                calls: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                estimated: {
+                    description:
+                        'True when part of the amount was priced from listed rates rather than reported by the provider.',
+                    type: 'boolean',
+                },
+                microcents: {
+                    description:
+                        'USD microcents (1e-8 USD) as a decimal string: what the wallet or the key was charged, or the\nAPI-equivalent value for subscription and included usage. Calls with no known price add nothing.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                unpricedCalls: {
+                    description:
+                        'Calls with no known price, which `microcents` leaves out; equal to `calls` means no price is known.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['calls', 'estimated', 'microcents', 'unpricedCalls'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        SpendLine: {
+            description: "One model's spend on one route in a reply or a conversation.",
+            properties: {
+                cachedInputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                calls: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                estimated: {
+                    description:
+                        'True when part of the amount was priced from listed rates rather than reported by the provider.',
+                    type: 'boolean',
+                },
+                inputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                microcents: {
+                    description:
+                        'USD microcents (1e-8 USD) as a decimal string: what the wallet or the key was charged, or the\nAPI-equivalent value for subscription and included usage. Calls with no known price add nothing.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                model: {
+                    description: 'The model that ran, as its provider names it.',
+                    type: 'string',
+                    maxLength: 256,
+                },
+                outputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                route: {
+                    $ref: '#/definitions/SpendRoute',
+                },
+                unpricedCalls: {
+                    description:
+                        'Calls with no known price, which `microcents` leaves out; equal to `calls` means no price is known.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                via: {
+                    description:
+                        "Who was charged: `nerva` for the wallet and exemptions, the API key's provider id (`openrouter`,\n`anthropic`, ...) or the subscription's application id (`claude-code`, `codex`, ...).",
+                    type: 'string',
+                    maxLength: 256,
+                },
+            },
+            required: [
+                'cachedInputTokens',
+                'calls',
+                'estimated',
+                'inputTokens',
+                'microcents',
+                'model',
+                'outputTokens',
+                'route',
+                'unpricedCalls',
+                'via',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        SpendModelTotals: {
+            description: "One model's spend on a route over today, this month and all time.",
+            properties: {
+                cachedInputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                inputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                model: {
+                    type: 'string',
+                    maxLength: 256,
+                },
+                month: {
+                    $ref: '#/definitions/SpendAmount',
+                    description: 'This calendar month, UTC.',
+                },
+                outputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                today: {
+                    $ref: '#/definitions/SpendAmount',
+                    description: 'Today, UTC.',
+                },
+                total: {
+                    $ref: '#/definitions/SpendAmount',
+                },
+            },
+            required: [
+                'cachedInputTokens',
+                'inputTokens',
+                'model',
+                'month',
+                'outputTokens',
+                'today',
+                'total',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        SpendPage: {
+            description:
+                "The caller's model spend by who paid: wallet, each API key and each subscription.",
+            properties: {
+                asOf: {
+                    description: 'Epoch milliseconds the totals were read.',
+                    type: 'number',
+                },
+                conversation: {
+                    $ref: '#/definitions/ConversationSpend',
+                },
+                sources: {
+                    items: {
+                        $ref: '#/definitions/SpendSourceTotals',
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+            },
+            required: ['asOf', 'sources'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        SpendParams: {
+            description: '`credit.spend` parameters.',
+            properties: {
+                conversationId: {
+                    description:
+                        "Also returns this conversation's spend; the conversation must belong to the caller.",
+                    type: 'string',
+                    maxLength: 512,
+                },
+            },
+            type: 'object',
+            additionalProperties: false,
+        },
+        SpendRoute: {
+            description: 'Who paid for a model call.\nUnion of {@link SpendRoute} values.',
+            enum: ['included', 'key', 'subscription', 'wallet'],
+            type: 'string',
+        },
+        SpendSourceTotals: {
+            description:
+                "One route's spend, such as one API key or one subscription, with its models.",
+            properties: {
+                models: {
+                    items: {
+                        $ref: '#/definitions/SpendModelTotals',
+                    },
+                    type: 'array',
+                    maxItems: 512,
+                },
+                month: {
+                    $ref: '#/definitions/SpendAmount',
+                },
+                route: {
+                    $ref: '#/definitions/SpendRoute',
+                },
+                today: {
+                    $ref: '#/definitions/SpendAmount',
+                },
+                total: {
+                    $ref: '#/definitions/SpendAmount',
+                },
+                via: {
+                    description: 'As {@link SpendLine.via}.',
+                    type: 'string',
+                    maxLength: 256,
+                },
+            },
+            required: ['models', 'month', 'route', 'today', 'total', 'via'],
+            type: 'object',
+            additionalProperties: false,
         },
         SteerParams: {
             description: 'A correction for the server-minted active run, not a follow-up turn.',

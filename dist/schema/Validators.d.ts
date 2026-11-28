@@ -357,6 +357,10 @@ export declare function creditResetsResult(value: unknown): boolean;
 export declare function creditSetBudgetParams(value: unknown): boolean;
 /** Validates the result of `credit.setBudget`. */
 export declare function creditSetBudgetResult(value: unknown): boolean;
+/** Validates the params of `credit.spend`. */
+export declare function creditSpendParams(value: unknown): boolean;
+/** Validates the result of `credit.spend`. */
+export declare function creditSpendResult(value: unknown): boolean;
 /** Validates the params of `credit.summary`. */
 export declare function creditSummaryParams(value: unknown): boolean;
 /** Validates the result of `credit.summary`. */

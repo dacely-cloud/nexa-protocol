@@ -136,6 +136,8 @@ import {
     creditResetsResult,
     creditSetBudgetParams,
     creditSetBudgetResult,
+    creditSpendParams,
+    creditSpendResult,
     creditSummaryParams,
     creditSummaryResult,
     creditWalletHistoryParams,
@@ -770,6 +772,7 @@ export const methodValidators: Readonly<Record<MethodName, MethodValidation>> = 
     'credit.resetHistory': { params: creditResetHistoryParams, result: creditResetHistoryResult },
     'credit.resets': { params: creditResetsParams, result: creditResetsResult },
     'credit.setBudget': { params: creditSetBudgetParams, result: creditSetBudgetResult },
+    'credit.spend': { params: creditSpendParams, result: creditSpendResult },
     'credit.summary': { params: creditSummaryParams, result: creditSummaryResult },
     'credit.wallet': { params: creditWalletParams, result: creditWalletResult },
     'credit.walletHistory': {

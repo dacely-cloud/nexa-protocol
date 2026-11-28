@@ -78,6 +78,12 @@ export const ChatModelSource = {
     Subscription: 'subscription',
     /** Maestro, which picks the model for every step. Selected as provider `nerva`, model `maestro`. */
     Maestro: 'maestro',
+    /**
+     * Nerva-provided access billed to the user's wallet at what the call cost. `provider` is the
+     * gateway Nerva reaches the model through (`openrouter`) and `model` the gateway's model id.
+     * A plan or key the user connected for the same model is used instead when the turn starts.
+     */
+    Nerva: 'nerva',
 } as const;
 
 /** Union of {@link ChatModelSource} values. */
@@ -110,15 +116,72 @@ export interface SafeguardFallback {
     readonly messages: number;
 }
 
-/** One selectable chat model backed by the user's own key or subscription. */
-export interface ChatModelChoice extends ChatModelSelection {
-    readonly name: string;
-    readonly providerName: string;
+/** What Nerva's tool-calling conformance check found for a model. */
+export const ChatModelToolCalling = {
+    Reliable: 'reliable',
+    Unreliable: 'unreliable',
+} as const;
+
+/** Union of {@link ChatModelToolCalling} values. */
+export type ChatModelToolCalling = (typeof ChatModelToolCalling)[keyof typeof ChatModelToolCalling];
+
+/**
+ * A model's listed price per million tokens, in USD microcents (1e-8 USD) as decimal strings.
+ *
+ * @remarks
+ * A listed price, never a measured cost: a wallet-billed model is charged what each call actually
+ * cost (OpenRouter's reported cost for the host that served it), with any markup the deployment
+ * configured already included here. A subscription model has no price; its usage is covered.
+ */
+export interface ChatModelPrice {
+    readonly inputPerMillion: string;
+    readonly outputPerMillion: string;
+    /** Cached input, where the listing prices it apart. */
+    readonly cachedInputPerMillion?: string;
+    /** Where the price was read, in plain words, such as "OpenRouter's listing". */
+    readonly source: string;
 }
 
-/** Chat models the authenticated account has connected. */
+/** One selectable chat model, with the connection it runs on for this account. */
+export interface ChatModelChoice extends ChatModelSelection {
+    readonly name: string;
+    /** The connection's provider: the subscription, the API key's provider, or Nerva. */
+    readonly providerName: string;
+    /** The model's vendor family for grouping and its logo, such as `anthropic`. */
+    readonly family?: string;
+    readonly familyName?: string;
+    /** The model's OpenRouter id when Nerva-provided access can also reach it. */
+    readonly openRouterId?: string;
+    /** Listed price on this connection; absent for subscriptions and unknown prices. */
+    readonly price?: ChatModelPrice;
+    /** Conformance result; absent when the model was not checked. A flagged model stays selectable. */
+    readonly toolCalling?: ChatModelToolCalling;
+    /** Plain words on what failed, present with `unreliable`. */
+    readonly toolCallingReason?: string;
+}
+
+/** Whether the account's wallet can pay for wallet-billed models. */
+export const ChatModelWalletState = {
+    /** Credit or weekly allowance is available. */
+    Funded: 'funded',
+    /** Neither credit nor weekly allowance is left; wallet-billed turns are refused before they start. */
+    Empty: 'empty',
+    /** An administrator exemption covers usage; nothing is charged. */
+    Included: 'included',
+} as const;
+
+/** Union of {@link ChatModelWalletState} values. */
+export type ChatModelWalletState = (typeof ChatModelWalletState)[keyof typeof ChatModelWalletState];
+
+/** Chat models the authenticated account can select. */
 export interface ChatModelsPage {
     readonly items: readonly ChatModelChoice[];
+    /** A background check of the account's connections is still running; list again shortly. */
+    readonly refreshPending?: true;
+    /** Connection sources whose listing failed; their earlier choices may still be shown. */
+    readonly unavailableSources?: readonly ChatModelSource[];
+    /** The wallet's state for wallet-billed models; absent where the deployment has no wallet. */
+    readonly wallet?: ChatModelWalletState;
 }
 
 /** `connections.applications.check` contract. */

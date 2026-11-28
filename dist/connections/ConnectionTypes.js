@@ -27,4 +27,24 @@ export const ChatModelSource = {
     Subscription: 'subscription',
     /** Maestro, which picks the model for every step. Selected as provider `nerva`, model `maestro`. */
     Maestro: 'maestro',
+    /**
+     * Nerva-provided access billed to the user's wallet at what the call cost. `provider` is the
+     * gateway Nerva reaches the model through (`openrouter`) and `model` the gateway's model id.
+     * A plan or key the user connected for the same model is used instead when the turn starts.
+     */
+    Nerva: 'nerva',
+};
+/** What Nerva's tool-calling conformance check found for a model. */
+export const ChatModelToolCalling = {
+    Reliable: 'reliable',
+    Unreliable: 'unreliable',
+};
+/** Whether the account's wallet can pay for wallet-billed models. */
+export const ChatModelWalletState = {
+    /** Credit or weekly allowance is available. */
+    Funded: 'funded',
+    /** Neither credit nor weekly allowance is left; wallet-billed turns are refused before they start. */
+    Empty: 'empty',
+    /** An administrator exemption covers usage; nothing is charged. */
+    Included: 'included',
 };

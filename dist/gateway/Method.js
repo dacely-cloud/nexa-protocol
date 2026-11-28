@@ -137,6 +137,8 @@ export var Method;
     Method["CreditResets"] = "credit.resets";
     /** Calls `credit.setBudget`. */
     Method["CreditSetBudget"] = "credit.setBudget";
+    /** Calls `credit.spend`. */
+    Method["CreditSpend"] = "credit.spend";
     /** Calls `credit.summary`. */
     Method["CreditSummary"] = "credit.summary";
     /** Calls `credit.wallet`. */

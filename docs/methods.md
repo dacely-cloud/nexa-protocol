@@ -1,6 +1,6 @@
 # RPC reference
 
-All 288 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 287 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 289 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 288 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -68,6 +68,7 @@ All 288 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [credit.resetHistory](#creditresethistory)
 - [credit.resets](#creditresets)
 - [credit.setBudget](#creditsetbudget)
+- [credit.spend](#creditspend)
 - [credit.summary](#creditsummary)
 - [credit.wallet](#creditwallet)
 - [credit.walletHistory](#creditwallethistory)
@@ -1938,6 +1939,24 @@ Parameters: [BudgetSetParams](protocol.md#budgetsetparams).
 | `scopeId`         | Yes      | `string`                                           |             |
 
 Result: [Budget](protocol.md#budget).
+
+## credit.spend
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.CreditSpend> = {};
+const result: ResultOf<typeof Method.CreditSpend> = await client.call(Method.CreditSpend, params);
+```
+
+Parameters: [SpendParams](protocol.md#spendparams).
+
+| Field            | Required | Type     | Description                                                                         |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------- |
+| `conversationId` | No       | `string` | Also returns this conversation's spend; the conversation must belong to the caller. |
+
+Result: [SpendPage](protocol.md#spendpage).
 
 ## credit.summary
 

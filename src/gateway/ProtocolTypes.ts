@@ -45,6 +45,7 @@ import type {
     CreditSummary,
 } from '../credit/Types.js';
 import type { WalletHistoryPage, WalletSnapshot } from '../credit/WalletReadTypes.js';
+import type { SpendPage, SpendParams } from '../credit/SpendTypes.js';
 import type {
     MaestroModelsListMethod,
     MaestroPolicyGetMethod,
@@ -1640,6 +1641,11 @@ export interface GatewayMethods {
     readonly 'credit.summary': {
         readonly params: CreditSummaryParams;
         readonly result: CreditSummary;
+    };
+    /** The caller's model spend by who paid: the wallet, each own API key and each subscription. */
+    readonly 'credit.spend': {
+        readonly params: SpendParams;
+        readonly result: SpendPage;
     };
     /**
      * Session fan-out. Explicit rather than implied by scope: a `read` credential holds every
