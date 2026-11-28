@@ -3363,14 +3363,15 @@ Module: `nexa-protocol/gateway/ProtocolTypes.js`.
 
 How a client identifies itself in the handshake.
 
-| Field                     | Required | Type                                                   | Description                                                                          |
-| ------------------------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| `id`                      | Yes      | `string`                                               | Stable per install, so a reconnect is recognisable in the logs.                      |
-| `metadataOnlyAttachments` | No       | `boolean`                                              | Deliver saved file descriptors; clients explicitly request original bytes.           |
-| `mode`                    | Yes      | `"automation"` / `"cli"` / `"node"` / `"tui"` / `"ui"` |                                                                                      |
-| `platform`                | Yes      | `string`                                               |                                                                                      |
-| `version`                 | Yes      | `string`                                               |                                                                                      |
-| `workspace`               | No       | `boolean`                                              | False skips background VM wake for clients that only need stateless model decisions. |
+| Field                     | Required | Type                                                   | Description                                                                                       |
+| ------------------------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `acceptsAttachments`      | No       | `boolean`                                              | Whether this client receives sent files; false states their paths instead, absent tries one send. |
+| `id`                      | Yes      | `string`                                               | Stable per install, so a reconnect is recognisable in the logs.                                   |
+| `metadataOnlyAttachments` | No       | `boolean`                                              | Deliver saved file descriptors; clients explicitly request original bytes.                        |
+| `mode`                    | Yes      | `"automation"` / `"cli"` / `"node"` / `"tui"` / `"ui"` |                                                                                                   |
+| `platform`                | Yes      | `string`                                               |                                                                                                   |
+| `version`                 | Yes      | `string`                                               |                                                                                                   |
+| `workspace`               | No       | `boolean`                                              | False skips background VM wake for clients that only need stateless model decisions.              |
 
 ## ConnectParams
 

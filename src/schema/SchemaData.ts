@@ -6806,6 +6806,11 @@ export const schema: Schema = {
         ConnectClientInfo: {
             description: 'How a client identifies itself in the handshake.',
             properties: {
+                acceptsAttachments: {
+                    description:
+                        'Whether this client receives sent files; false states their paths instead, absent tries one send.',
+                    type: 'boolean',
+                },
                 id: {
                     description: 'Stable per install, so a reconnect is recognisable in the logs.',
                     type: 'string',

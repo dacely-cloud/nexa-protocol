@@ -425,6 +425,8 @@ export interface ConnectClientInfo {
     readonly metadataOnlyAttachments?: boolean;
     /** False skips background VM wake for clients that only need stateless model decisions. */
     readonly workspace?: boolean;
+    /** Whether this client receives sent files; false states their paths instead, absent tries one send. */
+    readonly acceptsAttachments?: boolean;
 }
 
 /** The `connect` frame's params. */
