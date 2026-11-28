@@ -13675,14 +13675,14 @@ Type: `"best-of-n"` / `"cascade"` / `"critique"` / `"fan-out"` / `"race"` / `"ro
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
-Maestro decided how to arrange the work.
+Maestro decided how to arrange the work, or the arrangement changed.
 
-| Field      | Required | Type                                                  | Description                        |
-| ---------- | -------- | ----------------------------------------------------- | ---------------------------------- |
-| `kind`     | Yes      | `"plan"`                                              |                                    |
-| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                    |
-| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) |                                    |
-| `summary`  | Yes      | `string`                                              | The quick decision in plain words. |
+| Field      | Required | Type                                                  | Description                                                                     |
+| ---------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `kind`     | Yes      | `"plan"`                                              |                                                                                 |
+| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                                                                 |
+| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) | Every subtask of the current tree; siblings appear in the order they are shown. |
+| `summary`  | Yes      | `string`                                              | The quick decision in plain words.                                              |
 
 ## MaestroPlatform
 
@@ -13994,14 +13994,27 @@ An optional spending cap.
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
-One subtask of a plan.
+One node of a plan's task tree.
 
-| Field           | Required | Type              | Description                                 |
-| --------------- | -------- | ----------------- | ------------------------------------------- |
-| `dependsOn`     | Yes      | Array of `string` |                                             |
-| `environmentId` | No       | `string`          | The environment it will run on, when known. |
-| `id`            | Yes      | `string`          |                                             |
-| `title`         | Yes      | `string`          |                                             |
+| Field           | Required | Type                                                   | Description                                                                                            |
+| --------------- | -------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `agentId`       | No       | `string`                                               | The sub-agent running it, matching that agent's `agentId` in its events; absent when the lead runs it. |
+| `dependsOn`     | Yes      | Array of `string`                                      | Ids of subtasks in the same plan update that must finish before this one starts.                       |
+| `environmentId` | No       | `string`                                               | The environment it will run on, when known.                                                            |
+| `goal`          | No       | `string`                                               | What this subtask produces, in plain words.                                                            |
+| `id`            | Yes      | `string`                                               |                                                                                                        |
+| `model`         | No       | [MaestroModelUse](protocol.md#maestromodeluse)         | The model, reasoning effort and connection chosen to do it; set on subtasks that run as one unit.      |
+| `parentId`      | No       | `string`                                               | The subtask this one refines, by its id in the same plan update; absent when top-level.                |
+| `state`         | No       | [MaestroSubtaskState](protocol.md#maestrosubtaskstate) | Where this subtask is in its lifecycle; absent on plans recorded before subtasks had a state.          |
+| `title`         | Yes      | `string`                                               |                                                                                                        |
+
+## MaestroSubtaskState
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Lifecycle of one subtask in a plan's task tree.
+
+Type: `"failed"` / `"passed"` / `"pending"` / `"running"` / `"skipped"`.
 
 ## MaestroTestTally
 
@@ -14071,12 +14084,12 @@ Variant 3: [MaestroEnvironmentUpdate](protocol.md#maestroenvironmentupdate)
 
 Variant 4: [MaestroPlanUpdate](protocol.md#maestroplanupdate)
 
-| Field      | Required | Type                                                  | Description                        |
-| ---------- | -------- | ----------------------------------------------------- | ---------------------------------- |
-| `kind`     | Yes      | `"plan"`                                              |                                    |
-| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                    |
-| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) |                                    |
-| `summary`  | Yes      | `string`                                              | The quick decision in plain words. |
+| Field      | Required | Type                                                  | Description                                                                     |
+| ---------- | -------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `kind`     | Yes      | `"plan"`                                              |                                                                                 |
+| `pattern`  | Yes      | [MaestroPattern](protocol.md#maestropattern)          |                                                                                 |
+| `subtasks` | Yes      | Array of [MaestroSubtask](protocol.md#maestrosubtask) | Every subtask of the current tree; siblings appear in the order they are shown. |
+| `summary`  | Yes      | `string`                                              | The quick decision in plain words.                                              |
 
 Variant 5: [MaestroAgentUpdate](protocol.md#maestroagentupdate)
 

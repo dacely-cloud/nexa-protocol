@@ -23766,7 +23766,7 @@ export const schema = {
             type: 'string',
         },
         MaestroPlanUpdate: {
-            description: 'Maestro decided how to arrange the work.',
+            description: 'Maestro decided how to arrange the work, or the arrangement changed.',
             properties: {
                 kind: {
                     const: 'plan',
@@ -23776,11 +23776,12 @@ export const schema = {
                     $ref: '#/definitions/MaestroPattern',
                 },
                 subtasks: {
+                    description: 'Every subtask of the current tree; siblings appear in the order they are shown.',
                     items: {
                         $ref: '#/definitions/MaestroSubtask',
                     },
                     type: 'array',
-                    maxItems: 1024,
+                    maxItems: 4096,
                 },
                 summary: {
                     description: 'The quick decision in plain words.',
@@ -24321,9 +24322,16 @@ export const schema = {
             additionalProperties: false,
         },
         MaestroSubtask: {
-            description: 'One subtask of a plan.',
+            description: "One node of a plan's task tree.",
             properties: {
+                agentId: {
+                    description: "The sub-agent running it, matching that agent's `agentId` in its events; absent when the lead runs it.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
                 dependsOn: {
+                    description: 'Ids of subtasks in the same plan update that must finish before this one starts.',
                     items: {
                         type: 'string',
                         pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
@@ -24338,10 +24346,29 @@ export const schema = {
                     pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
                     maxLength: 128,
                 },
+                goal: {
+                    description: 'What this subtask produces, in plain words.',
+                    type: 'string',
+                    maxLength: 500,
+                },
                 id: {
                     type: 'string',
                     pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
                     maxLength: 128,
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelUse',
+                    description: 'The model, reasoning effort and connection chosen to do it; set on subtasks that run as one unit.',
+                },
+                parentId: {
+                    description: 'The subtask this one refines, by its id in the same plan update; absent when top-level.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroSubtaskState',
+                    description: 'Where this subtask is in its lifecycle; absent on plans recorded before subtasks had a state.',
                 },
                 title: {
                     type: 'string',
@@ -24351,6 +24378,11 @@ export const schema = {
             required: ['dependsOn', 'id', 'title'],
             type: 'object',
             additionalProperties: false,
+        },
+        MaestroSubtaskState: {
+            description: "Lifecycle of one subtask in a plan's task tree.\nUnion of {@link MaestroSubtaskState} values.",
+            enum: ['failed', 'passed', 'pending', 'running', 'skipped'],
+            type: 'string',
         },
         MaestroTestTally: {
             description: 'Passed and failed test counts.',

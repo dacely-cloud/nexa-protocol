@@ -130,6 +130,24 @@ export const MaestroPlatform = {
     Macos: 'macos',
     Other: 'other',
 };
+/**
+ * Lifecycle of one subtask in a plan's task tree.
+ *
+ * @remarks
+ * A subtask that was split into finer subtasks reports the state of its refinement as a whole.
+ */
+export const MaestroSubtaskState = {
+    /** Not started yet; it may still be split before it runs. */
+    Pending: 'pending',
+    /** Being worked on, checked or fixed. */
+    Running: 'running',
+    /** Finished and its checks passed. */
+    Passed: 'passed',
+    /** Finished without passing its checks and no further attempt is planned. */
+    Failed: 'failed',
+    /** Will not run: the plan dropped it, another result made it unnecessary, or the run stopped first. */
+    Skipped: 'skipped',
+};
 /** Lifecycle of one check. */
 export const MaestroCheckState = {
     Running: 'running',

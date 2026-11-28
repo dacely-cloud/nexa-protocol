@@ -438,13 +438,60 @@ export interface MaestroTestTally {
     readonly failed: number;
 }
 
-/** One subtask of a plan. */
+/**
+ * Lifecycle of one subtask in a plan's task tree.
+ *
+ * @remarks
+ * A subtask that was split into finer subtasks reports the state of its refinement as a whole.
+ */
+export const MaestroSubtaskState = {
+    /** Not started yet; it may still be split before it runs. */
+    Pending: 'pending',
+    /** Being worked on, checked or fixed. */
+    Running: 'running',
+    /** Finished and its checks passed. */
+    Passed: 'passed',
+    /** Finished without passing its checks and no further attempt is planned. */
+    Failed: 'failed',
+    /** Will not run: the plan dropped it, another result made it unnecessary, or the run stopped first. */
+    Skipped: 'skipped',
+} as const;
+
+/** Union of {@link MaestroSubtaskState} values. */
+export type MaestroSubtaskState = (typeof MaestroSubtaskState)[keyof typeof MaestroSubtaskState];
+
+/**
+ * One node of a plan's task tree.
+ *
+ * @remarks
+ * The tree is flat on the wire: each subtask names the subtask it refines in `parentId`, and a
+ * subtask without one is top-level. Maestro splits a subtask into finer subtasks only when it needs
+ * to, so any node may gain children in a later plan update and the tree has no fixed depth. Only
+ * `id`, `title` and `dependsOn` are always present; plans recorded before the tree existed carry
+ * nothing else.
+ */
 export interface MaestroSubtask {
     readonly id: string;
     readonly title: string;
+    /** Ids of subtasks in the same plan update that must finish before this one starts. */
     readonly dependsOn: readonly string[];
     /** The environment it will run on, when known. */
     readonly environmentId?: string;
+    /**
+     * The subtask this one refines, by its id in the same plan update; absent when top-level.
+     *
+     * @remarks
+     * Parents never form a cycle; a receiver shows a subtask whose parent is missing at the top level.
+     */
+    readonly parentId?: string;
+    /** What this subtask produces, in plain words. */
+    readonly goal?: string;
+    /** Where this subtask is in its lifecycle; absent on plans recorded before subtasks had a state. */
+    readonly state?: MaestroSubtaskState;
+    /** The model, reasoning effort and connection chosen to do it; set on subtasks that run as one unit. */
+    readonly model?: MaestroModelUse;
+    /** The sub-agent running it, matching that agent's `agentId` in its events; absent when the lead runs it. */
+    readonly agentId?: string;
 }
 
 /** Cost and tokens of one model within a run. */
@@ -538,12 +585,22 @@ export interface MaestroEnvironmentUpdate {
     readonly reason: string;
 }
 
-/** Maestro decided how to arrange the work. */
+/**
+ * Maestro decided how to arrange the work, or the arrangement changed.
+ *
+ * @remarks
+ * Each plan update carries the agent's full current task tree and supersedes every earlier plan
+ * update from the same agent. Maestro adds subtasks lazily as it splits a node, so a later update
+ * holds the same subtasks with new children and new states. The tree has no depth limit and no
+ * count limit of its own; the bound of 4096 subtasks on one update only keeps a single event
+ * bounded and is far above the trees Maestro builds.
+ */
 export interface MaestroPlanUpdate {
     readonly kind: 'plan';
     readonly pattern: MaestroPattern;
     /** The quick decision in plain words. */
     readonly summary: string;
+    /** Every subtask of the current tree; siblings appear in the order they are shown. */
     readonly subtasks: readonly MaestroSubtask[];
 }
 

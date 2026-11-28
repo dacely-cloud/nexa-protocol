@@ -1836,6 +1836,17 @@
             "properties/environmentId": {
                 "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
                 "maxLength": 128
+            },
+            "properties/parentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/goal": {
+                "maxLength": 500
+            },
+            "properties/agentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
             }
         },
         "MaestroModelCost": {
@@ -1913,7 +1924,7 @@
                 "maxLength": 2000
             },
             "properties/subtasks": {
-                "maxItems": 1024
+                "maxItems": 4096
             }
         },
         "MaestroAgentUpdate": {
