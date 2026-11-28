@@ -157,6 +157,12 @@ export interface MaestroModelRules {
     readonly baseModel: MaestroModelRef | null;
     /** A pinned lead model; null lets Maestro choose per step. */
     readonly leadModel: MaestroModelRef | null;
+    /**
+     * Lets newly discovered models that have no published results yet lead important steps, on a
+     * conservative prior. Absent or false keeps them to supporting and low-stakes steps until a
+     * leaderboard publishes results for them; they stay enabled either way.
+     */
+    readonly tryNewModelsEarly?: boolean;
 }
 /** Which environments Maestro may place work on. */
 export interface MaestroEnvironmentRules {
@@ -294,6 +300,24 @@ export interface MaestroModelView extends MaestroModelRef {
     /** The connection that serves it, or null when none can. */
     readonly connection: MaestroConnection | null;
     readonly benchmark?: MaestroBenchmark;
+    /**
+     * When Maestro's model discovery first saw this model (ISO 8601); absent for the models Maestro
+     * shipped knowing.
+     */
+    readonly discoveredAt?: string;
+    /** True for a discovered model in its first two weeks, so the page can mark it new. */
+    readonly isNew?: boolean;
+    /**
+     * True while no published result covers a discovered model: Maestro keeps it to supporting and
+     * low-stakes steps until a leaderboard publishes results, unless the policy's
+     * `models.tryNewModelsEarly` is on.
+     */
+    readonly awaitingEvidence?: boolean;
+    /**
+     * Why no connection can reach this model, e.g. 'GLM Coding Plan only' or 'Only inside GitHub
+     * Copilot'; absent when it can be reached or merely isn't connected.
+     */
+    readonly unreachable?: string;
 }
 /** One provider family in the Maestro catalog. */
 export interface MaestroProviderView {
@@ -431,6 +455,8 @@ export interface MaestroRunUpdate {
     readonly state: MaestroAgentState;
     readonly goal: MaestroGoal;
     readonly title: string;
+    /** Why the run stopped or failed, in plain words; absent while running and on runs that finished normally. */
+    readonly reason?: string;
 }
 /** Maestro chose or changed the model doing the work. */
 export interface MaestroRouteUpdate {

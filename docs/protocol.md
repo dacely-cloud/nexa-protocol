@@ -13599,12 +13599,13 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 Which models Maestro may choose from.
 
-| Field               | Required | Type                                                    | Description                                             |
-| ------------------- | -------- | ------------------------------------------------------- | ------------------------------------------------------- |
-| `baseModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | The model doing supporting work; null is Athena.        |
-| `disabledModels`    | Yes      | Array of [MaestroModelRef](protocol.md#maestromodelref) | Individual models switched off.                         |
-| `disabledProviders` | Yes      | Array of `string`                                       | Provider families switched off.                         |
-| `leadModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | A pinned lead model; null lets Maestro choose per step. |
+| Field               | Required | Type                                                    | Description                                                                                |
+| ------------------- | -------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `baseModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | The model doing supporting work; null is Athena.                                           |
+| `disabledModels`    | Yes      | Array of [MaestroModelRef](protocol.md#maestromodelref) | Individual models switched off.                                                            |
+| `disabledProviders` | Yes      | Array of `string`                                       | Provider families switched off.                                                            |
+| `leadModel`         | Yes      | [MaestroModelRef](protocol.md#maestromodelref) / `null` | A pinned lead model; null lets Maestro choose per step.                                    |
+| `tryNewModelsEarly` | No       | `boolean`                                               | Lets newly discovered models that have no published results yet lead important steps, on a |
 
 ## MaestroModelUse
 
@@ -13626,16 +13627,20 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 One model in the Maestro catalog.
 
-| Field        | Required | Type                                                        | Description                                                                     |
-| ------------ | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `available`  | Yes      | `boolean`                                                   | Whether a connection can serve it right now.                                    |
-| `benchmark`  | No       | [MaestroBenchmark](protocol.md#maestrobenchmark)            |                                                                                 |
-| `connection` | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null` | The connection that serves it, or null when none can.                           |
-| `enabled`    | Yes      | `boolean`                                                   | Whether the policy lets Maestro use it.                                         |
-| `model`      | Yes      | `string`                                                    |                                                                                 |
-| `name`       | Yes      | `string`                                                    |                                                                                 |
-| `provider`   | Yes      | `string`                                                    | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
-| `tier`       | Yes      | [MaestroTier](protocol.md#maestrotier)                      |                                                                                 |
+| Field              | Required | Type                                                        | Description                                                                                   |
+| ------------------ | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `available`        | Yes      | `boolean`                                                   | Whether a connection can serve it right now.                                                  |
+| `awaitingEvidence` | No       | `boolean`                                                   | True while no published result covers a discovered model: Maestro keeps it to supporting and  |
+| `benchmark`        | No       | [MaestroBenchmark](protocol.md#maestrobenchmark)            |                                                                                               |
+| `connection`       | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null` | The connection that serves it, or null when none can.                                         |
+| `discoveredAt`     | No       | `string`                                                    | When Maestro's model discovery first saw this model (ISO 8601); absent for the models Maestro |
+| `enabled`          | Yes      | `boolean`                                                   | Whether the policy lets Maestro use it.                                                       |
+| `isNew`            | No       | `boolean`                                                   | True for a discovered model in its first two weeks, so the page can mark it new.              |
+| `model`            | Yes      | `string`                                                    |                                                                                               |
+| `name`             | Yes      | `string`                                                    |                                                                                               |
+| `provider`         | Yes      | `string`                                                    | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.               |
+| `tier`             | Yes      | [MaestroTier](protocol.md#maestrotier)                      |                                                                                               |
+| `unreachable`      | No       | `string`                                                    | Why no connection can reach this model, e.g. 'GLM Coding Plan only' or 'Only inside GitHub    |
 
 ## MaestroModelsListMethod
 
@@ -13919,12 +13924,13 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 A run started or finished.
 
-| Field   | Required | Type                                               | Description |
-| ------- | -------- | -------------------------------------------------- | ----------- |
-| `goal`  | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |             |
-| `kind`  | Yes      | `"run"`                                            |             |
-| `state` | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |             |
-| `title` | Yes      | `string`                                           |             |
+| Field    | Required | Type                                               | Description                                                                                             |
+| -------- | -------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `goal`   | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |                                                                                                         |
+| `kind`   | Yes      | `"run"`                                            |                                                                                                         |
+| `reason` | No       | `string`                                           | Why the run stopped or failed, in plain words; absent while running and on runs that finished normally. |
+| `state`  | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |                                                                                                         |
+| `title`  | Yes      | `string`                                           |                                                                                                         |
 
 ## MaestroRunsGetMethod
 
@@ -14034,12 +14040,13 @@ Union of every Maestro update.
 
 Variant 1: [MaestroRunUpdate](protocol.md#maestrorunupdate)
 
-| Field   | Required | Type                                               | Description |
-| ------- | -------- | -------------------------------------------------- | ----------- |
-| `goal`  | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |             |
-| `kind`  | Yes      | `"run"`                                            |             |
-| `state` | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |             |
-| `title` | Yes      | `string`                                           |             |
+| Field    | Required | Type                                               | Description                                                                                             |
+| -------- | -------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `goal`   | Yes      | [MaestroGoal](protocol.md#maestrogoal)             |                                                                                                         |
+| `kind`   | Yes      | `"run"`                                            |                                                                                                         |
+| `reason` | No       | `string`                                           | Why the run stopped or failed, in plain words; absent while running and on runs that finished normally. |
+| `state`  | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |                                                                                                         |
+| `title`  | Yes      | `string`                                           |                                                                                                         |
 
 Variant 2: [MaestroRouteUpdate](protocol.md#maestrorouteupdate)
 

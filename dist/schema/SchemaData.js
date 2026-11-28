@@ -23627,6 +23627,10 @@ export const schema = {
                     ],
                     description: 'A pinned lead model; null lets Maestro choose per step.',
                 },
+                tryNewModelsEarly: {
+                    description: 'Lets newly discovered models that have no published results yet lead important steps, on a\nconservative prior. Absent or false keeps them to supporting and low-stakes steps until a\nleaderboard publishes results for them; they stay enabled either way.',
+                    type: 'boolean',
+                },
             },
             required: ['baseModel', 'disabledModels', 'disabledProviders', 'leadModel'],
             type: 'object',
@@ -23669,6 +23673,10 @@ export const schema = {
                     description: 'Whether a connection can serve it right now.',
                     type: 'boolean',
                 },
+                awaitingEvidence: {
+                    description: "True while no published result covers a discovered model: Maestro keeps it to supporting and\nlow-stakes steps until a leaderboard publishes results, unless the policy's\n`models.tryNewModelsEarly` is on.",
+                    type: 'boolean',
+                },
                 benchmark: {
                     $ref: '#/definitions/MaestroBenchmark',
                 },
@@ -23683,8 +23691,17 @@ export const schema = {
                     ],
                     description: 'The connection that serves it, or null when none can.',
                 },
+                discoveredAt: {
+                    description: "When Maestro's model discovery first saw this model (ISO 8601); absent for the models Maestro\nshipped knowing.",
+                    type: 'string',
+                    maxLength: 40,
+                },
                 enabled: {
                     description: 'Whether the policy lets Maestro use it.',
+                    type: 'boolean',
+                },
+                isNew: {
+                    description: 'True for a discovered model in its first two weeks, so the page can mark it new.',
                     type: 'boolean',
                 },
                 model: {
@@ -23704,6 +23721,11 @@ export const schema = {
                 },
                 tier: {
                     $ref: '#/definitions/MaestroTier',
+                },
+                unreachable: {
+                    description: "Why no connection can reach this model, e.g. 'GLM Coding Plan only' or 'Only inside GitHub\nCopilot'; absent when it can be reached or merely isn't connected.",
+                    type: 'string',
+                    maxLength: 300,
                 },
             },
             required: ['available', 'connection', 'enabled', 'model', 'name', 'provider', 'tier'],
@@ -24183,6 +24205,11 @@ export const schema = {
                 kind: {
                     const: 'run',
                     type: 'string',
+                },
+                reason: {
+                    description: 'Why the run stopped or failed, in plain words; absent while running and on runs that finished normally.',
+                    type: 'string',
+                    maxLength: 1000,
                 },
                 state: {
                     $ref: '#/definitions/MaestroAgentState',
