@@ -3377,6 +3377,22 @@ export function sessionsListResult(value: unknown): boolean {
     );
 }
 
+/** Validates the params of `sessions.maestro.steer`. */
+export function sessionsMaestroSteerParams(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/sessions.maestro.steer/properties/params',
+        value,
+    );
+}
+
+/** Validates the result of `sessions.maestro.steer`. */
+export function sessionsMaestroSteerResult(value: unknown): boolean {
+    return validator.validate(
+        '#/definitions/GatewayMethods/properties/sessions.maestro.steer/properties/result',
+        value,
+    );
+}
+
 /** Validates the params of `sessions.messages`. */
 export function sessionsMessagesParams(value: unknown): boolean {
     return validator.validate(

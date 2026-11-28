@@ -2,6 +2,7 @@ import type { AgentDefinition } from '../agent/AgentDefinition.js';
 import type { SteeringImage } from './AttachmentTypes.js';
 import type { AgentProfileCreateParams, AgentProfileDeleteParams, AgentProfileUpdateParams, AgentProfileUpgradeParams, AgentProfilesResult } from '../agent/ProfileTypes.js';
 import type { AgileSessionCommand, AgileView } from '../agile/interface/AgileView.js';
+import type { AgileMaestroSteerParams } from '../agile/interface/AgileMaestro.js';
 import type { DataUploadChunkParams, DataUploadIdParams, DataUploadStartParams } from '../analytics/ConversationUploadRequests.js';
 import type { ConversationDataFile, ConversationDataUpload } from '../analytics/ConversationUploadTypes.js';
 import type { DataUploadCreateParams, DataUploadSelectParams, DataUploadSelectionResult, DataUploadTarget, DataUploadTargetParams } from '../analytics/DataUploadTargetTypes.js';
@@ -1176,6 +1177,11 @@ export interface GatewayMethods {
     };
     readonly 'sessions.sprint': {
         readonly params: AgileSessionCommand;
+        readonly result: AgileView;
+    };
+    /** A board action on one node of a running Maestro task tree, applied at its next safe point. */
+    readonly 'sessions.maestro.steer': {
+        readonly params: AgileMaestroSteerParams;
         readonly result: AgileView;
     };
     readonly 'sessions.download': {

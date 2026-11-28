@@ -395,6 +395,8 @@ export enum Method {
     SessionsInput = 'sessions.input',
     /** Calls `sessions.list`. */
     SessionsList = 'sessions.list',
+    /** Calls `sessions.maestro.steer`. */
+    SessionsMaestroSteer = 'sessions.maestro.steer',
     /** Calls `sessions.messages`. */
     SessionsMessages = 'sessions.messages',
     /** Calls `sessions.pin`. */

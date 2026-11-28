@@ -2365,6 +2365,199 @@
             "properties/source": {
                 "maxLength": 80
             }
+        },
+        "AgileMaestroBoard": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/runs": {
+                "maxItems": 32
+            }
+        },
+        "AgileMaestroRun": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/runId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/title": {
+                "maxLength": 300
+            },
+            "properties/reason": {
+                "maxLength": 1000
+            },
+            "properties/startedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/finishedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/updatedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/nodes": {
+                "maxItems": 4097
+            }
+        },
+        "AgileMaestroNode": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/parentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/title": {
+                "maxLength": 300
+            },
+            "properties/goal": {
+                "maxLength": 4000
+            },
+            "properties/dependsOn": {
+                "maxItems": 256
+            },
+            "properties/dependsOn/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/agentIds": {
+                "maxItems": 64
+            },
+            "properties/agentIds/items": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/checks": {
+                "maxItems": 64
+            },
+            "properties/routes": {
+                "maxItems": 64
+            },
+            "properties/startedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/finishedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/actions": {
+                "maxItems": 64
+            }
+        },
+        "AgileMaestroAssignee": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/agentId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/activity": {
+                "maxLength": 1000
+            }
+        },
+        "AgileMaestroCheck": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 300
+            },
+            "properties/summary": {
+                "maxLength": 2000
+            }
+        },
+        "AgileMaestroRoute": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/at": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/reason": {
+                "maxLength": 1000
+            }
+        },
+        "AgileMaestroUsage": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/costMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/billedMicros": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            }
+        },
+        "AgileMaestroAction": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/text": {
+                "maxLength": 4000
+            },
+            "properties/requestedAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/settledAt": {
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "maxLength": 19
+            },
+            "properties/note": {
+                "maxLength": 1000
+            }
+        },
+        "AgileMaestroCommand": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/id": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/runId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/nodeId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/text": {
+                "minLength": 1,
+                "maxLength": 4000
+            }
+        },
+        "AgileMaestroSteerParams": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/sessionId": {
+                "minLength": 1,
+                "maxLength": 1024
+            }
         }
     }
 }

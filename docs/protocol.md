@@ -316,6 +316,195 @@ A product outcome containing stories, with explicit dependencies on other epics.
 | `outcome`   | Yes      | `string`          |             |
 | `title`     | Yes      | `string`          |             |
 
+## AgileMaestroAction
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+A board action the conversation's owner asked for, and how it ended.
+
+| Field         | Required | Type                                                           | Description                                            |
+| ------------- | -------- | -------------------------------------------------------------- | ------------------------------------------------------ |
+| `effort`      | No       | [ReasoningEffort](protocol.md#reasoningeffort)                 | The reasoning effort a pin names.                      |
+| `id`          | Yes      | `string`                                                       |                                                        |
+| `kind`        | Yes      | [AgileMaestroActionKind](protocol.md#agilemaestroactionkind)   |                                                        |
+| `model`       | No       | [MaestroModelRef](protocol.md#maestromodelref)                 | The model a pin names.                                 |
+| `note`        | No       | `string`                                                       | How it applied or why it was rejected, in plain words. |
+| `requestedAt` | Yes      | `string`                                                       | Decimal epoch milliseconds.                            |
+| `settledAt`   | No       | `string`                                                       | Decimal epoch milliseconds; absent while pending.      |
+| `state`       | Yes      | [AgileMaestroActionState](protocol.md#agilemaestroactionstate) |                                                        |
+| `text`        | No       | `string`                                                       | The instruction, or the guidance for a re-split.       |
+
+## AgileMaestroActionKind
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+What the conversation's owner can ask Maestro to do with one node of a running task tree.
+
+Type: `"cancel"` / `"instruct"` / `"pin"` / `"resplit"` / `"retry"` / `"skip"`.
+
+## AgileMaestroActionState
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+Where a board action is.
+
+Type: `"applied"` / `"pending"` / `"rejected"`.
+
+## AgileMaestroAssignee
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+The Maestro agent working a node, and the model, effort and connection doing it now.
+
+| Field      | Required | Type                                               | Description                                                                         |
+| ---------- | -------- | -------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `activity` | Yes      | `string`                                           | What the agent is doing, in a few words; empty when nothing was reported.           |
+| `agentId`  | Yes      | `string`                                           | The run id for the lead, else the sub-agent's id, as in its `maestro` events.       |
+| `model`    | No       | [MaestroModelUse](protocol.md#maestromodeluse)     | The model, reasoning effort and connection doing the work now, when one was chosen. |
+| `state`    | Yes      | [MaestroAgentState](protocol.md#maestroagentstate) |                                                                                     |
+| `switches` | Yes      | `integer`                                          | Model switches so far.                                                              |
+
+## AgileMaestroBoard
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+Maestro's runs in a conversation, projected onto its agile board.
+
+| Field         | Required | Type                                                    | Description                                                                            |
+| ------------- | -------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `omittedRuns` | Yes      | `integer`                                               | Older runs left out to bound the board; `maestro.runs.get` still returns their traces. |
+| `runs`        | Yes      | Array of [AgileMaestroRun](protocol.md#agilemaestrorun) | Oldest first.                                                                          |
+
+## AgileMaestroCheck
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+One acceptance check of a node and its latest result.
+
+| Field         | Required | Type                                                       | Description |
+| ------------- | -------- | ---------------------------------------------------------- | ----------- |
+| `durationMs`  | No       | `integer`                                                  |             |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |             |
+| `id`          | Yes      | `string`                                                   |             |
+| `name`        | Yes      | `string`                                                   |             |
+| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |             |
+| `summary`     | Yes      | `string`                                                   |             |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |             |
+
+## AgileMaestroCommand
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+A board action on one node of a running Maestro task tree.
+
+| Field    | Required | Type                                                         | Description                                           |
+| -------- | -------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| `effort` | No       | [ReasoningEffort](protocol.md#reasoningeffort)               |                                                       |
+| `id`     | Yes      | `string`                                                     | Chosen by the client, unique per action.              |
+| `kind`   | Yes      | [AgileMaestroActionKind](protocol.md#agilemaestroactionkind) |                                                       |
+| `model`  | No       | [MaestroModelRef](protocol.md#maestromodelref)               |                                                       |
+| `nodeId` | Yes      | `string`                                                     | A subtask id of that run, or the run id for the epic. |
+| `runId`  | Yes      | `string`                                                     |                                                       |
+| `text`   | No       | `string`                                                     |                                                       |
+
+## AgileMaestroLevel
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+The agile level a node of a Maestro run's task tree is shown at, decided by its depth.
+
+Type: `"epic"` / `"story"` / `"task"`.
+
+## AgileMaestroNode
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+One node of a Maestro run's task tree as an agile item.
+
+| Field         | Required | Type                                                          | Description                                                                                 |
+| ------------- | -------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `actions`     | Yes      | Array of [AgileMaestroAction](protocol.md#agilemaestroaction) | Board actions on this node, oldest first; pending ones are never left out.                  |
+| `agentIds`    | Yes      | Array of `string`                                             | Every agent that worked the node, oldest first; a retry may hand it to a new one.           |
+| `assignee`    | No       | [AgileMaestroAssignee](protocol.md#agilemaestroassignee)      | Absent until an agent picks the node up.                                                    |
+| `checkCount`  | Yes      | `integer`                                                     | Checks seen in total; more than `checks.length` when the oldest were left out to bound it.  |
+| `checks`      | Yes      | Array of [AgileMaestroCheck](protocol.md#agilemaestrocheck)   | The node's acceptance checks with their latest results, in the order they first ran.        |
+| `dependsOn`   | Yes      | Array of `string`                                             | Sibling nodes that must finish before it starts.                                            |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref)    | The environment its work runs on, once placed.                                              |
+| `finishedAt`  | No       | `string`                                                      | Decimal epoch milliseconds the node finished.                                               |
+| `goal`        | Yes      | `string`                                                      | What it produces, in plain words.                                                           |
+| `id`          | Yes      | `string`                                                      | The subtask id, or the run id for the epic.                                                 |
+| `level`       | Yes      | [AgileMaestroLevel](protocol.md#agilemaestrolevel)            |                                                                                             |
+| `parentId`    | Yes      | `null,string`                                                 | The node it refines: null for the epic, the run id for a story, a story or task for a task. |
+| `routeCount`  | Yes      | `integer`                                                     | Routes seen in total; more than `routes.length` when the oldest were left out to bound it.  |
+| `routes`      | Yes      | Array of [AgileMaestroRoute](protocol.md#agilemaestroroute)   | Model choices and switches, oldest first.                                                   |
+| `startedAt`   | No       | `string`                                                      | Decimal epoch milliseconds the node started.                                                |
+| `state`       | Yes      | [MaestroSubtaskState](protocol.md#maestrosubtaskstate)        |                                                                                             |
+| `status`      | Yes      | [PlanStepStatus](protocol.md#planstepstatus)                  |                                                                                             |
+| `title`       | Yes      | `string`                                                      |                                                                                             |
+| `usage`       | No       | [AgileMaestroUsage](protocol.md#agilemaestrousage)            | What the node's own agents spent; absent until the meter attributed usage to them.          |
+
+## AgileMaestroRoute
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+One model choice or switch on a node, with its reason.
+
+| Field      | Required | Type                                                   | Description                                         |
+| ---------- | -------- | ------------------------------------------------------ | --------------------------------------------------- |
+| `at`       | Yes      | `string`                                               | Decimal epoch milliseconds.                         |
+| `cause`    | Yes      | [MaestroRouteCause](protocol.md#maestroroutecause)     |                                                     |
+| `failure`  | No       | [MaestroFailureClass](protocol.md#maestrofailureclass) | Present when the cause is a failure or a refusal.   |
+| `model`    | Yes      | [MaestroModelUse](protocol.md#maestromodeluse)         |                                                     |
+| `previous` | No       | [MaestroModelUse](protocol.md#maestromodeluse)         | The model it replaced, absent for the first choice. |
+| `reason`   | Yes      | `string`                                               |                                                     |
+| `role`     | Yes      | [MaestroRole](protocol.md#maestrorole)                 |                                                     |
+
+## AgileMaestroRun
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+One Maestro run of the conversation and its whole task tree.
+
+| Field          | Required | Type                                                      | Description                                                                                   |
+| -------------- | -------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `cost`         | No       | [MaestroCost](protocol.md#maestrocost)                    | The run's live cost meter.                                                                    |
+| `finishedAt`   | No       | `string`                                                  | Decimal epoch milliseconds; absent while it runs.                                             |
+| `goal`         | Yes      | [MaestroGoal](protocol.md#maestrogoal)                    |                                                                                               |
+| `nodes`        | Yes      | Array of [AgileMaestroNode](protocol.md#agilemaestronode) | The epic first, then every subtask, parents before their children, siblings in order.         |
+| `omittedNodes` | Yes      | `integer`                                                 | Subtasks left out because the tree outgrew the board's bound; they remain in the run's trace. |
+| `reason`       | No       | `string`                                                  | Why the run stopped or failed, in plain words, when it did.                                   |
+| `runId`        | Yes      | `string`                                                  |                                                                                               |
+| `startedAt`    | Yes      | `string`                                                  | Decimal epoch milliseconds.                                                                   |
+| `state`        | Yes      | [MaestroAgentState](protocol.md#maestroagentstate)        |                                                                                               |
+| `title`        | Yes      | `string`                                                  |                                                                                               |
+| `updatedAt`    | Yes      | `string`                                                  | Decimal epoch milliseconds of the newest change shown.                                        |
+
+## AgileMaestroSteerParams
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+Session ownership is checked before the action reaches Maestro.
+
+| Field       | Required | Type                                                   | Description |
+| ----------- | -------- | ------------------------------------------------------ | ----------- |
+| `command`   | Yes      | [AgileMaestroCommand](protocol.md#agilemaestrocommand) |             |
+| `sessionId` | Yes      | `string`                                               |             |
+
+## AgileMaestroUsage
+
+Module: `nexa-protocol/agile/interface/AgileMaestro.js`.
+
+What the agents that worked a node spent, as the run's meter measured it.
+
+| Field               | Required | Type      | Description                                                                           |
+| ------------------- | -------- | --------- | ------------------------------------------------------------------------------------- |
+| `billedMicros`      | Yes      | `string`  | What was actually charged; plan-covered usage bills nothing; USD micros.              |
+| `cachedInputTokens` | Yes      | `integer` |                                                                                       |
+| `costMicros`        | Yes      | `string`  | Tokens at each model's published API price, including plan-covered usage; USD micros. |
+| `inputTokens`       | Yes      | `integer` |                                                                                       |
+| `outputTokens`      | Yes      | `integer` |                                                                                       |
+| `priced`            | Yes      | `boolean` | False when a model it used has no published price, so `costMicros` leaves it out.     |
+
 ## AgilePlan
 
 Module: `nexa-protocol/agile/interface/AgilePlan.js`.
@@ -425,15 +614,16 @@ Module: `nexa-protocol/agile/interface/AgileView.js`.
 
 One authoritative revision drives both the board and its dependency graph.
 
-| Field     | Required | Type                                                            | Description |
-| --------- | -------- | --------------------------------------------------------------- | ----------- |
-| `epics`   | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |             |
-| `paused`  | Yes      | `boolean`                                                       |             |
-| `plan`    | Yes      | [AgileBoardPlan](protocol.md#agileboardplan) / `null`           |             |
-| `sprints` | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |             |
-| `stories` | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |             |
-| `tasks`   | Yes      | Array of [AgileViewTask](protocol.md#agileviewtask)             |             |
-| `version` | Yes      | `number`                                                        |             |
+| Field     | Required | Type                                                            | Description                                                                            |
+| --------- | -------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `epics`   | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |                                                                                        |
+| `maestro` | No       | [AgileMaestroBoard](protocol.md#agilemaestroboard)              | Maestro's runs in this conversation and their task trees; absent before the first run. |
+| `paused`  | Yes      | `boolean`                                                       |                                                                                        |
+| `plan`    | Yes      | [AgileBoardPlan](protocol.md#agileboardplan) / `null`           |                                                                                        |
+| `sprints` | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |                                                                                        |
+| `stories` | Yes      | Array of [AgileViewDependency](protocol.md#agileviewdependency) |                                                                                        |
+| `tasks`   | Yes      | Array of [AgileViewTask](protocol.md#agileviewtask)             |                                                                                        |
+| `version` | Yes      | `number`                                                        |                                                                                        |
 
 ## AgileViewDependency
 
@@ -10331,6 +10521,7 @@ Every gateway method with its params and result; the method name is the key.
 | `sessions.get`                        | Yes      | Object (fields below) |                                                                                                        |
 | `sessions.input`                      | Yes      | Object (fields below) |                                                                                                        |
 | `sessions.list`                       | Yes      | Object (fields below) |                                                                                                        |
+| `sessions.maestro.steer`              | Yes      | Object (fields below) | A board action on one node of a running Maestro task tree, applied at its next safe point.             |
 | `sessions.messages`                   | Yes      | Object (fields below) |                                                                                                        |
 | `sessions.pin`                        | Yes      | Object (fields below) |                                                                                                        |
 | `sessions.pins`                       | Yes      | Object (fields below) |                                                                                                        |
@@ -11840,6 +12031,13 @@ Every gateway method with its params and result; the method name is the key.
 | -------- | -------- | -------------------------------------------------- | ----------- |
 | `params` | Yes      | [SessionListParams](protocol.md#sessionlistparams) |             |
 | `result` | Yes      | Array of [Session](protocol.md#session)            |             |
+
+**sessions.maestro.steer**
+
+| Field    | Required | Type                                                           | Description |
+| -------- | -------- | -------------------------------------------------------------- | ----------- |
+| `params` | Yes      | [AgileMaestroSteerParams](protocol.md#agilemaestrosteerparams) |             |
+| `result` | Yes      | [AgileView](protocol.md#agileview)                             |             |
 
 **sessions.messages**
 
@@ -17645,7 +17843,7 @@ A partial update from a running tool.
 
 | Field         | Required | Type                                                                     | Description                                                                                             |
 | ------------- | -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `data`        | Yes      | Array of `number` / [Recordstringnumber](protocol.md#recordstringnumber) | The attachment bytes: a binary view in the process that produced them, and on the JSON wire the indexed |
+| `data`        | Yes      | [Recordstringnumber](protocol.md#recordstringnumber) / Array of `number` | The attachment bytes: a binary view in the process that produced them, and on the JSON wire the indexed |
 | `description` | No       | `string`                                                                 |                                                                                                         |
 | `filename`    | Yes      | `string`                                                                 |                                                                                                         |
 | `mimeType`    | Yes      | `string`                                                                 |                                                                                                         |

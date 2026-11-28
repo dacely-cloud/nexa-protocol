@@ -713,6 +713,513 @@ export const schema: Schema = {
             required: ['dependsOn', 'id', 'outcome', 'title'],
             type: 'object',
         },
+        AgileMaestroAction: {
+            description: "A board action the conversation's owner asked for, and how it ended.",
+            properties: {
+                effort: {
+                    $ref: '#/definitions/ReasoningEffort',
+                    description: 'The reasoning effort a pin names.',
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                kind: {
+                    $ref: '#/definitions/AgileMaestroActionKind',
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelRef',
+                    description: 'The model a pin names.',
+                },
+                note: {
+                    description: 'How it applied or why it was rejected, in plain words.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                requestedAt: {
+                    description: 'Decimal epoch milliseconds.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                settledAt: {
+                    description: 'Decimal epoch milliseconds; absent while pending.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                state: {
+                    $ref: '#/definitions/AgileMaestroActionState',
+                },
+                text: {
+                    description: 'The instruction, or the guidance for a re-split.',
+                    type: 'string',
+                    maxLength: 4000,
+                },
+            },
+            required: ['id', 'kind', 'requestedAt', 'state'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroActionKind: {
+            description:
+                "What the conversation's owner can ask Maestro to do with one node of a running task tree.\nUnion of {@link AgileMaestroActionKind} values.",
+            enum: ['cancel', 'instruct', 'pin', 'resplit', 'retry', 'skip'],
+            type: 'string',
+        },
+        AgileMaestroActionState: {
+            description:
+                'Where a board action is.\nUnion of {@link AgileMaestroActionState} values.',
+            enum: ['applied', 'pending', 'rejected'],
+            type: 'string',
+        },
+        AgileMaestroAssignee: {
+            description:
+                'The Maestro agent working a node, and the model, effort and connection doing it now.',
+            properties: {
+                activity: {
+                    description:
+                        'What the agent is doing, in a few words; empty when nothing was reported.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                agentId: {
+                    description:
+                        "The run id for the lead, else the sub-agent's id, as in its `maestro` events.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelUse',
+                    description:
+                        'The model, reasoning effort and connection doing the work now, when one was chosen.',
+                },
+                state: {
+                    $ref: '#/definitions/MaestroAgentState',
+                },
+                switches: {
+                    description: 'Model switches so far.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+            },
+            required: ['activity', 'agentId', 'state', 'switches'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroBoard: {
+            description: "Maestro's runs in a conversation, projected onto its agile board.",
+            properties: {
+                omittedRuns: {
+                    description:
+                        'Older runs left out to bound the board; `maestro.runs.get` still returns their traces.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                runs: {
+                    description: 'Oldest first.',
+                    items: {
+                        $ref: '#/definitions/AgileMaestroRun',
+                    },
+                    type: 'array',
+                    maxItems: 32,
+                },
+            },
+            required: ['omittedRuns', 'runs'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroCheck: {
+            description: 'One acceptance check of a node and its latest result.',
+            properties: {
+                durationMs: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                environment: {
+                    $ref: '#/definitions/MaestroEnvironmentRef',
+                },
+                id: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroCheckState',
+                },
+                summary: {
+                    type: 'string',
+                    maxLength: 2000,
+                },
+                tests: {
+                    $ref: '#/definitions/MaestroTestTally',
+                },
+            },
+            required: ['id', 'name', 'state', 'summary'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroCommand: {
+            description: 'A board action on one node of a running Maestro task tree.',
+            properties: {
+                effort: {
+                    $ref: '#/definitions/ReasoningEffort',
+                },
+                id: {
+                    description: 'Chosen by the client, unique per action.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                kind: {
+                    $ref: '#/definitions/AgileMaestroActionKind',
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelRef',
+                },
+                nodeId: {
+                    description: 'A subtask id of that run, or the run id for the epic.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                runId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                text: {
+                    type: 'string',
+                    minLength: 1,
+                    maxLength: 4000,
+                },
+            },
+            required: ['id', 'kind', 'nodeId', 'runId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroLevel: {
+            description:
+                "The agile level a node of a Maestro run's task tree is shown at, decided by its depth.\nUnion of {@link AgileMaestroLevel} values.",
+            enum: ['epic', 'story', 'task'],
+            type: 'string',
+        },
+        AgileMaestroNode: {
+            description: "One node of a Maestro run's task tree as an agile item.",
+            properties: {
+                actions: {
+                    description:
+                        'Board actions on this node, oldest first; pending ones are never left out.',
+                    items: {
+                        $ref: '#/definitions/AgileMaestroAction',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                agentIds: {
+                    description:
+                        'Every agent that worked the node, oldest first; a retry may hand it to a new one.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                assignee: {
+                    $ref: '#/definitions/AgileMaestroAssignee',
+                    description: 'Absent until an agent picks the node up.',
+                },
+                checkCount: {
+                    description:
+                        'Checks seen in total; more than `checks.length` when the oldest were left out to bound it.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                checks: {
+                    description:
+                        "The node's acceptance checks with their latest results, in the order they first ran.",
+                    items: {
+                        $ref: '#/definitions/AgileMaestroCheck',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                dependsOn: {
+                    description: 'Sibling nodes that must finish before it starts.',
+                    items: {
+                        type: 'string',
+                        pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                        maxLength: 128,
+                    },
+                    type: 'array',
+                    maxItems: 256,
+                },
+                environment: {
+                    $ref: '#/definitions/MaestroEnvironmentRef',
+                    description: 'The environment its work runs on, once placed.',
+                },
+                finishedAt: {
+                    description: 'Decimal epoch milliseconds the node finished.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                goal: {
+                    description: 'What it produces, in plain words.',
+                    type: 'string',
+                    maxLength: 4000,
+                },
+                id: {
+                    description: 'The subtask id, or the run id for the epic.',
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                level: {
+                    $ref: '#/definitions/AgileMaestroLevel',
+                },
+                parentId: {
+                    description:
+                        'The node it refines: null for the epic, the run id for a story, a story or task for a task.',
+                    type: ['null', 'string'],
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                routeCount: {
+                    description:
+                        'Routes seen in total; more than `routes.length` when the oldest were left out to bound it.',
+                    minimum: 0,
+                    type: 'integer',
+                },
+                routes: {
+                    description: 'Model choices and switches, oldest first.',
+                    items: {
+                        $ref: '#/definitions/AgileMaestroRoute',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                startedAt: {
+                    description: 'Decimal epoch milliseconds the node started.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroSubtaskState',
+                },
+                status: {
+                    $ref: '#/definitions/PlanStepStatus',
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+                usage: {
+                    $ref: '#/definitions/AgileMaestroUsage',
+                    description:
+                        "What the node's own agents spent; absent until the meter attributed usage to them.",
+                },
+            },
+            required: [
+                'actions',
+                'agentIds',
+                'checkCount',
+                'checks',
+                'dependsOn',
+                'goal',
+                'id',
+                'level',
+                'parentId',
+                'routeCount',
+                'routes',
+                'state',
+                'status',
+                'title',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroRoute: {
+            description: 'One model choice or switch on a node, with its reason.',
+            properties: {
+                at: {
+                    description: 'Decimal epoch milliseconds.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                cause: {
+                    $ref: '#/definitions/MaestroRouteCause',
+                },
+                failure: {
+                    $ref: '#/definitions/MaestroFailureClass',
+                    description: 'Present when the cause is a failure or a refusal.',
+                },
+                model: {
+                    $ref: '#/definitions/MaestroModelUse',
+                },
+                previous: {
+                    $ref: '#/definitions/MaestroModelUse',
+                    description: 'The model it replaced, absent for the first choice.',
+                },
+                reason: {
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                role: {
+                    $ref: '#/definitions/MaestroRole',
+                },
+            },
+            required: ['at', 'cause', 'model', 'reason', 'role'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroRun: {
+            description: 'One Maestro run of the conversation and its whole task tree.',
+            properties: {
+                cost: {
+                    $ref: '#/definitions/MaestroCost',
+                    description: "The run's live cost meter.",
+                },
+                finishedAt: {
+                    description: 'Decimal epoch milliseconds; absent while it runs.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                goal: {
+                    $ref: '#/definitions/MaestroGoal',
+                },
+                nodes: {
+                    description:
+                        'The epic first, then every subtask, parents before their children, siblings in order.',
+                    items: {
+                        $ref: '#/definitions/AgileMaestroNode',
+                    },
+                    type: 'array',
+                    maxItems: 4097,
+                },
+                omittedNodes: {
+                    description:
+                        "Subtasks left out because the tree outgrew the board's bound; they remain in the run's trace.",
+                    minimum: 0,
+                    type: 'integer',
+                },
+                reason: {
+                    description: 'Why the run stopped or failed, in plain words, when it did.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                runId: {
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                startedAt: {
+                    description: 'Decimal epoch milliseconds.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                state: {
+                    $ref: '#/definitions/MaestroAgentState',
+                },
+                title: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+                updatedAt: {
+                    description: 'Decimal epoch milliseconds of the newest change shown.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+            },
+            required: [
+                'goal',
+                'nodes',
+                'omittedNodes',
+                'runId',
+                'startedAt',
+                'state',
+                'title',
+                'updatedAt',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroSteerParams: {
+            description: 'Session ownership is checked before the action reaches Maestro.',
+            properties: {
+                command: {
+                    $ref: '#/definitions/AgileMaestroCommand',
+                },
+                sessionId: {
+                    type: 'string',
+                    minLength: 1,
+                    maxLength: 1024,
+                },
+            },
+            required: ['command', 'sessionId'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        AgileMaestroUsage: {
+            description:
+                "What the agents that worked a node spent, as the run's meter measured it.",
+            properties: {
+                billedMicros: {
+                    description:
+                        'What was actually charged; plan-covered usage bills nothing; USD micros.',
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                cachedInputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                costMicros: {
+                    description:
+                        "Tokens at each model's published API price, including plan-covered usage; USD micros.",
+                    type: 'string',
+                    pattern: '^(0|[1-9][0-9]{0,18})$',
+                    maxLength: 19,
+                },
+                inputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                outputTokens: {
+                    minimum: 0,
+                    type: 'integer',
+                },
+                priced: {
+                    description:
+                        'False when a model it used has no published price, so `costMicros` leaves it out.',
+                    type: 'boolean',
+                },
+            },
+            required: [
+                'billedMicros',
+                'cachedInputTokens',
+                'costMicros',
+                'inputTokens',
+                'outputTokens',
+                'priced',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
         AgilePlan: {
             description:
                 'Agile structure attached atomically to the existing durable plan and its execution steps.',
@@ -941,6 +1448,11 @@ export const schema: Schema = {
                         $ref: '#/definitions/AgileViewDependency',
                     },
                     type: 'array',
+                },
+                maestro: {
+                    $ref: '#/definitions/AgileMaestroBoard',
+                    description:
+                        "Maestro's runs in this conversation and their task trees; absent before the first run.",
                 },
                 paused: {
                     type: 'boolean',
@@ -20833,6 +21345,20 @@ export const schema: Schema = {
                     required: ['params', 'result'],
                     type: 'object',
                 },
+                'sessions.maestro.steer': {
+                    description:
+                        'A board action on one node of a running Maestro task tree, applied at its next safe point.',
+                    properties: {
+                        params: {
+                            $ref: '#/definitions/AgileMaestroSteerParams',
+                        },
+                        result: {
+                            $ref: '#/definitions/AgileView',
+                        },
+                    },
+                    required: ['params', 'result'],
+                    type: 'object',
+                },
                 'sessions.messages': {
                     properties: {
                         params: {
@@ -22224,6 +22750,7 @@ export const schema: Schema = {
                 'sessions.get',
                 'sessions.input',
                 'sessions.list',
+                'sessions.maestro.steer',
                 'sessions.messages',
                 'sessions.pin',
                 'sessions.pins',
@@ -32041,13 +32568,13 @@ export const schema: Schema = {
                 data: {
                     anyOf: [
                         {
+                            $ref: '#/definitions/Record%3Cstring%2Cnumber%3E',
+                        },
+                        {
                             items: {
                                 type: 'number',
                             },
                             type: 'array',
-                        },
-                        {
-                            $ref: '#/definitions/Record%3Cstring%2Cnumber%3E',
                         },
                     ],
                     description:

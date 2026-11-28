@@ -11,6 +11,7 @@ import type {
     AgentProfilesResult,
 } from '../agent/ProfileTypes.js';
 import type { AgileSessionCommand, AgileView } from '../agile/interface/AgileView.js';
+import type { AgileMaestroSteerParams } from '../agile/interface/AgileMaestro.js';
 import type {
     DataUploadChunkParams,
     DataUploadIdParams,
@@ -1504,6 +1505,11 @@ export interface GatewayMethods {
     readonly 'sessions.planning': { readonly params: SessionRef; readonly result: AgileView };
     readonly 'sessions.sprint': {
         readonly params: AgileSessionCommand;
+        readonly result: AgileView;
+    };
+    /** A board action on one node of a running Maestro task tree, applied at its next safe point. */
+    readonly 'sessions.maestro.steer': {
+        readonly params: AgileMaestroSteerParams;
         readonly result: AgileView;
     };
     readonly 'sessions.download': { readonly params: SessionFileParams; readonly result: OkResult };

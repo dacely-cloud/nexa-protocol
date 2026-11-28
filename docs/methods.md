@@ -1,6 +1,6 @@
 # RPC reference
 
-All 289 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 288 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
+All 290 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-transport; the remaining 289 use `client.call(Method.Name, params)`. The method catalog is `nexa-protocol/gateway/Method.js` and the parameter and result types come from `nexa-protocol/gateway/ProtocolTypes.js`. Examples are independent templates; replace identifiers and values before calling. Administrative and destructive methods change server state. Availability depends on the authenticated identity, scopes, and server policy.
 
 - [accounts.create](#accountscreate)
 - [accounts.list](#accountslist)
@@ -197,6 +197,7 @@ All 289 gateway methods. `connect` is managed by `NexaClient.connect` in nexa-tr
 - [sessions.get](#sessionsget)
 - [sessions.input](#sessionsinput)
 - [sessions.list](#sessionslist)
+- [sessions.maestro.steer](#sessionsmaestrosteer)
 - [sessions.messages](#sessionsmessages)
 - [sessions.pin](#sessionspin)
 - [sessions.pins](#sessionspins)
@@ -5417,6 +5418,36 @@ Parameters: [SessionListParams](protocol.md#sessionlistparams).
 | `userId`  | No       | `string` |             |
 
 Result: Array of [Session](protocol.md#session).
+
+## sessions.maestro.steer
+
+```ts
+import { Method } from 'nexa-protocol/gateway/Method.js';
+import type { ParamsOf, ResultOf } from 'nexa-protocol/gateway/ProtocolTypes.js';
+
+const params: ParamsOf<typeof Method.SessionsMaestroSteer> = {
+    command: {
+        id: 'YOUR_ID',
+        kind: 'cancel',
+        nodeId: 'YOUR_NODEID',
+        runId: 'YOUR_RUNID',
+    },
+    sessionId: 'YOUR_SESSIONID',
+};
+const result: ResultOf<typeof Method.SessionsMaestroSteer> = await client.call(
+    Method.SessionsMaestroSteer,
+    params,
+);
+```
+
+Parameters: [AgileMaestroSteerParams](protocol.md#agilemaestrosteerparams).
+
+| Field       | Required | Type                                                   | Description |
+| ----------- | -------- | ------------------------------------------------------ | ----------- |
+| `command`   | Yes      | [AgileMaestroCommand](protocol.md#agilemaestrocommand) |             |
+| `sessionId` | Yes      | `string`                                               |             |
+
+Result: [AgileView](protocol.md#agileview).
 
 ## sessions.messages
 

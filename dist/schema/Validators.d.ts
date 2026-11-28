@@ -873,6 +873,10 @@ export declare function sessionsInputResult(value: unknown): boolean;
 export declare function sessionsListParams(value: unknown): boolean;
 /** Validates the result of `sessions.list`. */
 export declare function sessionsListResult(value: unknown): boolean;
+/** Validates the params of `sessions.maestro.steer`. */
+export declare function sessionsMaestroSteerParams(value: unknown): boolean;
+/** Validates the result of `sessions.maestro.steer`. */
+export declare function sessionsMaestroSteerResult(value: unknown): boolean;
 /** Validates the params of `sessions.messages`. */
 export declare function sessionsMessagesParams(value: unknown): boolean;
 /** Validates the result of `sessions.messages`. */

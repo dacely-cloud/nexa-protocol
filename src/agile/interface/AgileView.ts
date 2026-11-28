@@ -3,6 +3,7 @@
 
 import type { PlanStatus, PlanStep } from '../../tools/planning/PlanningStateTypes.js';
 import type { AgileSprintCommand } from '../AgileSprintTypes.js';
+import type { AgileMaestroBoard } from './AgileMaestro.js';
 import type { AgilePlan } from './AgilePlan.js';
 
 /** Browser-facing plan fields; execution evidence remains in its own authorized APIs. */
@@ -37,6 +38,14 @@ export interface AgileView {
     readonly epics: readonly AgileViewDependency[];
     readonly stories: readonly AgileViewDependency[];
     readonly sprints: readonly AgileViewDependency[];
+    /**
+     * Maestro's runs in this conversation and their task trees; absent before the first run.
+     *
+     * @remarks
+     * Maestro owns these items and the planner never edits them, so they are kept apart from
+     * {@link AgileView.plan}. They change with the same `version` and `session.planning` event.
+     */
+    readonly maestro?: AgileMaestroBoard;
 }
 
 /** A notification invalidates an older view without replaying the complete backlog on each write. */

@@ -1713,6 +1713,14 @@ export function sessionsListParams(value) {
 export function sessionsListResult(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/sessions.list/properties/result', value);
 }
+/** Validates the params of `sessions.maestro.steer`. */
+export function sessionsMaestroSteerParams(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/sessions.maestro.steer/properties/params', value);
+}
+/** Validates the result of `sessions.maestro.steer`. */
+export function sessionsMaestroSteerResult(value) {
+    return validator.validate('#/definitions/GatewayMethods/properties/sessions.maestro.steer/properties/result', value);
+}
 /** Validates the params of `sessions.messages`. */
 export function sessionsMessagesParams(value) {
     return validator.validate('#/definitions/GatewayMethods/properties/sessions.messages/properties/params', value);

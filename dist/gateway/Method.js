@@ -395,6 +395,8 @@ export var Method;
     Method["SessionsInput"] = "sessions.input";
     /** Calls `sessions.list`. */
     Method["SessionsList"] = "sessions.list";
+    /** Calls `sessions.maestro.steer`. */
+    Method["SessionsMaestroSteer"] = "sessions.maestro.steer";
     /** Calls `sessions.messages`. */
     Method["SessionsMessages"] = "sessions.messages";
     /** Calls `sessions.pin`. */
