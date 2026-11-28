@@ -102,6 +102,8 @@ export interface VmAdministrationInspect {
     readonly includeResize?: boolean;
     /** Requests current regional capacity for both explicit and automatic storage. */
     readonly includeAvailability?: boolean;
+    /** Requests availability plus the VM's custom sizing and custom resize limits. */
+    readonly includeSizing?: boolean;
 }
 
 /** An observed exact environment/generation and stable original request ID constrain every mutation. */
@@ -116,6 +118,36 @@ export interface VmAdministrationMutation extends VmAdministrationInspect {
     readonly requestId: string;
     /** Required for Start and Resize. This profile stays fixed across request retries. */
     readonly profile?: VmAdministrationProfileReference;
+    /** Resize only: custom vCPU and memory of the selected CPU tier instead of the tier's own hardware. */
+    readonly sizing?: VmAdministrationSizing;
+    /** Resize only: grow the VM's existing disks to these exact sizes; a disk never shrinks. */
+    readonly disks?: VmAdministrationDiskGeometry;
+}
+
+/** Custom compute hardware of a CPU tier; memory is a multiple of the reported step. */
+export interface VmAdministrationSizing {
+    readonly vcpus: number;
+    readonly memoryBytes: string;
+}
+
+/** The VM's current disks and the largest sizes each can grow to now. */
+export interface VmAdministrationDiskGrowthLimits {
+    readonly rootBytes: string;
+    readonly workspaceBytes: string;
+    readonly maximumRootBytes: string;
+    readonly maximumWorkspaceBytes: string;
+    readonly stepBytes: string;
+}
+
+/** What a custom configuration can use now beside the hardware the running VM still holds. */
+export interface VmAdministrationResizeLimits {
+    readonly minimumVcpus: number;
+    readonly maximumVcpus: number;
+    readonly minimumMemoryBytes: string;
+    readonly maximumMemoryBytes: string;
+    readonly memoryStepBytes: string;
+    /** Present when the host can grow this VM's disks. */
+    readonly disks?: VmAdministrationDiskGrowthLimits;
 }
 
 /** Create the selected account's default VM in a specific approved site. */
@@ -208,6 +240,8 @@ export interface VmAdministrationEnvironment {
     readonly selectedDisks?: VmAdministrationDiskGeometry;
     readonly operation: VmAdministrationOperation | null;
     readonly profile: VmAdministrationProfile | null;
+    /** Custom vCPU and memory the VM runs instead of its tier's own hardware. */
+    readonly sizing?: VmAdministrationSizing;
 }
 
 /** Configuration options come from the approved fleet and the selected account's profile grants. */
@@ -228,6 +262,8 @@ export interface VmAdministrationView {
     readonly defaultProfile: VmAdministrationProfile;
     readonly provisioning?: VmAdministrationProvisioning;
     readonly resizeProfiles?: readonly VmAdministrationProfile[];
+    /** Present for an active VM on a host that supports custom configurations. */
+    readonly resizeLimits?: VmAdministrationResizeLimits;
     readonly acceptedOperationId: string | null;
 }
 

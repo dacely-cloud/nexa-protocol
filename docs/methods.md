@@ -3488,6 +3488,7 @@ Parameters: [VmAdministrationInspect](protocol.md#vmadministrationinspect).
 | --------------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
 | `includeAvailability` | No       | `boolean` | Requests current regional capacity for both explicit and automatic storage.            |
 | `includeResize`       | No       | `boolean` | Requests resize choices while older clients retain their original status shape.        |
+| `includeSizing`       | No       | `boolean` | Requests availability plus the VM's custom sizing and custom resize limits.            |
 | `includeStorage`      | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
 | `userId`              | Yes      | `string`  |                                                                                        |
 

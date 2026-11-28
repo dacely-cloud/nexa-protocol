@@ -32173,6 +32173,34 @@ export const schema = {
             required: ['rootBytes', 'workspaceBytes'],
             type: 'object',
         },
+        VmAdministrationDiskGrowthLimits: {
+            description: "The VM's current disks and the largest sizes each can grow to now.",
+            properties: {
+                maximumRootBytes: {
+                    type: 'string',
+                },
+                maximumWorkspaceBytes: {
+                    type: 'string',
+                },
+                rootBytes: {
+                    type: 'string',
+                },
+                stepBytes: {
+                    type: 'string',
+                },
+                workspaceBytes: {
+                    type: 'string',
+                },
+            },
+            required: [
+                'maximumRootBytes',
+                'maximumWorkspaceBytes',
+                'rootBytes',
+                'stepBytes',
+                'workspaceBytes',
+            ],
+            type: 'object',
+        },
         VmAdministrationDiskOffer: {
             description: 'The region and compute profile that can use this installed storage geometry.',
             properties: {
@@ -32233,6 +32261,10 @@ export const schema = {
                 siteId: {
                     type: 'string',
                 },
+                sizing: {
+                    $ref: '#/definitions/VmAdministrationSizing',
+                    description: "Custom vCPU and memory the VM runs instead of its tier's own hardware.",
+                },
                 state: {
                     $ref: '#/definitions/VmAdministrationState',
                 },
@@ -32249,6 +32281,10 @@ export const schema = {
                 },
                 includeResize: {
                     description: 'Requests resize choices while older clients retain their original status shape.',
+                    type: 'boolean',
+                },
+                includeSizing: {
+                    description: "Requests availability plus the VM's custom sizing and custom resize limits.",
                     type: 'boolean',
                 },
                 includeStorage: {
@@ -32296,6 +32332,10 @@ export const schema = {
                     enum: ['delete', 'resize', 'start', 'stop'],
                     type: 'string',
                 },
+                disks: {
+                    $ref: '#/definitions/VmAdministrationDiskGeometry',
+                    description: "Resize only: grow the VM's existing disks to these exact sizes; a disk never shrinks.",
+                },
                 environmentId: {
                     type: 'string',
                 },
@@ -32310,6 +32350,10 @@ export const schema = {
                     description: 'Requests resize choices while older clients retain their original status shape.',
                     type: 'boolean',
                 },
+                includeSizing: {
+                    description: "Requests availability plus the VM's custom sizing and custom resize limits.",
+                    type: 'boolean',
+                },
                 includeStorage: {
                     description: 'Opt into storage metadata while older administration clients keep their original view.',
                     type: 'boolean',
@@ -32320,6 +32364,10 @@ export const schema = {
                 },
                 requestId: {
                     type: 'string',
+                },
+                sizing: {
+                    $ref: '#/definitions/VmAdministrationSizing',
+                    description: "Resize only: custom vCPU and memory of the selected CPU tier instead of the tier's own hardware.",
                 },
                 userId: {
                     type: 'string',
@@ -32508,6 +32556,10 @@ export const schema = {
                     description: 'Requests resize choices while older clients retain their original status shape.',
                     type: 'boolean',
                 },
+                includeSizing: {
+                    description: "Requests availability plus the VM's custom sizing and custom resize limits.",
+                    type: 'boolean',
+                },
                 includeStorage: {
                     description: 'Opt into storage metadata while older administration clients keep their original view.',
                     type: 'boolean',
@@ -32590,10 +32642,55 @@ export const schema = {
             type: 'object',
             additionalProperties: false,
         },
+        VmAdministrationResizeLimits: {
+            description: 'What a custom configuration can use now beside the hardware the running VM still holds.',
+            properties: {
+                disks: {
+                    $ref: '#/definitions/VmAdministrationDiskGrowthLimits',
+                    description: "Present when the host can grow this VM's disks.",
+                },
+                maximumMemoryBytes: {
+                    type: 'string',
+                },
+                maximumVcpus: {
+                    type: 'number',
+                },
+                memoryStepBytes: {
+                    type: 'string',
+                },
+                minimumMemoryBytes: {
+                    type: 'string',
+                },
+                minimumVcpus: {
+                    type: 'number',
+                },
+            },
+            required: [
+                'maximumMemoryBytes',
+                'maximumVcpus',
+                'memoryStepBytes',
+                'minimumMemoryBytes',
+                'minimumVcpus',
+            ],
+            type: 'object',
+        },
         VmAdministrationRuntime: {
             description: 'Runtime policy is reported independently of sampled host hardware.\nOne VmAdministrationRuntime value.',
             enum: ['qemu-cpu', 'qemu-gpu'],
             type: 'string',
+        },
+        VmAdministrationSizing: {
+            description: 'Custom compute hardware of a CPU tier; memory is a multiple of the reported step.',
+            properties: {
+                memoryBytes: {
+                    type: 'string',
+                },
+                vcpus: {
+                    type: 'number',
+                },
+            },
+            required: ['memoryBytes', 'vcpus'],
+            type: 'object',
         },
         VmAdministrationState: {
             description: 'These are shared control-plane observations, not a substitute for direct guest health checks.\nOne VmAdministrationState value.',
@@ -32635,6 +32732,10 @@ export const schema = {
                 },
                 provisioning: {
                     $ref: '#/definitions/VmAdministrationProvisioning',
+                },
+                resizeLimits: {
+                    $ref: '#/definitions/VmAdministrationResizeLimits',
+                    description: 'Present for an active VM on a host that supports custom configurations.',
                 },
                 resizeProfiles: {
                     items: {

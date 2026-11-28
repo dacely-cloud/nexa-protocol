@@ -18234,17 +18234,20 @@ Provisioning and changes to an existing environment have different identity requ
 
 Variant 1: [VmAdministrationMutation](protocol.md#vmadministrationmutation)
 
-| Field                 | Required | Type                                                                             | Description                                                                            |
-| --------------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `action`              | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                        |
-| `environmentId`       | Yes      | `string`                                                                         |                                                                                        |
-| `generation`          | Yes      | `string`                                                                         |                                                                                        |
-| `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.            |
-| `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
-| `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
-| `profile`             | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.        |
-| `requestId`           | Yes      | `string`                                                                         |                                                                                        |
-| `userId`              | Yes      | `string`                                                                         |                                                                                        |
+| Field                 | Required | Type                                                                             | Description                                                                                      |
+| --------------------- | -------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `action`              | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                                  |
+| `disks`               | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         | Resize only: grow the VM's existing disks to these exact sizes; a disk never shrinks.            |
+| `environmentId`       | Yes      | `string`                                                                         |                                                                                                  |
+| `generation`          | Yes      | `string`                                                                         |                                                                                                  |
+| `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.                      |
+| `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.                  |
+| `includeSizing`       | No       | `boolean`                                                                        | Requests availability plus the VM's custom sizing and custom resize limits.                      |
+| `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view.           |
+| `profile`             | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.                  |
+| `requestId`           | Yes      | `string`                                                                         |                                                                                                  |
+| `sizing`              | No       | [VmAdministrationSizing](protocol.md#vmadministrationsizing)                     | Resize only: custom vCPU and memory of the selected CPU tier instead of the tier's own hardware. |
+| `userId`              | Yes      | `string`                                                                         |                                                                                                  |
 
 Variant 2: [VmAdministrationProvision](protocol.md#vmadministrationprovision)
 
@@ -18254,6 +18257,7 @@ Variant 2: [VmAdministrationProvision](protocol.md#vmadministrationprovision)
 | `disks`               | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
 | `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.            |
 | `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
+| `includeSizing`       | No       | `boolean`                                                                        | Requests availability plus the VM's custom sizing and custom resize limits.            |
 | `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
 | `profile`             | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
 | `requestId`           | Yes      | `string`                                                                         |                                                                                        |
@@ -18270,6 +18274,20 @@ Exact logical sizes of the system and workspace disks, in bytes.
 | ---------------- | -------- | -------- | ----------- |
 | `rootBytes`      | Yes      | `string` |             |
 | `workspaceBytes` | Yes      | `string` |             |
+
+## VmAdministrationDiskGrowthLimits
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+The VM's current disks and the largest sizes each can grow to now.
+
+| Field                   | Required | Type     | Description |
+| ----------------------- | -------- | -------- | ----------- |
+| `maximumRootBytes`      | Yes      | `string` |             |
+| `maximumWorkspaceBytes` | Yes      | `string` |             |
+| `rootBytes`             | Yes      | `string` |             |
+| `stepBytes`             | Yes      | `string` |             |
+| `workspaceBytes`        | Yes      | `string` |             |
 
 ## VmAdministrationDiskOffer
 
@@ -18291,16 +18309,17 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 No public administrative record contains SSH material, placement addresses or native capabilities.
 
-| Field               | Required | Type                                                                        | Description |
-| ------------------- | -------- | --------------------------------------------------------------------------- | ----------- |
-| `generation`        | Yes      | `string`                                                                    |             |
-| `id`                | Yes      | `string`                                                                    |             |
-| `operation`         | Yes      | [VmAdministrationOperation](protocol.md#vmadministrationoperation) / `null` |             |
-| `profile`           | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile) / `null`     |             |
-| `resourcesReserved` | Yes      | `boolean`                                                                   |             |
-| `selectedDisks`     | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)    |             |
-| `siteId`            | No       | `string`                                                                    |             |
-| `state`             | Yes      | [VmAdministrationState](protocol.md#vmadministrationstate)                  |             |
+| Field               | Required | Type                                                                        | Description                                                            |
+| ------------------- | -------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `generation`        | Yes      | `string`                                                                    |                                                                        |
+| `id`                | Yes      | `string`                                                                    |                                                                        |
+| `operation`         | Yes      | [VmAdministrationOperation](protocol.md#vmadministrationoperation) / `null` |                                                                        |
+| `profile`           | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile) / `null`     |                                                                        |
+| `resourcesReserved` | Yes      | `boolean`                                                                   |                                                                        |
+| `selectedDisks`     | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)    |                                                                        |
+| `siteId`            | No       | `string`                                                                    |                                                                        |
+| `sizing`            | No       | [VmAdministrationSizing](protocol.md#vmadministrationsizing)                | Custom vCPU and memory the VM runs instead of its tier's own hardware. |
+| `state`             | Yes      | [VmAdministrationState](protocol.md#vmadministrationstate)                  |                                                                        |
 
 ## VmAdministrationInspect
 
@@ -18312,6 +18331,7 @@ The operator selects one platform account, never an API, tenant, host or machine
 | --------------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
 | `includeAvailability` | No       | `boolean` | Requests current regional capacity for both explicit and automatic storage.            |
 | `includeResize`       | No       | `boolean` | Requests resize choices while older clients retain their original status shape.        |
+| `includeSizing`       | No       | `boolean` | Requests availability plus the VM's custom sizing and custom resize limits.            |
 | `includeStorage`      | No       | `boolean` | Opt into storage metadata while older administration clients keep their original view. |
 | `userId`              | Yes      | `string`  |                                                                                        |
 
@@ -18343,17 +18363,20 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 An observed exact environment/generation and stable original request ID constrain every mutation.
 
-| Field                 | Required | Type                                                                             | Description                                                                            |
-| --------------------- | -------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `action`              | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                        |
-| `environmentId`       | Yes      | `string`                                                                         |                                                                                        |
-| `generation`          | Yes      | `string`                                                                         |                                                                                        |
-| `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.            |
-| `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
-| `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
-| `profile`             | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.        |
-| `requestId`           | Yes      | `string`                                                                         |                                                                                        |
-| `userId`              | Yes      | `string`                                                                         |                                                                                        |
+| Field                 | Required | Type                                                                             | Description                                                                                      |
+| --------------------- | -------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `action`              | Yes      | `"delete"` / `"resize"` / `"start"` / `"stop"`                                   |                                                                                                  |
+| `disks`               | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         | Resize only: grow the VM's existing disks to these exact sizes; a disk never shrinks.            |
+| `environmentId`       | Yes      | `string`                                                                         |                                                                                                  |
+| `generation`          | Yes      | `string`                                                                         |                                                                                                  |
+| `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.                      |
+| `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.                  |
+| `includeSizing`       | No       | `boolean`                                                                        | Requests availability plus the VM's custom sizing and custom resize limits.                      |
+| `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view.           |
+| `profile`             | No       | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) | Required for Start and Resize. This profile stays fixed across request retries.                  |
+| `requestId`           | Yes      | `string`                                                                         |                                                                                                  |
+| `sizing`              | No       | [VmAdministrationSizing](protocol.md#vmadministrationsizing)                     | Resize only: custom vCPU and memory of the selected CPU tier instead of the tier's own hardware. |
+| `userId`              | Yes      | `string`                                                                         |                                                                                                  |
 
 ## VmAdministrationOperation
 
@@ -18460,6 +18483,7 @@ Create the selected account's default VM in a specific approved site.
 | `disks`               | No       | [VmAdministrationDiskGeometry](protocol.md#vmadministrationdiskgeometry)         |                                                                                        |
 | `includeAvailability` | No       | `boolean`                                                                        | Requests current regional capacity for both explicit and automatic storage.            |
 | `includeResize`       | No       | `boolean`                                                                        | Requests resize choices while older clients retain their original status shape.        |
+| `includeSizing`       | No       | `boolean`                                                                        | Requests availability plus the VM's custom sizing and custom resize limits.            |
 | `includeStorage`      | No       | `boolean`                                                                        | Opt into storage metadata while older administration clients keep their original view. |
 | `profile`             | Yes      | [VmAdministrationProfileReference](protocol.md#vmadministrationprofilereference) |                                                                                        |
 | `requestId`           | Yes      | `string`                                                                         |                                                                                        |
@@ -18491,6 +18515,21 @@ The region and exact compute profile with qualified current capacity.
 | `profileRevision` | Yes      | `string` |             |
 | `siteId`          | Yes      | `string` |             |
 
+## VmAdministrationResizeLimits
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+What a custom configuration can use now beside the hardware the running VM still holds.
+
+| Field                | Required | Type                                                                             | Description                                     |
+| -------------------- | -------- | -------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `disks`              | No       | [VmAdministrationDiskGrowthLimits](protocol.md#vmadministrationdiskgrowthlimits) | Present when the host can grow this VM's disks. |
+| `maximumMemoryBytes` | Yes      | `string`                                                                         |                                                 |
+| `maximumVcpus`       | Yes      | `number`                                                                         |                                                 |
+| `memoryStepBytes`    | Yes      | `string`                                                                         |                                                 |
+| `minimumMemoryBytes` | Yes      | `string`                                                                         |                                                 |
+| `minimumVcpus`       | Yes      | `number`                                                                         |                                                 |
+
 ## VmAdministrationRuntime
 
 Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
@@ -18498,6 +18537,17 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 Runtime policy is reported independently of sampled host hardware.
 
 Type: `"qemu-cpu"` / `"qemu-gpu"`.
+
+## VmAdministrationSizing
+
+Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
+
+Custom compute hardware of a CPU tier; memory is a multiple of the reported step.
+
+| Field         | Required | Type     | Description |
+| ------------- | -------- | -------- | ----------- |
+| `memoryBytes` | Yes      | `string` |             |
+| `vcpus`       | Yes      | `number` |             |
 
 ## VmAdministrationState
 
@@ -18513,16 +18563,17 @@ Module: `nexa-protocol/dataplane/VmAdministrationTypes.js`.
 
 A null environment explicitly reports that no managed default has been provisioned.
 
-| Field                 | Required | Type                                                                            | Description |
-| --------------------- | -------- | ------------------------------------------------------------------------------- | ----------- |
-| `acceptedOperationId` | Yes      | `null,string`                                                                   |             |
-| `defaultProfile`      | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile)                  |             |
-| `environment`         | Yes      | [VmAdministrationEnvironment](protocol.md#vmadministrationenvironment) / `null` |             |
-| `observedAtMs`        | Yes      | `string`                                                                        |             |
-| `providerId`          | Yes      | `string`                                                                        |             |
-| `provisioning`        | No       | [VmAdministrationProvisioning](protocol.md#vmadministrationprovisioning)        |             |
-| `resizeProfiles`      | No       | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile)         |             |
-| `userId`              | Yes      | `string`                                                                        |             |
+| Field                 | Required | Type                                                                            | Description                                                             |
+| --------------------- | -------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `acceptedOperationId` | Yes      | `null,string`                                                                   |                                                                         |
+| `defaultProfile`      | Yes      | [VmAdministrationProfile](protocol.md#vmadministrationprofile)                  |                                                                         |
+| `environment`         | Yes      | [VmAdministrationEnvironment](protocol.md#vmadministrationenvironment) / `null` |                                                                         |
+| `observedAtMs`        | Yes      | `string`                                                                        |                                                                         |
+| `providerId`          | Yes      | `string`                                                                        |                                                                         |
+| `provisioning`        | No       | [VmAdministrationProvisioning](protocol.md#vmadministrationprovisioning)        |                                                                         |
+| `resizeLimits`        | No       | [VmAdministrationResizeLimits](protocol.md#vmadministrationresizelimits)        | Present for an active VM on a host that supports custom configurations. |
+| `resizeProfiles`      | No       | Array of [VmAdministrationProfile](protocol.md#vmadministrationprofile)         |                                                                         |
+| `userId`              | Yes      | `string`                                                                        |                                                                         |
 
 ## VmCpuUsage
 
