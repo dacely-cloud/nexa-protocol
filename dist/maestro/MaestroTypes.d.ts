@@ -659,6 +659,38 @@ export declare const MaestroCheckState: {
 };
 /** Union of {@link MaestroCheckState} values. */
 export type MaestroCheckState = (typeof MaestroCheckState)[keyof typeof MaestroCheckState];
+/** A check Maestro's verdict does not count, with why. */
+export interface MaestroVerdictCheck {
+    /** The check's id; a check dropped before the work never ran, so no other update names it. */
+    readonly checkId: string;
+    readonly name: string;
+    /** Why it does not count, in plain words. */
+    readonly reason: string;
+}
+/**
+ * Maestro's verdict on its own work in structured form, beside the prose statement of the
+ * verdict check (`verdict-<agent id>`).
+ */
+export interface MaestroVerdictDetail {
+    /**
+     * True when a check written before the work, without seeing it, failed on the untouched
+     * starting state and passes on the work: the only evidence Maestro counts as verified.
+     */
+    readonly independent: boolean;
+    /** What the task requires that no command can check, in the check writer's words. */
+    readonly untestable: readonly string[];
+    /** Checks that failed on every attempt and were set aside as wrong after re-examination. */
+    readonly setAside: readonly MaestroVerdictCheck[];
+    /**
+     * Checks dropped before the work: broken and not repaired, too long to read, or testing how
+     * the work is done rather than what the task asks.
+     */
+    readonly dropped: readonly MaestroVerdictCheck[];
+    /** Why no strict review ran, when one was due. */
+    readonly unreviewed?: string;
+    /** Which workspace state is handed in, when an earlier one was restored. */
+    readonly restored?: string;
+}
 /** A check ran on the work. */
 export interface MaestroCheckUpdate {
     readonly kind: 'check';
@@ -673,6 +705,8 @@ export interface MaestroCheckUpdate {
      * @TJS-type integer
      */
     readonly durationMs?: number;
+    /** On the verdict check only: the verdict in structured form. */
+    readonly verdict?: MaestroVerdictDetail;
 }
 /** The run's live cost meter changed. */
 export interface MaestroUsageUpdate {

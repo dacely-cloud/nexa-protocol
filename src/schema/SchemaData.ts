@@ -25014,6 +25014,10 @@ export const schema: Schema = {
                 tests: {
                     $ref: '#/definitions/MaestroTestTally',
                 },
+                verdict: {
+                    $ref: '#/definitions/MaestroVerdictDetail',
+                    description: 'On the verdict check only: the verdict in structured form.',
+                },
             },
             required: ['checkId', 'kind', 'name', 'state', 'summary'],
             type: 'object',
@@ -26420,6 +26424,83 @@ export const schema: Schema = {
                 },
             },
             required: ['cost', 'kind'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroVerdictCheck: {
+            description: "A check Maestro's verdict does not count, with why.",
+            properties: {
+                checkId: {
+                    description:
+                        "The check's id; a check dropped before the work never ran, so no other update names it.",
+                    type: 'string',
+                    pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
+                    maxLength: 128,
+                },
+                name: {
+                    type: 'string',
+                    maxLength: 300,
+                },
+                reason: {
+                    description: 'Why it does not count, in plain words.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+            },
+            required: ['checkId', 'name', 'reason'],
+            type: 'object',
+            additionalProperties: false,
+        },
+        MaestroVerdictDetail: {
+            description:
+                "Maestro's verdict on its own work in structured form, beside the prose statement of the\nverdict check (`verdict-<agent id>`).",
+            properties: {
+                dropped: {
+                    description:
+                        'Checks dropped before the work: broken and not repaired, too long to read, or testing how\nthe work is done rather than what the task asks.',
+                    items: {
+                        $ref: '#/definitions/MaestroVerdictCheck',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                independent: {
+                    description:
+                        'True when a check written before the work, without seeing it, failed on the untouched\nstarting state and passes on the work: the only evidence Maestro counts as verified.',
+                    type: 'boolean',
+                },
+                restored: {
+                    description:
+                        'Which workspace state is handed in, when an earlier one was restored.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                setAside: {
+                    description:
+                        'Checks that failed on every attempt and were set aside as wrong after re-examination.',
+                    items: {
+                        $ref: '#/definitions/MaestroVerdictCheck',
+                    },
+                    type: 'array',
+                    maxItems: 64,
+                },
+                unreviewed: {
+                    description: 'Why no strict review ran, when one was due.',
+                    type: 'string',
+                    maxLength: 1000,
+                },
+                untestable: {
+                    description:
+                        "What the task requires that no command can check, in the check writer's words.",
+                    items: {
+                        type: 'string',
+                        maxLength: 1000,
+                    },
+                    type: 'array',
+                    maxItems: 32,
+                },
+            },
+            required: ['dropped', 'independent', 'setAside', 'untestable'],
             type: 'object',
             additionalProperties: false,
         },

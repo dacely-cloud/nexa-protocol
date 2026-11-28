@@ -13852,16 +13852,17 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 A check ran on the work.
 
-| Field         | Required | Type                                                       | Description |
-| ------------- | -------- | ---------------------------------------------------------- | ----------- |
-| `checkId`     | Yes      | `string`                                                   |             |
-| `durationMs`  | No       | `integer`                                                  |             |
-| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |             |
-| `kind`        | Yes      | `"check"`                                                  |             |
-| `name`        | Yes      | `string`                                                   |             |
-| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |             |
-| `summary`     | Yes      | `string`                                                   |             |
-| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |             |
+| Field         | Required | Type                                                       | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| `checkId`     | Yes      | `string`                                                   |                                                            |
+| `durationMs`  | No       | `integer`                                                  |                                                            |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                                                            |
+| `kind`        | Yes      | `"check"`                                                  |                                                            |
+| `name`        | Yes      | `string`                                                   |                                                            |
+| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |                                                            |
+| `summary`     | Yes      | `string`                                                   |                                                            |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |                                                            |
+| `verdict`     | No       | [MaestroVerdictDetail](protocol.md#maestroverdictdetail)   | On the verdict check only: the verdict in structured form. |
 
 ## MaestroConnection
 
@@ -14609,16 +14610,17 @@ Variant 5: [MaestroAgentUpdate](protocol.md#maestroagentupdate)
 
 Variant 6: [MaestroCheckUpdate](protocol.md#maestrocheckupdate)
 
-| Field         | Required | Type                                                       | Description |
-| ------------- | -------- | ---------------------------------------------------------- | ----------- |
-| `checkId`     | Yes      | `string`                                                   |             |
-| `durationMs`  | No       | `integer`                                                  |             |
-| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |             |
-| `kind`        | Yes      | `"check"`                                                  |             |
-| `name`        | Yes      | `string`                                                   |             |
-| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |             |
-| `summary`     | Yes      | `string`                                                   |             |
-| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |             |
+| Field         | Required | Type                                                       | Description                                                |
+| ------------- | -------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| `checkId`     | Yes      | `string`                                                   |                                                            |
+| `durationMs`  | No       | `integer`                                                  |                                                            |
+| `environment` | No       | [MaestroEnvironmentRef](protocol.md#maestroenvironmentref) |                                                            |
+| `kind`        | Yes      | `"check"`                                                  |                                                            |
+| `name`        | Yes      | `string`                                                   |                                                            |
+| `state`       | Yes      | [MaestroCheckState](protocol.md#maestrocheckstate)         |                                                            |
+| `summary`     | Yes      | `string`                                                   |                                                            |
+| `tests`       | No       | [MaestroTestTally](protocol.md#maestrotesttally)           |                                                            |
+| `verdict`     | No       | [MaestroVerdictDetail](protocol.md#maestroverdictdetail)   | On the verdict check only: the verdict in structured form. |
 
 Variant 7: [MaestroUsageUpdate](protocol.md#maestrousageupdate)
 
@@ -14646,6 +14648,33 @@ The run's live cost meter changed.
 | ------ | -------- | -------------------------------------- | ----------- |
 | `cost` | Yes      | [MaestroCost](protocol.md#maestrocost) |             |
 | `kind` | Yes      | `"usage"`                              |             |
+
+## MaestroVerdictCheck
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+A check Maestro's verdict does not count, with why.
+
+| Field     | Required | Type     | Description                                                                             |
+| --------- | -------- | -------- | --------------------------------------------------------------------------------------- |
+| `checkId` | Yes      | `string` | The check's id; a check dropped before the work never ran, so no other update names it. |
+| `name`    | Yes      | `string` |                                                                                         |
+| `reason`  | Yes      | `string` | Why it does not count, in plain words.                                                  |
+
+## MaestroVerdictDetail
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Maestro's verdict on its own work in structured form, beside the prose statement of the
+
+| Field         | Required | Type                                                            | Description                                                                               |
+| ------------- | -------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `dropped`     | Yes      | Array of [MaestroVerdictCheck](protocol.md#maestroverdictcheck) | Checks dropped before the work: broken and not repaired, too long to read, or testing how |
+| `independent` | Yes      | `boolean`                                                       | True when a check written before the work, without seeing it, failed on the untouched     |
+| `restored`    | No       | `string`                                                        | Which workspace state is handed in, when an earlier one was restored.                     |
+| `setAside`    | Yes      | Array of [MaestroVerdictCheck](protocol.md#maestroverdictcheck) | Checks that failed on every attempt and were set aside as wrong after re-examination.     |
+| `unreviewed`  | No       | `string`                                                        | Why no strict review ran, when one was due.                                               |
+| `untestable`  | Yes      | Array of `string`                                               | What the task requires that no command can check, in the check writer's words.            |
 
 ## MaestroWaitResolution
 

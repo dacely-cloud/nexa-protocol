@@ -2000,6 +2000,44 @@
                 "maxLength": 2000
             }
         },
+        "MaestroVerdictCheck": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/checkId": {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$",
+                "maxLength": 128
+            },
+            "properties/name": {
+                "maxLength": 300
+            },
+            "properties/reason": {
+                "maxLength": 1000
+            }
+        },
+        "MaestroVerdictDetail": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/untestable": {
+                "maxItems": 32
+            },
+            "properties/untestable/items": {
+                "maxLength": 1000
+            },
+            "properties/setAside": {
+                "maxItems": 64
+            },
+            "properties/dropped": {
+                "maxItems": 64
+            },
+            "properties/unreviewed": {
+                "maxLength": 1000
+            },
+            "properties/restored": {
+                "maxLength": 1000
+            }
+        },
         "MaestroUsageUpdate": {
             "": {
                 "additionalProperties": false
