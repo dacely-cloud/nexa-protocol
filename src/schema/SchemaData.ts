@@ -25382,6 +25382,68 @@ export const schema: Schema = {
             type: 'object',
             additionalProperties: false,
         },
+        MaestroModelReport: {
+            description:
+                'One community report about a model: what a public page said about it for one kind of work, read\nwhen Maestro was unsure which model suits that work. The quote is copied from the page and\nlabelled with its source; Maestro measured none of it.',
+            properties: {
+                measured: {
+                    description:
+                        'Whether the excerpt states a measured result (a score, a rate, a rank).',
+                    type: 'boolean',
+                },
+                published: {
+                    description:
+                        'When the page was published, `YYYY-MM` or `YYYY-MM-DD`; absent when it does not say.',
+                    type: 'string',
+                    pattern: '^\\d{4}-\\d{2}(?:-\\d{2})?$',
+                    maxLength: 10,
+                },
+                publisher: {
+                    $ref: '#/definitions/MaestroReportPublisher',
+                },
+                quote: {
+                    description: 'An exact excerpt of the page that states the claim.',
+                    type: 'string',
+                    maxLength: 220,
+                },
+                readAt: {
+                    description: 'When Maestro read it, `YYYY-MM-DD`.',
+                    type: 'string',
+                    pattern: '^\\d{4}-\\d{2}-\\d{2}$',
+                    maxLength: 10,
+                },
+                source: {
+                    description: "The page's host name, such as `hw.dev`.",
+                    type: 'string',
+                    maxLength: 253,
+                },
+                stance: {
+                    $ref: '#/definitions/MaestroReportStance',
+                },
+                topic: {
+                    description: 'The kind of work, such as `Verilog hardware design (RTL)`.',
+                    type: 'string',
+                    maxLength: 120,
+                },
+                url: {
+                    description: "The page's address.",
+                    type: 'string',
+                    maxLength: 2048,
+                },
+            },
+            required: [
+                'measured',
+                'publisher',
+                'quote',
+                'readAt',
+                'source',
+                'stance',
+                'topic',
+                'url',
+            ],
+            type: 'object',
+            additionalProperties: false,
+        },
         MaestroModelRules: {
             description: 'Which models Maestro may choose from.',
             properties: {
@@ -25522,6 +25584,15 @@ export const schema: Schema = {
                     type: 'string',
                     pattern: '^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$',
                     maxLength: 128,
+                },
+                reported: {
+                    description:
+                        'Community reports about this model, the most credible first, at most three; absent when\nthere are none.',
+                    items: {
+                        $ref: '#/definitions/MaestroModelReport',
+                    },
+                    type: 'array',
+                    maxItems: 3,
                 },
                 tier: {
                     $ref: '#/definitions/MaestroTier',
@@ -25859,6 +25930,18 @@ export const schema: Schema = {
             description:
                 'What Maestro does when a provider declines a request.\nUnion of {@link MaestroRefusalHandling} values.',
             enum: ['ask', 'off', 'reroute'],
+            type: 'string',
+        },
+        MaestroReportPublisher: {
+            description:
+                "Who published a community report, judged from the page's address alone.\nUnion of {@link MaestroReportPublisher} values.",
+            enum: ['aggregator', 'independent', 'practitioner', 'vendor'],
+            type: 'string',
+        },
+        MaestroReportStance: {
+            description:
+                'What a community report says about a model for one kind of work.\nUnion of {@link MaestroReportStance} values.',
+            enum: ['best', 'strong', 'weak'],
             type: 'string',
         },
         MaestroRole: {

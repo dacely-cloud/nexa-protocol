@@ -14042,6 +14042,24 @@ One model, named by its provider family and model id.
 | `model`    | Yes      | `string` |                                                                                 |
 | `provider` | Yes      | `string` | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`. |
 
+## MaestroModelReport
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+One community report about a model: what a public page said about it for one kind of work, read
+
+| Field       | Required | Type                                                         | Description                                                                          |
+| ----------- | -------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `measured`  | Yes      | `boolean`                                                    | Whether the excerpt states a measured result (a score, a rate, a rank).              |
+| `published` | No       | `string`                                                     | When the page was published, `YYYY-MM` or `YYYY-MM-DD`; absent when it does not say. |
+| `publisher` | Yes      | [MaestroReportPublisher](protocol.md#maestroreportpublisher) |                                                                                      |
+| `quote`     | Yes      | `string`                                                     | An exact excerpt of the page that states the claim.                                  |
+| `readAt`    | Yes      | `string`                                                     | When Maestro read it, `YYYY-MM-DD`.                                                  |
+| `source`    | Yes      | `string`                                                     | The page's host name, such as `hw.dev`.                                              |
+| `stance`    | Yes      | [MaestroReportStance](protocol.md#maestroreportstance)       |                                                                                      |
+| `topic`     | Yes      | `string`                                                     | The kind of work, such as `Verilog hardware design (RTL)`.                           |
+| `url`       | Yes      | `string`                                                     | The page's address.                                                                  |
+
 ## MaestroModelRules
 
 Module: `nexa-protocol/maestro/MaestroTypes.js`.
@@ -14076,20 +14094,21 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 
 One model in the Maestro catalog.
 
-| Field              | Required | Type                                                        | Description                                                                                   |
-| ------------------ | -------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `available`        | Yes      | `boolean`                                                   | Whether a connection can serve it right now.                                                  |
-| `awaitingEvidence` | No       | `boolean`                                                   | True while no published result covers a discovered model: Maestro keeps it to supporting and  |
-| `benchmark`        | No       | [MaestroBenchmark](protocol.md#maestrobenchmark)            |                                                                                               |
-| `connection`       | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null` | The connection that serves it, or null when none can.                                         |
-| `discoveredAt`     | No       | `string`                                                    | When Maestro's model discovery first saw this model (ISO 8601); absent for the models Maestro |
-| `enabled`          | Yes      | `boolean`                                                   | Whether the policy lets Maestro use it.                                                       |
-| `isNew`            | No       | `boolean`                                                   | True for a discovered model in its first two weeks, so the page can mark it new.              |
-| `model`            | Yes      | `string`                                                    |                                                                                               |
-| `name`             | Yes      | `string`                                                    |                                                                                               |
-| `provider`         | Yes      | `string`                                                    | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.               |
-| `tier`             | Yes      | [MaestroTier](protocol.md#maestrotier)                      |                                                                                               |
-| `unreachable`      | No       | `string`                                                    | Why no connection can reach this model, e.g. 'GLM Coding Plan only' or 'Only inside GitHub    |
+| Field              | Required | Type                                                          | Description                                                                                   |
+| ------------------ | -------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `available`        | Yes      | `boolean`                                                     | Whether a connection can serve it right now.                                                  |
+| `awaitingEvidence` | No       | `boolean`                                                     | True while no published result covers a discovered model: Maestro keeps it to supporting and  |
+| `benchmark`        | No       | [MaestroBenchmark](protocol.md#maestrobenchmark)              |                                                                                               |
+| `connection`       | Yes      | [MaestroConnection](protocol.md#maestroconnection) / `null`   | The connection that serves it, or null when none can.                                         |
+| `discoveredAt`     | No       | `string`                                                      | When Maestro's model discovery first saw this model (ISO 8601); absent for the models Maestro |
+| `enabled`          | Yes      | `boolean`                                                     | Whether the policy lets Maestro use it.                                                       |
+| `isNew`            | No       | `boolean`                                                     | True for a discovered model in its first two weeks, so the page can mark it new.              |
+| `model`            | Yes      | `string`                                                      |                                                                                               |
+| `name`             | Yes      | `string`                                                      |                                                                                               |
+| `provider`         | Yes      | `string`                                                      | Provider family, such as `nerva`, `anthropic`, `openai`, `google` or `mistral`.               |
+| `reported`         | No       | Array of [MaestroModelReport](protocol.md#maestromodelreport) | Community reports about this model, the most credible first, at most three; absent when       |
+| `tier`             | Yes      | [MaestroTier](protocol.md#maestrotier)                        |                                                                                               |
+| `unreachable`      | No       | `string`                                                      | Why no connection can reach this model, e.g. 'GLM Coding Plan only' or 'Only inside GitHub    |
 
 ## MaestroModelsListMethod
 
@@ -14292,6 +14311,22 @@ Module: `nexa-protocol/maestro/MaestroTypes.js`.
 What Maestro does when a provider declines a request.
 
 Type: `"ask"` / `"off"` / `"reroute"`.
+
+## MaestroReportPublisher
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+Who published a community report, judged from the page's address alone.
+
+Type: `"aggregator"` / `"independent"` / `"practitioner"` / `"vendor"`.
+
+## MaestroReportStance
+
+Module: `nexa-protocol/maestro/MaestroTypes.js`.
+
+What a community report says about a model for one kind of work.
+
+Type: `"best"` / `"strong"` / `"weak"`.
 
 ## MaestroRole
 

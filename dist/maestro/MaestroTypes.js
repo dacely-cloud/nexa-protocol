@@ -106,6 +106,26 @@ export const MaestroRefusalHandling = {
     /** Ask the user before moving. */
     Ask: 'ask',
 };
+/** What a community report says about a model for one kind of work. */
+export const MaestroReportStance = {
+    /** The best or top model for the work. */
+    Best: 'best',
+    /** Does the work well, above most others. */
+    Strong: 'strong',
+    /** Does the work poorly, below most others. */
+    Weak: 'weak',
+};
+/** Who published a community report, judged from the page's address alone. */
+export const MaestroReportPublisher = {
+    /** A leaderboard, an evaluation, a paper or a benchmark repository that measures models. */
+    Independent: 'independent',
+    /** A news site, a review or a blog that is neither a vendor nor a forum. */
+    Aggregator: 'aggregator',
+    /** A forum or discussion where practitioners report their own experience. */
+    Practitioner: 'practitioner',
+    /** A model vendor's own site. */
+    Vendor: 'vendor',
+};
 /** Lifecycle of a Maestro run or sub-agent. */
 export const MaestroAgentState = {
     Queued: 'queued',

@@ -1765,6 +1765,31 @@
                 "maxLength": 500
             }
         },
+        "MaestroModelReport": {
+            "": {
+                "additionalProperties": false
+            },
+            "properties/topic": {
+                "maxLength": 120
+            },
+            "properties/quote": {
+                "maxLength": 220
+            },
+            "properties/source": {
+                "maxLength": 253
+            },
+            "properties/url": {
+                "maxLength": 2048
+            },
+            "properties/published": {
+                "pattern": "^\\d{4}-\\d{2}(?:-\\d{2})?$",
+                "maxLength": 10
+            },
+            "properties/readAt": {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "maxLength": 10
+            }
+        },
         "MaestroModelView": {
             "": {
                 "additionalProperties": false
@@ -1785,6 +1810,9 @@
             },
             "properties/unreachable": {
                 "maxLength": 300
+            },
+            "properties/reported": {
+                "maxItems": 3
             }
         },
         "MaestroProviderView": {

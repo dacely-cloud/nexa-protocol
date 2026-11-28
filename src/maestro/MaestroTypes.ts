@@ -333,6 +333,59 @@ export interface MaestroBenchmark {
     readonly source: string;
 }
 
+/** What a community report says about a model for one kind of work. */
+export const MaestroReportStance = {
+    /** The best or top model for the work. */
+    Best: 'best',
+    /** Does the work well, above most others. */
+    Strong: 'strong',
+    /** Does the work poorly, below most others. */
+    Weak: 'weak',
+} as const;
+
+/** Union of {@link MaestroReportStance} values. */
+export type MaestroReportStance = (typeof MaestroReportStance)[keyof typeof MaestroReportStance];
+
+/** Who published a community report, judged from the page's address alone. */
+export const MaestroReportPublisher = {
+    /** A leaderboard, an evaluation, a paper or a benchmark repository that measures models. */
+    Independent: 'independent',
+    /** A news site, a review or a blog that is neither a vendor nor a forum. */
+    Aggregator: 'aggregator',
+    /** A forum or discussion where practitioners report their own experience. */
+    Practitioner: 'practitioner',
+    /** A model vendor's own site. */
+    Vendor: 'vendor',
+} as const;
+
+/** Union of {@link MaestroReportPublisher} values. */
+export type MaestroReportPublisher =
+    (typeof MaestroReportPublisher)[keyof typeof MaestroReportPublisher];
+
+/**
+ * One community report about a model: what a public page said about it for one kind of work, read
+ * when Maestro was unsure which model suits that work. The quote is copied from the page and
+ * labelled with its source; Maestro measured none of it.
+ */
+export interface MaestroModelReport {
+    /** The kind of work, such as `Verilog hardware design (RTL)`. */
+    readonly topic: string;
+    readonly stance: MaestroReportStance;
+    /** An exact excerpt of the page that states the claim. */
+    readonly quote: string;
+    /** Whether the excerpt states a measured result (a score, a rate, a rank). */
+    readonly measured: boolean;
+    readonly publisher: MaestroReportPublisher;
+    /** The page's host name, such as `hw.dev`. */
+    readonly source: string;
+    /** The page's address. */
+    readonly url: string;
+    /** When the page was published, `YYYY-MM` or `YYYY-MM-DD`; absent when it does not say. */
+    readonly published?: string;
+    /** When Maestro read it, `YYYY-MM-DD`. */
+    readonly readAt: string;
+}
+
 /** One model in the Maestro catalog. */
 export interface MaestroModelView extends MaestroModelRef {
     readonly name: string;
@@ -362,6 +415,11 @@ export interface MaestroModelView extends MaestroModelRef {
      * Copilot'; absent when it can be reached or merely isn't connected.
      */
     readonly unreachable?: string;
+    /**
+     * Community reports about this model, the most credible first, at most three; absent when
+     * there are none.
+     */
+    readonly reported?: readonly MaestroModelReport[];
 }
 
 /** One provider family in the Maestro catalog. */
